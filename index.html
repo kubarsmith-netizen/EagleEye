@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Foresight</title>
+<title>EaglEye Market</title>
 <style>
 :root,[data-theme=light]{--bg:#f4f3ee;--fg:#1d1d1b;--card:#fff;--mut:#6b6b66;--line:#e0dfd8;--yes:#16885a;--no:#c0392b;--acc:#2b4a8b;--side:#ebeae3}
 [data-theme=dark]{--bg:#121211;--fg:#ececea;--card:#1c1c1a;--mut:#9a9a94;--line:#2f2f2c;--yes:#3ecf8e;--no:#ef6a62;--acc:#8aa9f0;--side:#181816}
@@ -32,13 +32,15 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;bor
 .tabs{display:flex;gap:8px;margin:14px 0 18px}
 #t{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:8px;display:none;max-width:90%;z-index:9}
 @media(max-width:860px){#shell{flex-direction:column}nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}main{padding:16px}.two,.stats{grid-template-columns:1fr}}
-</style></head>
+</style>
+<link rel="icon" type="image/x-icon" href="favicon.png">
+</head>
 <body><div id="app"></div><div id="t"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 // Paste your Supabase values (Project Settings > API). Project URL = base address only, e.g. https://abc.supabase.co
-const SUPABASE_URL = 'PASTE_PROJECT_URL';
-const SUPABASE_KEY = 'PASTE_ANON_KEY';
+const SUPABASE_URL = 'https://qwkmyncxomibcpmlguxj.supabase.co/rest/v1/';
+const SUPABASE_KEY = 'sb_publishable_mwgMhSwlsfRnOtu3h8-hUA_F7xjnxAV';
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = s => document.querySelector(s);
@@ -81,7 +83,7 @@ function chart(id){
 
 // ---------- auth ----------
 function authView(){
-  $('#app').innerHTML = `<div style="max-width:420px;margin:12vh auto;padding:16px"><div class="card"><h1>Foresight</h1>
+  $('#app').innerHTML = `<div style="max-width:420px;margin:12vh auto;padding:16px"><div class="card"><h1>EagleEye Market</h1>
   <p class="mut">Predict outcomes with play tokens. No real money.</p>
   <input id="u" placeholder="Username (sign up only)"><input id="e" type="email" placeholder="Email"><input id="p" type="password" placeholder="Password">
   <div class="row"><button onclick="auth(true)">Log in</button><button class="g" onclick="auth(false)">Sign up</button><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button></div></div></div>`;
@@ -207,7 +209,7 @@ function render(){
   const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount};
   const ok = {create: staff, review: staff, admin: owner, suggest: !staff};
   const body = !pages[pg] ? '<p>Page not found.</p>' : (pg in ok && !ok[pg]) ? '<p class="mut">You do not have access to this page.</p>' : pages[pg]();
-  $('#app').innerHTML = `<div id="shell"><nav><h2 style="margin:0 12px 14px">Foresight</h2>
+  $('#app').innerHTML = `<div id="shell"><nav><h2 style="margin:0 12px 14px">EagleEye Market</h2>
     ${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('rules', 'Rules and prize')}
     ${staff ? link('create', 'Create market') + link('review', 'Review suggestions', pend || '') : link('suggest', 'Suggest a market')}
     ${owner ? link('admin', 'Admin tools') : ''}${link('account', 'Account')}
