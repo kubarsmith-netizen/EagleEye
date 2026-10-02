@@ -90,6 +90,8 @@ function authView(){
 }
 async function auth(login){
   const email = $('#e').value, password = $('#p').value;
+  const ALLOWED = ['headroyce.org'];
+  if (!login && !ALLOWED.includes(email.split('@').pop().toLowerCase())) return toast('Please use your headroyce.org email.');
   const r = login ? await sb.auth.signInWithPassword({email, password}) : await sb.auth.signUp({email, password, options:{data:{username:$('#u').value}}});
   if (r.error) return toast(r.error.message);
   if (!r.data.session) return toast('Check your email to confirm, then log in.');
