@@ -84,7 +84,7 @@ function chart(id){
 // ---------- auth ----------
 function authView(){
   $('#app').innerHTML = `<div style="max-width:420px;margin:12vh auto;padding:16px"><div class="card"><h1>EagleEye Market</h1>
-  <p class="mut">Predict outcomes with play tokens. No real money.</p>
+  <p class="mut">Please sign up with your Head-Royce email </p>
   <input id="u" placeholder="Username (sign up only)"><input id="e" type="email" placeholder="Email"><input id="p" type="password" placeholder="Password">
   <div class="row"><button onclick="auth(true)">Log in</button><button class="g" onclick="auth(false)">Sign up</button><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button></div></div></div>`;
 }
