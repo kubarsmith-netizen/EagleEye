@@ -168,7 +168,7 @@ const pgBoard = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</
   ${(FINAL.length ? FINAL : LB).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>${(+r.score).toFixed(1)}</td></tr>`).join('')}</table></div>`;
 const statusRows = list => list.map(p => `<tr><td>${esc(p.question)}</td><td><span class="chip">${p.status}</span></td><td>${p.note ? esc(p.note) : '<span class="mut">none</span>'}</td></tr>`).join('');
 const pgRules = () => `<h1>Rules and prize</h1><div class="card" style="max-width:760px">
-  <h2 style="margin-top:0">The season</h2><p>The season ends on <b>October 18, 2026 at 3:20 PM Pacific Time</b>. The countdown is at the top of every page. When it reaches zero, trading closes.</p>
+  <h2 style="margin-top:0">The season</h2><p>The season ends on <b>December 18, 2026 at 3:20 PM Pacific Time</b>. The countdown is at the top of every page. When it reaches zero, trading closes.</p>
   <h2>Your tokens</h2><p>Everyone starts with <b>1,000 tokens</b>. Tokens are free, there is nothing to buy, and they cannot be bought or sold.</p>
   <h2>Trading</h2><p>You can trade on any open market that has already been created. Buy YES or NO with your tokens. The odds move as people buy, so buying early at a low price pays more if you are right. You can cash out a position before the market resolves.</p>
   <p><b>Cooldown:</b> after you buy or sell in a market, you cannot buy or sell in that same market again until its cooldown ends. The length is shown on each market page. This keeps the game about predictions, not playing the odds.</p>
