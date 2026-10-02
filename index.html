@@ -166,7 +166,7 @@ function pgPortfolio(){
   <div class="card"><div class="mut">Invested in open markets</div><b>${inv.toFixed(1)}</b></div><div class="card"><div class="mut">Current value of positions</div><b>${val.toFixed(1)}</b></div></div>
   ${rows.length ? `<div class="card"><table><tr><th>Market</th><th>Side</th><th>Invested</th><th>Worth now</th><th>Change</th><th></th></tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
 }
-const pgBoard = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Top 10 by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
+const pgBoard = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Everyone by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
   ${(FINAL.length ? FINAL : LB).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>${(+r.score).toFixed(1)}</td></tr>`).join('')}</table></div>`;
 const statusRows = list => list.map(p => `<tr><td>${esc(p.question)}</td><td><span class="chip">${p.status}</span></td><td>${p.note ? esc(p.note) : '<span class="mut">none</span>'}</td></tr>`).join('');
 const pgRules = () => `<h1>Rules and prize</h1><div class="card" style="max-width:760px">
