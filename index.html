@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EaglEye Market</title>
+<title>EagleEye Market</title>
 <style>
 :root,[data-theme=light]{--bg:#f4f3ee;--fg:#1d1d1b;--card:#fff;--mut:#6b6b66;--line:#e0dfd8;--yes:#16885a;--no:#c0392b;--acc:#2b4a8b;--side:#ebeae3}
 [data-theme=dark]{--bg:#121211;--fg:#ececea;--card:#1c1c1a;--mut:#9a9a94;--line:#2f2f2c;--yes:#3ecf8e;--no:#ef6a62;--acc:#8aa9f0;--side:#181816}
@@ -48,7 +48,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 const root = document.documentElement;
 let me = null, markets = [], P = [], CD = [], T = [], LB = [], STAFF = [], INV = [], PR = [], FINAL = [], FILTER = 'open', subscribed = false;
 
-const SEASON_END = new Date('2026-10-18T15:20:00-07:00');
+const SEASON_END = new Date('2026-12-18T15:20:00-07:00');
 function cdText(){
   const ms = SEASON_END - Date.now();
   if (ms <= 0) return 'The season has ended. Trading is closed.';
