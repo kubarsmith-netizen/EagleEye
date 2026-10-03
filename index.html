@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EagleEye</title>
+<title>EagleEye Market</title>
 <style>
 :root,[data-theme=light]{--bg:#f4f3ee;--fg:#1d1d1b;--card:#fff;--mut:#6b6b66;--line:#e0dfd8;--yes:#16885a;--no:#c0392b;--acc:#2b4a8b;--side:#ebeae3}
 [data-theme=dark]{--bg:#121211;--fg:#ececea;--card:#1c1c1a;--mut:#9a9a94;--line:#2f2f2c;--yes:#3ecf8e;--no:#ef6a62;--acc:#8aa9f0;--side:#181816}
@@ -33,27 +33,22 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;bor
 #t{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:8px;display:none;max-width:90%;z-index:9}
 @media(max-width:860px){#shell{flex-direction:column}nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}main{padding:16px}.two,.stats{grid-template-columns:1fr}}
 </style>
- <link rel="icon" href="/favicon.ico">
+<link rel="icon" href="/favicon.ico">
 </head>
 <body><div id="app"></div><div id="t"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
- 
-
 // Paste your Supabase values (Project Settings > API). Project URL = base address only, e.g. https://abc.supabase.co
 const SUPABASE_URL = 'https://qwkmyncxomibcpmlguxj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_mwgMhSwlsfRnOtu3h8-hUA_F7xjnxAV';
-
-// Only these email domains can sign up, e.g. ['yourdomain.org']. Leave empty to allow any email.
-const ALLOWED_DOMAINS = [headroyce.org];
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const root = document.documentElement;
-let me = null, markets = [], P = [], CD = [], T = [], LB = [], STAFF = [], INV = [], PR = [], FINAL = [], MT = {}, MTok = {}, FILTER = 'open', subscribed = false;
+let me = null, markets = [], P = [], CD = [], T = [], LB = [], STAFF = [], INV = [], PR = [], FINAL = [], FILTER = 'open', subscribed = false;
 
-const SEASON_END = new Date('2026-10-18T15:20:00-07:00');
+const SEASON_END = new Date('2026-12-18T15:20:00-07:00');
 function cdText(){
   const ms = SEASON_END - Date.now();
   if (ms <= 0) return 'The season has ended. Trading is closed.';
@@ -71,7 +66,6 @@ async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (
 
 const cost = (a, b, l) => { const m = Math.max(a, b); return m + l * Math.log(Math.exp((a-m)/l) + Math.exp((b-m)/l)); };
 const py = m => 1 / (1 + Math.exp((+m.q_no - +m.q_yes) / +m.b));
-const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
 const worth = (m, p) => { const qs = +(p.side === 'yes' ? m.q_yes : m.q_no), qo = +(p.side === 'yes' ? m.q_no : m.q_yes); return cost(qs, qo, +m.b) - cost(qs - +p.shares, qo, +m.b); };
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
 function info(m){
@@ -89,14 +83,15 @@ function chart(id){
 
 // ---------- auth ----------
 function authView(){
-  $('#app').innerHTML = `<div style="max-width:420px;margin:12vh auto;padding:16px"><div class="card"><h1>EagleEye</h1>
-  <p class="mut">Predict outcomes with play tokens. No real money.</p>
+  $('#app').innerHTML = `<div style="max-width:420px;margin:12vh auto;padding:16px"><div class="card"><h1>EagleEye Market</h1>
+  <p class="mut">Please sign up with your Head-Royce email </p>
   <input id="u" placeholder="Username (sign up only)"><input id="e" type="email" placeholder="Email"><input id="p" type="password" placeholder="Password">
   <div class="row"><button onclick="auth(true)">Log in</button><button class="g" onclick="auth(false)">Sign up</button><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button></div></div></div>`;
 }
 async function auth(login){
   const email = $('#e').value, password = $('#p').value;
-  if (!login && ALLOWED_DOMAINS.length && !ALLOWED_DOMAINS.includes(email.split('@').pop().toLowerCase())) return toast('Please use your ' + ALLOWED_DOMAINS.join(' or ') + ' email.');
+  const ALLOWED = ['headroyce.org'];
+  if (!login && !ALLOWED.includes(email.split('@').pop().toLowerCase())) return toast('Please use your headroyce.org email.');
   const r = login ? await sb.auth.signInWithPassword({email, password}) : await sb.auth.signUp({email, password, options:{data:{username:$('#u').value}}});
   if (r.error) return toast(r.error.message);
   if (!r.data.session) return toast('Check your email to confirm, then log in.');
@@ -111,14 +106,14 @@ async function load(){
     sb.from('profiles').select().eq('id', session.user.id).single(),
     sb.from('markets').select().order('created_at', {ascending:false}),
     sb.from('positions').select(), sb.from('cooldowns').select(),
-    sb.rpc('price_points'),
+    sb.from('trades').select('market_id,price_yes').order('created_at').limit(5000),
     sb.rpc('leaderboard'), sb.from('profiles').select('username,role').neq('role','user'),
     sb.from('invite_codes').select('code,used_by'),
     sb.from('proposals').select('id,question,closes_at,status,note,profiles(username)').order('created_at', {ascending:false}).limit(100),
     sb.from('season_final').select('place,username,score').order('place')]);
   if (!a.data) { me = null; return render(); }
   me = a.data; markets = b.data || []; P = c.data || []; CD = d.data || [];
-  T = e.data || []; LB = f.data || []; STAFF = g.data || []; INV = h.data || []; PR = i.data || []; FINAL = j.data || []; MTok = {};
+  T = e.data || []; LB = f.data || []; STAFF = g.data || []; INV = h.data || []; PR = i.data || []; FINAL = j.data || [];
   render();
   if (!subscribed) { subscribed = true;
     sb.channel('m').on('postgres_changes', {event:'*', schema:'public', table:'markets'}, load)
@@ -150,7 +145,7 @@ function pgMarket(id){
     <div class="row">${[10, 50, 100].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
     <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
   const pos = mine.map(p => { const w = worth(m, p), pc = (w / +p.invested - 1) * 100;
-    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b> · bought at ${(+p.invested / +p.shares * 100).toFixed(0)}%, now ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>invested ${(+p.invested).toFixed(1)} → worth ${w.toFixed(1)} (${pc >= 0 ? '+' : ''}${pc.toFixed(0)}%)</span>
+    return `<div class="row split"><span>${p.side.toUpperCase()}: invested ${(+p.invested).toFixed(1)} → worth ${w.toFixed(1)} (${pc >= 0 ? '+' : ''}${pc.toFixed(0)}%)</span>
     <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`; }).join('');
   const resolve = i.open && (i.own || me.role === 'owner') ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
@@ -159,23 +154,23 @@ function pgMarket(id){
   <div class="two"><div class="card"><div class="split big"><span style="color:var(--yes)">YES ${(i.y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-i.y)*100).toFixed(0)}%</span></div>
     <div class="bar"><i style="width:${i.y*100}%"></i></div>${chart(id)}</div>
   <div><div class="card"><b>Trade</b><div style="margin-top:8px">${trade}</div><p class="mut">Cooldown after each trade: ${+(m.cooldown_seconds / 3600).toFixed(1)} hours</p></div>
-  ${pos ? `<div class="card"><b>Your position</b>${pos}</div>` : ''}${resolve}</div></div>${tradesCard(id)}`;
+  ${pos ? `<div class="card"><b>Your position</b>${pos}</div>` : ''}${resolve}</div></div>`;
 }
 function pgPortfolio(){
   const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open');
   let inv = 0, val = 0;
   const tr = rows.map(({p, m}) => { const w = worth(m, p), i = info(m); inv += +p.invested; val += w;
-    return `<tr><td><a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${(+p.invested / +p.shares * 100).toFixed(0)}%</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${(+p.invested).toFixed(1)}</td><td>${w.toFixed(1)}</td><td>${((w / +p.invested - 1) * 100).toFixed(0)}%</td>
+    return `<tr><td><a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${(+p.invested).toFixed(1)}</td><td>${w.toFixed(1)}</td><td>${((w / +p.invested - 1) * 100).toFixed(0)}%</td>
     <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td></tr>`; }).join('');
   return `<h1>Portfolio</h1><div class="stats"><div class="card"><div class="mut">Cash</div><b>${(+me.balance).toFixed(1)}</b></div>
   <div class="card"><div class="mut">Invested in open markets</div><b>${inv.toFixed(1)}</b></div><div class="card"><div class="mut">Current value of positions</div><b>${val.toFixed(1)}</b></div></div>
-  ${rows.length ? `<div class="card"><table><tr><th>Market</th><th>Side</th><th>Bought at</th><th>Price now</th><th>Invested</th><th>Worth now</th><th>Change</th><th></th></tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
+  ${rows.length ? `<div class="card"><table><tr><th>Market</th><th>Side</th><th>Invested</th><th>Worth now</th><th>Change</th><th></th></tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
 }
-const pgBoard = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Top 10 by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
+const pgBoard = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Everyone by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
   ${(FINAL.length ? FINAL : LB).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>${(+r.score).toFixed(1)}</td></tr>`).join('')}</table></div>`;
 const statusRows = list => list.map(p => `<tr><td>${esc(p.question)}</td><td><span class="chip">${p.status}</span></td><td>${p.note ? esc(p.note) : '<span class="mut">none</span>'}</td></tr>`).join('');
 const pgRules = () => `<h1>Rules and prize</h1><div class="card" style="max-width:760px">
-  <h2 style="margin-top:0">The season</h2><p>The season ends on <b>October 18, 2026 at 3:20 PM Pacific Time</b>. The countdown is at the top of every page. When it reaches zero, trading closes.</p>
+  <h2 style="margin-top:0">The season</h2><p>The season ends on <b>December 18, 2026 at 3:20 PM Pacific Time</b>. The countdown is at the top of every page. When it reaches zero, trading closes.</p>
   <h2>Your tokens</h2><p>Everyone starts with <b>1,000 tokens</b>. Tokens are free, there is nothing to buy, and they cannot be bought or sold.</p>
   <h2>Trading</h2><p>You can trade on any open market that has already been created. Buy YES or NO with your tokens. The odds move as people buy, so buying early at a low price pays more if you are right. You can cash out a position before the market resolves.</p>
   <p><b>Cooldown:</b> after you buy or sell in a market, you cannot buy or sell in that same market again until its cooldown ends. The length is shown on each market page. This keeps the game about predictions, not playing the odds.</p>
@@ -216,7 +211,7 @@ function render(){
   const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount};
   const ok = {create: staff, review: staff, admin: owner, suggest: !staff};
   const body = !pages[pg] ? '<p>Page not found.</p>' : (pg in ok && !ok[pg]) ? '<p class="mut">You do not have access to this page.</p>' : pages[pg]();
-  $('#app').innerHTML = `<div id="shell"><nav><h2 style="margin:0 12px 14px">EagleEye</h2>
+  $('#app').innerHTML = `<div id="shell"><nav><h2 style="margin:0 12px 14px">EagleEye Market</h2>
     ${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('rules', 'Rules and prize')}
     ${staff ? link('create', 'Create market') + link('review', 'Review suggestions', pend || '') : link('suggest', 'Suggest a market')}
     ${owner ? link('admin', 'Admin tools') : ''}${link('account', 'Account')}
@@ -224,24 +219,8 @@ function render(){
     <div class="row"><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button><button class="g" onclick="sb.auth.signOut().then(load)">Log out</button></div></div>
     </nav><main><div class="card split"><b id="cd">${cdText()}</b><a href="#/rules">Rules and prize</a></div>${body}</main></div>`;
   for (const k in keep) { const el = document.getElementById(k); if (el) el.value = keep[k]; }
-  if (pg === 'market' && staff && !MTok[+arg]) fetchTrades(+arg);
 }
 addEventListener('hashchange', () => { render(); scrollTo(0, 0); });
-
-const tradesCard = id => {
-  if (me.role === 'user') return '';
-  const rows = MT[id];
-  const body = !rows ? '<p class="mut">Loading...</p>' : !rows.length ? '<p class="mut">No trades yet.</p>' :
-    `<table><tr><th>Time</th><th>User</th><th>Action</th><th>Tokens</th><th>YES price after</th></tr>${rows.map(r =>
-      `<tr><td>${new Date(r.ts).toLocaleString()}</td><td>${esc(r.username || 'deleted user')}</td><td>${r.kind === 'buy' ? 'Bought' : 'Cashed out'} ${r.side.toUpperCase()}</td><td>${(+r.tokens).toFixed(1)}</td><td>${(+r.price_yes * 100).toFixed(0)}%</td></tr>`).join('')}</table>`;
-  return `<div class="card" style="margin-top:20px"><b>All trades on this market</b> <span class="mut">(admins only)</span>${body}</div>`;
-};
-async function fetchTrades(id){
-  MTok[id] = true;
-  const {data, error} = await sb.rpc('market_trades', {p_market:id});
-  if (error) toast(error.message);
-  MT[id] = data || []; render();
-}
 
 // ---------- actions ----------
 const buy = (id, side) => rpc('trade', {p_market:id, p_side:side, p_tokens:+$('#a'+id).value, p_action:'buy'});
