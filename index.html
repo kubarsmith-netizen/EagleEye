@@ -32,15 +32,20 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;bor
 .tabs{display:flex;gap:8px;margin:14px 0 18px}
 #t{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:8px;display:none;max-width:90%;z-index:9}
 @media(max-width:860px){#shell{flex-direction:column}nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}main{padding:16px}.two,.stats{grid-template-columns:1fr}}
-</style></head>
+</style>
+ <link rel="icon" href="/favicon.ico">
+</head>
 <body><div id="app"></div><div id="t"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
+ 
+
 // Paste your Supabase values (Project Settings > API). Project URL = base address only, e.g. https://abc.supabase.co
-const SUPABASE_URL = 'PASTE_PROJECT_URL';
-const SUPABASE_KEY = 'PASTE_ANON_KEY';
+const SUPABASE_URL = 'https://qwkmyncxomibcpmlguxj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_mwgMhSwlsfRnOtu3h8-hUA_F7xjnxAV';
+
 // Only these email domains can sign up, e.g. ['yourdomain.org']. Leave empty to allow any email.
-const ALLOWED_DOMAINS = [];
+const ALLOWED_DOMAINS = [headroyce.org];
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = s => document.querySelector(s);
