@@ -170,7 +170,7 @@ function pgPortfolio(){
 }
 const pgBoard = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Everyone by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
   ${(FINAL.length ? FINAL : LB).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>${(+r.score).toFixed(1)}</td></tr>`).join('')}</table></div>`;
-const statusRows = list => list.map(p => `<tr><td>${esc(p.question)}</td><td><span class="chip">${p.status}</span></td><td>${p.note ? esc(p.note) : '<span class="mut">none</span>'}</td></tr>`).join('');
+const statusRows = (list, who) => list.map(p => `<tr><td>${esc(p.question)}</td>${who ? `<td>${esc(p.profiles ? p.profiles.username : 'deleted user')}</td>` : ''}<td><span class="chip">${p.status}</span></td><td>${p.note ? esc(p.note) : '<span class="mut">none</span>'}</td></tr>`).join('');
 const pgRules = () => `<h1>Rules and prize</h1><div class="card" style="max-width:760px">
   <h2 style="margin-top:0">The season</h2><p>The season ends on <b>December 18, 2026 at 3:20 PM Pacific Time</b>. The countdown is at the top of every page. When it reaches zero, trading closes.</p>
   <h2>Your tokens</h2><p>Everyone starts with <b>1,000 tokens</b>. Tokens are free, there is nothing to buy, and they cannot be bought or sold.</p>
@@ -193,7 +193,7 @@ function pgReview(){
     <div class="row"><label class="mut">Opening YES %<input id="po${p.id}" type="number" value="50"></label><label class="mut">Cooldown (hours)<input id="pc${p.id}" type="number" value="24"></label></div>
     <input id="pn${p.id}" placeholder="Comment: why approve or reject? (optional, shown to the user)">
     <div class="row"><button class="y" onclick="approve(${p.id})">Approve</button><button class="n" onclick="reject(${p.id})">Reject</button></div></div>`).join('') || '<p class="mut">Nothing waiting for review.</p>'}</div>
-  ${done.length ? `<h2>Already reviewed</h2><div class="card"><table><tr><th>Question</th><th>Result</th><th>Comment</th></tr>${statusRows(done)}</table></div>` : ''}`;
+    ${done.length ? `<h2>Already reviewed</h2><div class="card"><table><tr><th>Question</th><th>Suggested by</th><th>Result</th><th>Comment</th></tr>${statusRows(done, true)}</table></div>` : ''}`;
 }
 const pgAdmin = () => `<h1>Admin tools</h1><div class="grid"><div class="card"><b>Season</b>${Date.now() >= SEASON_END ? (FINAL.length ? '<p class="mut">Final standings are recorded.</p>' : '<p class="mut">Click right after the season ends, before resolving or voiding any market.</p><button onclick="recordFinal()">Record final standings</button>') : '<p class="mut">Available after the season ends.</p>'}</div><div class="card"><b>Invite codes</b><p class="mut">Send a one-time code. They sign up, then redeem it on their Account page.</p>
   <button onclick="inv()">New admin invite code</button><p class="mut">Unused: ${INV.filter(i => !i.used_by).map(i => '<code>' + i.code + '</code>').join(' ') || 'none'}</p></div>
