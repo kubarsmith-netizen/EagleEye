@@ -69,10 +69,10 @@ const go = h => { location.hash = '#/' + h; };
 const toast = m => { const t = $('#t'); t.textContent = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); };
 async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (error) toast(error.message); await load(); return data; }
 
-const cost = (a, b, l) => { const m = Math.max(a, b); return m + l * Math.log(Math.exp((a-m)/l) + Math.exp((b-m)/l)); };
+const cost = (q1, q2, b) => { const m = Math.max(q1, q2); return m + b * Math.log(Math.exp((q1 - m) / b) + Math.exp((q2 - m) / b)); };
 const py = m => 1 / (1 + Math.exp((+m.q_no - +m.q_yes) / +m.b));
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
-const worth = (m, p) => { const qs = +(p.side === 'yes' ? m.q_yes : m.q_no), qo = +(p.side === 'yes' ? m.q_no : m.q_yes); return cost(qs, qo, +m.b) - cost(qs - +p.shares, qo, +m.b); };
+const worth = (m, p) => { const qYes = +m.q_yes, qNo = +m.q_no; const qYesNew = p.side === 'yes' ? qYes - +p.shares : qYes; const qNoNew = p.side === 'no' ? qNo - +p.shares : qNo; return cost(qYes, qNo, +m.b) - cost(qYesNew, qNoNew, +m.b); };
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
 function info(m){
   const cd = CD.find(c => c.market_id === m.id);
