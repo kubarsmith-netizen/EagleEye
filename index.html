@@ -25,7 +25,7 @@ main{flex:1;padding:30px 40px;max-width:1240px}
 .mut{color:var(--mut);font-size:14px}a{color:var(--acc)}
 .chip{background:var(--line);color:var(--fg);border-radius:10px;padding:1px 8px;font-size:12px}nav a.on .chip{background:#fff3;color:#fff}
 .tags{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px}
-.tag{display:inline-block;padding:4px 20px 4px 11px;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;line-height:1.3;color:#fff;background:#7c3aed;clip-path:polygon(0 0,100% 0,calc(100% - 9px) 50%,100% 100%,0 100%)}
+.tag{display:inline-block;padding:4px 20px 4px 11px;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;line-height:1.3;color:#fff;background:#f2b01e;clip-path:polygon(0 0,100% 0,calc(100% - 9px) 50%,100% 100%,0 100%)}
 .tag.promo{background:#f2b01e;color:#1d1d1b}
 input,button{font:inherit;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
 input{width:100%;margin-top:8px}label{display:block;flex:1;min-width:150px}label input{margin-top:4px}
@@ -132,7 +132,7 @@ const TREND_MIN = 6;   // trades in the last 24 hours for a market to count as t
 const isPromoted = m => m.status === 'open' && !!m.promoted_at;
 const trending = m => m.status === 'open' && (ACT[m.id] || 0) >= TREND_MIN;
 const rank = m => isPromoted(m) ? 0 : trending(m) ? 1 : 2;
-const tags = m => { const t = (isPromoted(m) ? '<span class="tag promo">Promoted</span>' : '') + (trending(m) ? '<span class="tag">Trending</span>' : ''); return t ? `<div class="tags">${t}</div>` : ''; };
+const tags = m => { const t = (isPromoted(m) ? '<span class="tag promo">Trending</span>' : '') + (trending(m) ? '<span class="tag">Trending</span>' : ''); return t ? `<div class="tags">${t}</div>` : ''; };
 function pgMarkets(){
   const list = markets.filter(m => FILTER === 'all' || (FILTER === 'open') === (m.status === 'open'))
     .sort((a, b) => rank(a) - rank(b) || (rank(a) === 0 ? new Date(b.promoted_at) - new Date(a.promoted_at) : rank(a) === 1 ? ACT[b.id] - ACT[a.id] : 0));
