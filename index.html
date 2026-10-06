@@ -128,7 +128,7 @@ async function load(){
 
 // ---------- pages ----------
 const setFilter = f => { FILTER = f; render(); };
-const TREND_MIN = 3;   // trades in the last 24 hours for a market to count as trending
+const TREND_MIN = 6;   // trades in the last 24 hours for a market to count as trending
 const isPromoted = m => m.status === 'open' && !!m.promoted_at;
 const trending = m => m.status === 'open' && (ACT[m.id] || 0) >= TREND_MIN;
 const rank = m => isPromoted(m) ? 0 : trending(m) ? 1 : 2;
