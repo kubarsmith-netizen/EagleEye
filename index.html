@@ -172,7 +172,7 @@ function pgMarket(id){
     <div class="row">${[10, 50, 100].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
     <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
   const pos = mine.map(p => { const w = worth(m, p), pc = (w / +p.invested - 1) * 100;
-    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b> · bought at ${(sidePrice(m, p.side) * 100).toFixed(0)}%, now ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>invested ${(+p.invested).toFixed(1)} → worth ${w.toFixed(1)} (${pc >= 0 ? '+' : ''}${pc.toFixed(0)}%)</span>
+    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b> · bought at ${(+p.invested / +p.shares * 100).toFixed(0)}%, now ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>invested ${(+p.invested).toFixed(1)} → worth ${w.toFixed(1)} (${pc >= 0 ? '+' : ''}${pc.toFixed(0)}%)</span>
     <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`; }).join('');
   const resolve = i.open && (i.own || me.role === 'owner') ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
@@ -187,7 +187,7 @@ function pgPortfolio(){
   const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open');
   let inv = 0, val = 0;
   const tr = rows.map(({p, m}) => { const w = worth(m, p), i = info(m); inv += +p.invested; val += w;
-    return `<tr><td><a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${(+p.invested).toFixed(1)}</td><td>${w.toFixed(1)}</td><td>${((w / +p.invested - 1) * 100).toFixed(0)}%</td>
+    return `<tr><td><a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${(+p.invested / +p.shares * 100).toFixed(0)}%</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${(+p.invested).toFixed(1)}</td><td>${w.toFixed(1)}</td><td>${((w / +p.invested - 1) * 100).toFixed(0)}%</td>
     <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td></tr>`; }).join('');
   return `<h1>Portfolio</h1><div class="stats"><div class="card"><div class="mut">Cash</div><b>${(+me.balance).toFixed(1)}</b></div>
   <div class="card"><div class="mut">Invested in open markets</div><b>${inv.toFixed(1)}</b></div><div class="card"><div class="mut">Current value of positions</div><b>${val.toFixed(1)}</b></div></div>
