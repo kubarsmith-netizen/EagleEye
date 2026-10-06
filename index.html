@@ -72,8 +72,28 @@ async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (
 const py = m => 1 / (1 + Math.exp((+m.q_no - +m.q_yes) / +m.b));
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
 
-// Clean Worth = Shares * Current Spot Price (No Loans)
-const worth = (m, p) => +p.shares * sidePrice(m, p.side);
+// LMSR Cost Function
+const lmsrCost = (qYes, qNo, b) => {
+  const maxQ = Math.max(qYes, qNo);
+  return b * (Math.log(Math.exp((qYes - maxQ) / b) + Math.exp((qNo - maxQ) / b)) + (maxQ / b));
+};
+
+// Liquidation Worth = Exact Tokens Returned Upon Cash Out
+const worth = (m, p) => {
+  const qYes = +m.q_yes;
+  const qNo = +m.q_no;
+  const b = +m.b;
+  const shares = +p.shares;
+
+  if (!shares || shares <= 0) return 0;
+
+  const currentCost = lmsrCost(qYes, qNo, b);
+  const newCost = p.side === 'yes' 
+    ? lmsrCost(qYes - shares, qNo, b)
+    : lmsrCost(qYes, qNo - shares, b);
+
+  return Math.max(0, currentCost - newCost);
+};
 
 // Average Execution Price ("Bought at") = Invested Tokens / Total Shares
 const boughtAtPrice = p => +p.shares > 0 ? (+p.invested / +p.shares) : sidePrice(m, p.side);
@@ -299,7 +319,7 @@ const reject = id => rpc('reject_proposal', {p_id:id, p_note:$('#pn'+id).value})
 const res = (id, o) => confirm(o === 'void' ? 'Cancel this market and refund everyone\'s stakes? This cannot be undone.' : 'Resolve as ' + o.toUpperCase() + '? This pays out winners and cannot be undone.') && rpc('resolve_market', {p_market:id, p_outcome:o});
 const inv = () => rpc('make_invite').then(c => c && prompt('Share this one-time code:', c));
 const setRole = (u, r) => rpc('set_role', {p_username:u, p_role:r});
-const recordFinal = () => confirm('Record the final standings now? This can only be done once.') && rpc('record_final_standings');
+const recordFinal = () => confirm('Record the final standings now? This can only be done once.') && rpc('record_final standings');
 const redeem = () => rpc('redeem_invite', {p_code:$('#ic').value});
 
 load();
