@@ -238,7 +238,7 @@ const tradesCard = id => {
   const rows = MT[id];
   const body = !rows ? '<p class="mut">Loading...</p>' : !rows.length ? '<p class="mut">No trades yet.</p>' :
     `<table><tr><th>Time</th><th>User</th><th>Action</th><th>Tokens</th><th>YES price after</th></tr>${rows.map(r =>
-      `<tr><td>${new Date(r.ts).toLocaleString()}</td><td>${esc(r.username || 'deleted user')}</td><td>${r.kind === 'buy' ? 'Bought' : 'Cashed out'} ${r.side.toUpperCase()}</td><td>${(+r.tokens).toFixed(1)}</td><td>${(+r.price_yes * 100).toFixed(0)}%</td></tr>`).join('')}</table>`;
+      `<tr><td>${new Date(r.ts).toLocaleString()}</td><td>${esc(r.username || 'deleted user')}</td><td>${r.kind === 'buy' ? 'Bought' : 'Cashed out'}${r.side.toUpperCase()}</td><td>${(+r.tokens).toFixed(1)}</td><td>${(+r.price_yes * 100).toFixed(0)}%</td></tr>`).join('')}</table>`;
   return `<div class="card" style="margin-top:20px"><b>All trades on this market</b> <span class="mut">(admins only)</span>${body}</div>`;
 };
 const toLocalInput = iso => { const d = new Date(iso); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); };
