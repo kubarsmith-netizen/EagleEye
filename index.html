@@ -42,10 +42,8 @@ select{font:inherit;padding:9px 12px;border-radius:8px;border:1px solid var(--li
 <body><div id="app"></div><div id="t"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
-// Paste your Supabase values (Project Settings > API). Project URL = base address only, e.g. https://abc.supabase.co
 const SUPABASE_URL = 'https://qwkmyncxomibcpmlguxj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_mwgMhSwlsfRnOtu3h8-hUA_F7xjnxAV';
-// Only these email domains can sign up, e.g. ['yourdomain.org']. Leave empty to allow any email.
 const ALLOWED_DOMAINS = ['headroyce.org'];
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -70,10 +68,16 @@ const go = h => { location.hash = '#/' + h; };
 const toast = m => { const t = $('#t'); t.textContent = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); };
 async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (error) toast(error.message); await load(); return data; }
 
-const cost = (q1, q2, b) => { const m = Math.max(q1, q2); return m + b * Math.log(Math.exp((q1 - m) / b) + Math.exp((q2 - m) / b)); };
+// ---------- Clean Valuation & Execution Pricing ----------
 const py = m => 1 / (1 + Math.exp((+m.q_no - +m.q_yes) / +m.b));
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
-const worth = (m, p) => { const qYes = +m.q_yes, qNo = +m.q_no; const qYesNew = p.side === 'yes' ? qYes - +p.shares : qYes; const qNoNew = p.side === 'no' ? qNo - +p.shares : qNo; return cost(qYes, qNo, +m.b) - cost(qYesNew, qNoNew, +m.b); };
+
+// Clean Worth = Shares * Current Spot Price (No Loans)
+const worth = (m, p) => +p.shares * sidePrice(m, p.side);
+
+// Average Execution Price ("Bought at") = Invested Tokens / Total Shares
+const boughtAtPrice = p => +p.shares > 0 ? (+p.invested / +p.shares) : sidePrice(m, p.side);
+
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
 function info(m){
   const cd = CD.find(c => c.market_id === m.id);
@@ -135,10 +139,10 @@ let SORT = 'featured';
 const SORTS = {featured:'Featured', newest:'Newest', oldest:'Oldest', high:'Highest YES %', low:'Lowest YES %', active:'Most active (24h)', closing:'Closing soonest'};
 const setSort = v => { SORT = v; render(); };
 const setFilter = f => { FILTER = f; render(); };
-const TREND_MIN = 6;   // trades in the last 24 hours for a market to count as trending
+const TREND_MIN = 6;
 const isPromoted = m => m.status === 'open' && !!m.promoted_at;
 const trending = m => m.status === 'open' && (ACT[m.id] || 0) >= TREND_MIN;
-const isBoosted = m => m.status === 'open' && !!m.boosted_at;   // moved up with no tag
+const isBoosted = m => m.status === 'open' && !!m.boosted_at;
 const rank = m => isPromoted(m) ? 0 : trending(m) ? 1 : isBoosted(m) ? 2 : 3;
 const tags = m => { const t = isPromoted(m) ? '<span class="tag promo">Trending!</span>' : trending(m) ? '<span class="tag">Trending!</span>' : ''; return t ? `<div class="tags">${t}</div>` : ''; };
 const sorters = {
@@ -171,8 +175,8 @@ function pgMarket(id){
   else trade = `<input id="a${id}" type="number" min="1" placeholder="Tokens to invest">
     <div class="row">${[10, 50, 100].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
     <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
-  const pos = mine.map(p => { const w = worth(m, p), pc = (w / +p.invested - 1) * 100;
-    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b> · bought at ${(+p.invested / +p.shares * 100).toFixed(0)}%, now ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>invested ${(+p.invested).toFixed(1)} → worth ${w.toFixed(1)} (${pc >= 0 ? '+' : ''}${pc.toFixed(0)}%)</span>
+  const pos = mine.map(p => { const w = worth(m, p), bAt = boughtAtPrice(p) * 100, pc = (w / +p.invested - 1) * 100;
+    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b> · bought at ${bAt.toFixed(0)}%, now ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>invested ${(+p.invested).toFixed(1)} → worth ${w.toFixed(1)} (${pc >= 0 ? '+' : ''}${pc.toFixed(0)}%)</span>
     <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`; }).join('');
   const resolve = i.open && (i.own || me.role === 'owner') ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
@@ -186,8 +190,8 @@ function pgMarket(id){
 function pgPortfolio(){
   const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open');
   let inv = 0, val = 0;
-  const tr = rows.map(({p, m}) => { const w = worth(m, p), i = info(m); inv += +p.invested; val += w;
-    return `<tr><td><a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${(+p.invested / +p.shares * 100).toFixed(0)}%</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${(+p.invested).toFixed(1)}</td><td>${w.toFixed(1)}</td><td>${((w / +p.invested - 1) * 100).toFixed(0)}%</td>
+  const tr = rows.map(({p, m}) => { const w = worth(m, p), bAt = boughtAtPrice(p) * 100, i = info(m); inv += +p.invested; val += w;
+    return `<tr><td><a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${bAt.toFixed(0)}%</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${(+p.invested).toFixed(1)}</td><td>${w.toFixed(1)}</td><td>${((w / +p.invested - 1) * 100).toFixed(0)}%</td>
     <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td></tr>`; }).join('');
   return `<h1>Portfolio</h1><div class="stats"><div class="card"><div class="mut">Cash</div><b>${(+me.balance).toFixed(1)}</b></div>
   <div class="card"><div class="mut">Invested in open markets</div><b>${inv.toFixed(1)}</b></div><div class="card"><div class="mut">Current value of positions</div><b>${val.toFixed(1)}</b></div></div>
