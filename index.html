@@ -86,11 +86,11 @@ async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (
 const py = m => +m.money_yes / (+m.money_yes + +m.money_no);
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
 const boughtAtPrice = (m, p) => +p.shares > 0 ? +p.invested / +p.shares : sidePrice(m, p.side);
-function positionValue(m, p){
-  const own = p.side === 'yes' ? +m.money_yes : +m.money_no;
-  return Math.min(+p.shares * sidePrice(m, p.side), Math.max(own - 1, 0));  // same cap as the server
-
-}
+   function positionValue(m, p){
+     const own = p.side === 'yes' ? +m.money_no : +m.money_yes, oth = p.side === 'yes' ? +m.money_yes : +m.money_no;
+     const x = +p.shares, S = own + x + oth;
+     return 2 * x * oth / (S + Math.sqrt(S * S - 4 * x * oth));
+   }
 
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
 function info(m){
