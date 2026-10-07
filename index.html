@@ -69,7 +69,6 @@ const toast = m => { const t = $('#t'); t.textContent = m; t.style.display = 'bl
 async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (error) toast(error.message); await load(); return data; }
 
 // ---------- Money Share Pricing Model ----------
-// Probability YES = money_yes / (money_yes + money_no)
 const py = m => {
   const my = +m.money_yes || 500;
   const mn = +m.money_no || 500;
@@ -77,11 +76,7 @@ const py = m => {
 };
 
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
-
-// Position Value = shares * current spot price
 const positionValue = (m, p) => +p.shares * sidePrice(m, p.side);
-
-// Average Price/Probability Paid per Share
 const boughtAtPrice = (m, p) => +p.shares > 0 ? (+p.invested / +p.shares) : sidePrice(m, p.side);
 
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
@@ -191,8 +186,8 @@ function pgMarket(id){
     return `<tr>
       <td><b>${p.side.toUpperCase()}</b></td>
       <td>${(+p.invested).toFixed(1)}</td>
-      <td>${(avgP * 100).toFixed(1)}%</td>
-      <td>${(curP * 100).toFixed(1)}%</td>
+      <td>${(avgP * 100).toFixed(0)}%</td>
+      <td>${(curP * 100).toFixed(0)}%</td>
       <td>${val.toFixed(1)}</td>
       <td><button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></td>
     </tr>`; 
@@ -202,10 +197,10 @@ function pgMarket(id){
     <thead>
       <tr>
         <th>Side</th>
-        <th>Money Invested</th>
-        <th>Percentage When Bought</th>
+        <th>Amount Invested</th>
+        <th>Percentage Invested</th>
         <th>Percentage Now</th>
-        <th>How Much You'll Get If You Sell</th>
+        <th>Worth Now</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -240,33 +235,28 @@ function pgPortfolio(){
       <td><a href="#/market/${m.id}">${esc(m.question)}</a></td>
       <td><b>${p.side.toUpperCase()}</b></td>
       <td>${(+p.invested).toFixed(1)}</td>
-      <td>${(avgP * 100).toFixed(1)}%</td>
-      <td>${(curP * 100).toFixed(1)}%</td>
+      <td>${(avgP * 100).toFixed(0)}%</td>
+      <td>${(curP * 100).toFixed(0)}%</td>
       <td>${val.toFixed(1)}</td>
       <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td>
     </tr>`; 
   }).join('');
 
-  const totalPnl = totalValue - totalInvested;
-  const totalPnlSign = totalPnl >= 0 ? '+' : '';
-  const totalPnlColor = totalPnl >= 0 ? 'var(--yes)' : 'var(--no)';
-
   return `<h1>Portfolio</h1>
   <div class="stats">
     <div class="card"><div class="mut">Cash</div><b>${(+me.balance).toFixed(1)}</b></div>
-    <div class="card"><div class="mut">Money Invested</div><b>${totalInvested.toFixed(1)}</b></div>
-    <div class="card"><div class="mut">Current Value</div><b>${totalValue.toFixed(1)}</b></div>
-    <div class="card"><div class="mut">Total P&L</div><b style="color:${totalPnlColor}">${totalPnlSign}${totalPnl.toFixed(1)}</b></div>
+    <div class="card"><div class="mut">Amount Invested</div><b>${totalInvested.toFixed(1)}</b></div>
+    <div class="card"><div class="mut">Worth Now</div><b>${totalValue.toFixed(1)}</b></div>
   </div>
   ${rows.length ? `<div class="card"><table>
     <thead>
       <tr>
         <th>Market</th>
         <th>Side</th>
-        <th>Money Invested</th>
-        <th>Percentage When Bought</th>
+        <th>Amount Invested</th>
+        <th>Percentage Invested</th>
         <th>Percentage Now</th>
-        <th>How Much You'll Get If You Sell</th>
+        <th>Worth Now</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -376,7 +366,7 @@ const reject = id => rpc('reject_proposal', {p_id:id, p_note:$('#pn'+id).value})
 const res = (id, o) => confirm(o === 'void' ? 'Cancel this market and refund everyone\'s stakes? This cannot be undone.' : 'Resolve as ' + o.toUpperCase() + '? This pays out winners and cannot be undone.') && rpc('resolve_market', {p_market:id, p_outcome:o});
 const inv = () => rpc('make_invite').then(c => c && prompt('Share this one-time code:', c));
 const setRole = (u, r) => rpc('set_role', {p_username:u, p_role:r});
-const recordFinal = () => confirm('Record the final standings now? This can only be done once.') && rpc('record_final standings');
+const recordFinal = () => confirm('Record the final standings now? This can only be done once.') && rpc('record_final_standings');
 const redeem = () => rpc('redeem_invite', {p_code:$('#ic').value});
 
 load();
