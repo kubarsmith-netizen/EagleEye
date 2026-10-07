@@ -16,7 +16,7 @@ main{flex:1;padding:30px 40px;max-width:1240px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}.grid .card{margin:0}
 .two{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-top:18px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:16px 0}.stats b{font-size:24px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:16px 0}.stats b{font-size:24px}
 .mk{color:inherit;text-decoration:none;display:block}.mk:hover{border-color:var(--acc)}
 .narrow{max-width:560px}.big{font-size:26px;font-weight:600}
 .bar{height:10px;border-radius:5px;background:var(--no);overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;background:var(--yes)}
@@ -72,31 +72,11 @@ async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (
 const py = m => 1 / (1 + Math.exp((+m.q_no - +m.q_yes) / +m.b));
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
 
-// LMSR Cost Function
-const lmsrCost = (qYes, qNo, b) => {
-  const maxQ = Math.max(qYes, qNo);
-  return b * (Math.log(Math.exp((qYes - maxQ) / b) + Math.exp((qNo - maxQ) / b)) + (maxQ / b));
-};
+// Market Value = Shares * Current Spot Price
+const positionValue = (m, p) => +p.shares * sidePrice(m, p.side);
 
-// Liquidation Worth = Exact Tokens Returned Upon Cash Out
-const worth = (m, p) => {
-  const qYes = +m.q_yes;
-  const qNo = +m.q_no;
-  const b = +m.b;
-  const shares = +p.shares;
-
-  if (!shares || shares <= 0) return 0;
-
-  const currentCost = lmsrCost(qYes, qNo, b);
-  const newCost = p.side === 'yes' 
-    ? lmsrCost(qYes - shares, qNo, b)
-    : lmsrCost(qYes, qNo - shares, b);
-
-  return Math.max(0, currentCost - newCost);
-};
-
-// Average Execution Price ("Bought at") = Invested Tokens / Total Shares
-const boughtAtPrice = p => +p.shares > 0 ? (+p.invested / +p.shares) : sidePrice(m, p.side);
+// Average Price Paid per Share
+const boughtAtPrice = (m, p) => +p.shares > 0 ? (+p.invested / +p.shares) : sidePrice(m, p.side);
 
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
 function info(m){
@@ -195,8 +175,8 @@ function pgMarket(id){
   else trade = `<input id="a${id}" type="number" min="1" placeholder="Tokens to invest">
     <div class="row">${[10, 50, 100].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
     <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
-  const pos = mine.map(p => { const w = worth(m, p), bAt = boughtAtPrice(p) * 100, pc = (w / +p.invested - 1) * 100;
-    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b> · bought at ${bAt.toFixed(0)}%, now ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>invested ${(+p.invested).toFixed(1)} → worth ${w.toFixed(1)} (${pc >= 0 ? '+' : ''}${pc.toFixed(0)}%)</span>
+  const pos = mine.map(p => { const v = positionValue(m, p), bAt = boughtAtPrice(m, p) * 100, pc = (v / +p.invested - 1) * 100;
+    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b> · bought at ${bAt.toFixed(0)}%, now ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>invested ${(+p.invested).toFixed(1)} → value ${v.toFixed(1)} (${pc >= 0 ? '+' : ''}${pc.toFixed(0)}%)</span>
     <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`; }).join('');
   const resolve = i.open && (i.own || me.role === 'owner') ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
@@ -209,39 +189,54 @@ function pgMarket(id){
 }
 function pgPortfolio(){
   const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open');
-  let inv = 0, val = 0;
+  let totalInvested = 0, totalValue = 0;
+  
   const tr = rows.map(({p, m}) => { 
-    const w = worth(m, p); 
+    const curPrice = sidePrice(m, p.side);
+    const avgPrice = boughtAtPrice(m, p);
+    const val = positionValue(m, p); 
+    const pnl = val - (+p.invested);
+    const pnlPct = +p.invested > 0 ? (pnl / +p.invested) * 100 : 0;
     const i = info(m); 
-    const maxPayout = +p.shares;
-    inv += +p.invested; 
-    val += w;
     
+    totalInvested += +p.invested; 
+    totalValue += val;
+    
+    const pnlColor = pnl >= 0 ? 'var(--yes)' : 'var(--no)';
+    const pnlSign = pnl >= 0 ? '+' : '';
+
     return `<tr>
       <td><a href="#/market/${m.id}">${esc(m.question)}</a></td>
       <td>${p.side.toUpperCase()}</td>
-      <td>${(+p.shares).toFixed(1)}</td>
+      <td>${(avgPrice * 100).toFixed(0)}%</td>
+      <td>${(curPrice * 100).toFixed(0)}%</td>
       <td>${(+p.invested).toFixed(1)}</td>
-      <td>${maxPayout.toFixed(1)}</td>
-      <td>${w.toFixed(1)}</td>
+      <td>${val.toFixed(1)}</td>
+      <td style="color:${pnlColor}">${pnlSign}${pnl.toFixed(1)} (${pnlSign}${pnlPct.toFixed(0)}%)</td>
       <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td>
     </tr>`; 
   }).join('');
 
+  const totalPnl = totalValue - totalInvested;
+  const totalPnlSign = totalPnl >= 0 ? '+' : '';
+  const totalPnlColor = totalPnl >= 0 ? 'var(--yes)' : 'var(--no)';
+
   return `<h1>Portfolio</h1>
   <div class="stats">
     <div class="card"><div class="mut">Cash</div><b>${(+me.balance).toFixed(1)}</b></div>
-    <div class="card"><div class="mut">Invested</div><b>${inv.toFixed(1)}</b></div>
-    <div class="card"><div class="mut">Cash-out Value</div><b>${val.toFixed(1)}</b></div>
+    <div class="card"><div class="mut">Invested</div><b>${totalInvested.toFixed(1)}</b></div>
+    <div class="card"><div class="mut">Current Value</div><b>${totalValue.toFixed(1)}</b></div>
+    <div class="card"><div class="mut">Total P&L</div><b style="color:${totalPnlColor}">${totalPnlSign}${totalPnl.toFixed(1)}</b></div>
   </div>
   ${rows.length ? `<div class="card"><table>
     <tr>
       <th>Market</th>
       <th>Side</th>
-      <th>Shares</th>
+      <th>Avg Price</th>
+      <th>Current Price</th>
       <th>Invested</th>
-      <th>Payout if Win</th>
-      <th>Cash-out Value</th>
+      <th>Current Value</th>
+      <th>P&L</th>
       <th></th>
     </tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
 }
