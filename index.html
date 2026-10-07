@@ -68,25 +68,21 @@ const go = h => { location.hash = '#/' + h; };
 const toast = m => { const t = $('#t'); t.textContent = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); };
 async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (error) toast(error.message); await load(); return data; }
 
-// ---------- Pricing: two-pool market (this is ALL of the trading math) ----------
-// Every market holds a YES pool and a NO pool of shares.
-//   Price of YES = NO pool / (YES pool + NO pool)      <- this is the YES %
-//   Price of NO  = 1 - price of YES
-// Each share pays exactly 1 token if its side wins, 0 if it loses.
-//
-// BUY (done by the server, public.trade() in Supabase): your tokens go in, shares come out.
-//   The pools keep  YES pool x NO pool  constant, so a bigger trade moves the price more.
-// CASH OUT: all your shares of that side go back in and tokens come out.
-//   positionValue() is exactly what the server pays you: it solves
-//   (own + shares - t) x (other - t) = own x other for t, the tokens you receive.
-const py = m => +m.pool_no / (+m.pool_yes + +m.pool_no);
+// ---------- Money Share Pricing Model ----------
+// Probability YES = money_yes / (money_yes + money_no)
+const py = m => {
+  const my = +m.money_yes || 500;
+  const mn = +m.money_no || 500;
+  return my / (my + mn);
+};
+
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
-const boughtAtPrice = (m, p) => +p.shares > 0 ? +p.invested / +p.shares : sidePrice(m, p.side);   // average price paid per share
-function positionValue(m, p){
-  const own = p.side === 'yes' ? +m.pool_yes : +m.pool_no, other = p.side === 'yes' ? +m.pool_no : +m.pool_yes;
-  const s = +p.shares, B = own + s + other;
-  return 2 * s * other / (B + Math.sqrt(B * B - 4 * s * other));
-}
+
+// Position Value = shares * current spot price
+const positionValue = (m, p) => +p.shares * sidePrice(m, p.side);
+
+// Average Price Paid per Share = total invested / total shares
+const boughtAtPrice = (m, p) => +p.shares > 0 ? (+p.invested / +p.shares) : sidePrice(m, p.side);
 
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
 function info(m){
@@ -177,17 +173,22 @@ function pgMarkets(){
 function pgMarket(id){
   const m = markets.find(x => x.id === id);
   if (!m) return '<p>Market not found. <a href="#/markets">Back to markets</a></p>';
-  const i = info(m), mine = P.filter(p => p.market_id === id && +p.shares > 0);
+  const i = info(m), mine = P.filter(p => p.market_id === id);
   let trade;
   if (!i.open) trade = `<p class="mut">${mState(m)}${m.outcome === 'void' ? '. Stakes were refunded.' : ''}</p>`;
   else if (i.closed) trade = `<p class="mut">${Date.now() >= SEASON_END ? 'The season has ended. Trading is closed.' : 'Trading closed. Waiting for resolution.'}</p>`;
   else if (i.locked) trade = `<p class="mut">Locked until ${new Date(i.until).toLocaleString()}</p>`;
   else trade = `<input id="a${id}" type="number" min="1" placeholder="Tokens to invest">
-    <div class="row">${[10, 50, 100].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
+    <div class="row">${[10, 50, 100, 250].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
     <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
-  const pos = mine.map(p => { const v = positionValue(m, p);
-    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>Cash out for: ${v.toFixed(1)}</span>
-    <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`; }).join('');
+  const pos = mine.map(p => { 
+    const v = positionValue(m, p);
+    const bAt = boughtAtPrice(m, p) * 100;
+    const curP = sidePrice(m, p.side) * 100;
+    const pc = +p.invested > 0 ? ((v - +p.invested) / +p.invested) * 100 : 0;
+    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b> · bought at ${bAt.toFixed(0)}%, now ${curP.toFixed(0)}%<br>invested ${(+p.invested).toFixed(1)} → value ${v.toFixed(1)} (${pc >= 0 ? '+' : ''}${pc.toFixed(0)}%)</span>
+    <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`; 
+  }).join('');
   const resolve = i.open && (i.own || me.role === 'owner') ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
   return `<a href="#/markets" class="mut">← All markets</a><h1>${esc(m.question)}</h1>
@@ -198,20 +199,57 @@ function pgMarket(id){
   ${pos ? `<div class="card"><b>Your position</b>${pos}</div>` : ''}${resolve}${adminBox(m)}</div></div>${tradesCard(id)}`;
 }
 function pgPortfolio(){
-  const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open' && +r.p.shares > 0);
-  const tr = rows.map(({p, m}) => { const i = info(m);
+  const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open');
+  let totalInvested = 0, totalValue = 0;
+  
+  const tr = rows.map(({p, m}) => { 
+    const curPrice = sidePrice(m, p.side);
+    const avgPrice = boughtAtPrice(m, p);
+    const val = positionValue(m, p); 
+    const pnl = val - (+p.invested);
+    const pnlPct = +p.invested > 0 ? (pnl / +p.invested) * 100 : 0;
+    const i = info(m); 
+    
+    totalInvested += +p.invested; 
+    totalValue += val;
+    
+    const pnlColor = pnl >= 0 ? 'var(--yes)' : 'var(--no)';
+    const pnlSign = pnl >= 0 ? '+' : '';
+
     return `<tr>
       <td><a href="#/market/${m.id}">${esc(m.question)}</a></td>
       <td>${p.side.toUpperCase()}</td>
+      <td>${(avgPrice * 100).toFixed(0)}%</td>
+      <td>${(curPrice * 100).toFixed(0)}%</td>
       <td>${(+p.invested).toFixed(1)}</td>
-      <td>${(boughtAtPrice(m, p) * 100).toFixed(0)}%</td>
-      <td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td>
-      <td>${positionValue(m, p).toFixed(1)}</td>
+      <td>${val.toFixed(1)}</td>
+      <td style="color:${pnlColor}">${pnlSign}${pnl.toFixed(1)} (${pnlSign}${pnlPct.toFixed(0)}%)</td>
       <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td>
-    </tr>`; }).join('');
+    </tr>`; 
+  }).join('');
+
+  const totalPnl = totalValue - totalInvested;
+  const totalPnlSign = totalPnl >= 0 ? '+' : '';
+  const totalPnlColor = totalPnl >= 0 ? 'var(--yes)' : 'var(--no)';
+
   return `<h1>Portfolio</h1>
+  <div class="stats">
+    <div class="card"><div class="mut">Cash</div><b>${(+me.balance).toFixed(1)}</b></div>
+    <div class="card"><div class="mut">Invested</div><b>${totalInvested.toFixed(1)}</b></div>
+    <div class="card"><div class="mut">Current Value</div><b>${totalValue.toFixed(1)}</b></div>
+    <div class="card"><div class="mut">Total P&L</div><b style="color:${totalPnlColor}">${totalPnlSign}${totalPnl.toFixed(1)}</b></div>
+  </div>
   ${rows.length ? `<div class="card"><table>
-    <tr><th>Market</th><th>Side</th><th>Invested</th><th>Bought at</th><th>Now</th><th>Cash out for</th><th></th></tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
+    <tr>
+      <th>Market</th>
+      <th>Side</th>
+      <th>Avg Price</th>
+      <th>Current Price</th>
+      <th>Invested</th>
+      <th>Current Value</th>
+      <th>P&L</th>
+      <th></th>
+    </tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
 }
 const pgBoard = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Everyone by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
   ${(FINAL.length ? FINAL : LB).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>${(+r.score).toFixed(1)}</td></tr>`).join('')}</table></div>`;
