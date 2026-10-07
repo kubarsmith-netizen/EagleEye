@@ -79,13 +79,17 @@ async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (
 // CASH OUT: all your shares of that side go back in and tokens come out.
 //   positionValue() is exactly what the server pays you: it solves
 //   (own + shares - t) x (other - t) = own x other for t, the tokens you receive.
-const py = m => +m.pool_no / (+m.pool_yes + +m.pool_no);
+// Money-share market: each market holds YES money and NO money.
+//   YES % = YES money / (YES money + NO money)
+//   Bet: your tokens go to your side; your cost basis is the price right after the bet.
+//   Shares = tokens / that price. Value = shares x current price. A win pays 1 per share.
+const py = m => +m.money_yes / (+m.money_yes + +m.money_no);
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
-const boughtAtPrice = (m, p) => +p.shares > 0 ? +p.invested / +p.shares : sidePrice(m, p.side);   // average price paid per share
+const boughtAtPrice = (m, p) => +p.shares > 0 ? +p.invested / +p.shares : sidePrice(m, p.side);
 function positionValue(m, p){
-  const own = p.side === 'yes' ? +m.pool_yes : +m.pool_no, other = p.side === 'yes' ? +m.pool_no : +m.pool_yes;
-  const s = +p.shares, B = own + s + other;
-  return 2 * s * other / (B + Math.sqrt(B * B - 4 * s * other));
+  const own = p.side === 'yes' ? +m.money_yes : +m.money_no;
+  return Math.min(+p.shares * sidePrice(m, p.side), Math.max(own - 1, 0));  // same cap as the server
+
 }
 
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
