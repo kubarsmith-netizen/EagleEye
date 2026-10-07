@@ -192,7 +192,7 @@ function pgMarket(id){
   const pos = mine.map(p => { const v = positionValue(m, p);
     return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>Cash out for: ${v.toFixed(1)}</span>
     <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`; }).join('');
-  const resolve = i.open && (i.own || me.role === 'owner') ? `<div class="card"><b>Resolve this market</b><div class="row">
+  const resolve = i.open && me.role !== 'user' ? `<div class="card">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
   return `<a href="#/markets" class="mut">← All markets</a><h1>${esc(m.question)}</h1>
   <div class="mut">${mState(m)}${m.proposed_by ? ' · Suggested by ' + esc(m.proposed_by) : ''}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}</div>
