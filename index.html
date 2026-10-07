@@ -16,7 +16,7 @@ main{flex:1;padding:30px 40px;max-width:1240px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}.grid .card{margin:0}
 .two{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-top:18px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:16px 0}.stats b{font-size:24px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:16px 0}.stats b{font-size:24px}
 .mk{color:inherit;text-decoration:none;display:block}.mk:hover{border-color:var(--acc)}
 .narrow{max-width:560px}.big{font-size:26px;font-weight:600}
 .bar{height:10px;border-radius:5px;background:var(--no);overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;background:var(--yes)}
@@ -207,7 +207,7 @@ function pgMarket(id){
     <tbody>${posRows}</tbody>
   </table></div>` : '';
 
-  const resolve = i.open && (i.own || me.role === 'owner') ? `<div class="card"><b>Resolve this market</b><div class="row">
+  const resolve = i.open && (i.own || me.role === 'owner' || mine.length > 0) ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
 
   return `<a href="#/markets" class="mut">← All markets</a><h1>${esc(m.question)}</h1>
@@ -245,8 +245,8 @@ function pgPortfolio(){
   return `<h1>Portfolio</h1>
   <div class="stats">
     <div class="card"><div class="mut">Cash</div><b>${(+me.balance).toFixed(1)}</b></div>
-    <div class="card"><div class="mut">Amount Invested</div><b>${totalInvested.toFixed(1)}</b></div>
-    <div class="card"><div class="mut">Worth Now</div><b>${totalValue.toFixed(1)}</b></div>
+    <div class="card"><div class="mut">Amount invested</div><b>${totalInvested.toFixed(1)}</b></div>
+    <div class="card"><div class="mut">Worth now</div><b>${totalValue.toFixed(1)}</b></div>
   </div>
   ${rows.length ? `<div class="card"><table>
     <thead>
