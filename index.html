@@ -66,7 +66,21 @@ function setTheme(t){ root.dataset.theme = t; try { localStorage.setItem('theme'
 const toggleTheme = () => { setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'); render(); };
 const go = h => { location.hash = '#/' + h; };
 const toast = m => { const t = $('#t'); t.textContent = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); };
-async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (error) toast(error.message); await load(); return data; }
+
+async function rpc(fn, args) {
+  try {
+    const { data, error } = await sb.rpc(fn, args);
+    if (error) {
+      toast(error.message);
+      return null;
+    }
+    await load();
+    return data;
+  } catch (err) {
+    toast(err.message || 'Failed to complete transaction.');
+    console.error('RPC Error:', err);
+  }
+}
 
 // ---------- Money Share Pricing Model ----------
 const py = m => {
@@ -350,7 +364,22 @@ async function fetchTrades(id){
 }
 
 // ---------- actions ----------
-const buy = (id, side) => rpc('trade', {p_market:id, p_side:side, p_tokens:+$('#a'+id).value, p_action:'buy'});
+const buy = (id, side) => {
+  const input = $('#a' + id);
+  const amount = input ? parseFloat(input.value) : 0;
+  
+  if (!amount || amount <= 0) {
+    return toast('Please enter a valid number of tokens.');
+  }
+
+  return rpc('trade', {
+    p_market: id,
+    p_side: side,
+    p_tokens: amount,
+    p_action: 'buy'
+  });
+};
+
 const sell = (id, side) => rpc('trade', {p_market:id, p_side:side, p_tokens:0, p_action:'sell'});
 async function mk(){
   const id = await rpc('create_market', {p_question:$('#q').value, p_yes:$('#o').value/100, p_cooldown:Math.round($('#c').value*3600), p_closes:$('#d').value ? new Date($('#d').value).toISOString() : null});
