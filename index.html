@@ -68,17 +68,7 @@ const go = h => { location.hash = '#/' + h; };
 const toast = m => { const t = $('#t'); t.textContent = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); };
 async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (error) toast(error.message); await load(); return data; }
 
-// ---------- Pricing: two-pool market (this is ALL of the trading math) ----------
-// Every market holds a YES pool and a NO pool of shares.
-//   Price of YES = NO pool / (YES pool + NO pool)      <- this is the YES %
-//   Price of NO  = 1 - price of YES
-// Each share pays exactly 1 token if its side wins, 0 if it loses.
-//
-// BUY (done by the server, public.trade() in Supabase): your tokens go in, shares come out.
-//   The pools keep  YES pool x NO pool  constant, so a bigger trade moves the price more.
-// CASH OUT: all your shares of that side go back in and tokens come out.
-//   positionValue() is exactly what the server pays you: it solves
-//   (own + shares - t) x (other - t) = own x other for t, the tokens you receive.
+// ---------- Pricing: money-share market (this is ALL of the trading math) ----------
 // Money-share market: each market holds YES money and NO money.
 //   YES % = YES money / (YES money + NO money)
 //   Bet: your tokens go to your side; your cost basis is the price right after the bet.
@@ -86,12 +76,10 @@ async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (
 const py = m => +m.money_yes / (+m.money_yes + +m.money_no);
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
 const boughtAtPrice = (m, p) => +p.shares > 0 ? +p.invested / +p.shares : sidePrice(m, p.side);
-   function positionValue(m, p){
-     const own = p.side === 'yes' ? +m.money_no : +m.money_yes, oth = p.side === 'yes' ? +m.money_yes : +m.money_no;
-     const x = +p.shares, S = own + x + oth;
-     return 2 * x * oth / (S + Math.sqrt(S * S - 4 * x * oth));
-   }
-  
+function positionValue(m, p){
+  const own = p.side === 'yes' ? +m.money_yes : +m.money_no;
+  return Math.min(+p.shares * sidePrice(m, p.side), Math.max(own - 1, 0));  // same cap as the server
+}
 
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
 function info(m){
@@ -187,19 +175,20 @@ function pgMarket(id){
   if (!i.open) trade = `<p class="mut">${mState(m)}${m.outcome === 'void' ? '. Stakes were refunded.' : ''}</p>`;
   else if (i.closed) trade = `<p class="mut">${Date.now() >= SEASON_END ? 'The season has ended. Trading is closed.' : 'Trading closed. Waiting for resolution.'}</p>`;
   else if (i.locked) trade = `<p class="mut">Locked until ${new Date(i.until).toLocaleString()}</p>`;
+  else if (mine.length) trade = `<p class="mut">You already have a position here. Cash out first to trade again.</p>`;
   else trade = `<input id="a${id}" type="number" min="1" placeholder="Tokens to invest">
     <div class="row">${[10, 50, 100].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
     <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
   const pos = mine.map(p => { const v = positionValue(m, p);
     return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>Cash out for: ${v.toFixed(1)}</span>
     <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`; }).join('');
-  const resolve = i.open && me.role !== 'user' ? `<div class="card">
+  const resolve = i.open && me.role !== 'user' ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
   return `<a href="#/markets" class="mut">← All markets</a><h1>${esc(m.question)}</h1>
   <div class="mut">${mState(m)}${m.proposed_by ? ' · Suggested by ' + esc(m.proposed_by) : ''}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}</div>
   <div class="two"><div class="card"><div class="split big"><span style="color:var(--yes)">YES ${(i.y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-i.y)*100).toFixed(0)}%</span></div>
     <div class="bar"><i style="width:${i.y*100}%"></i></div>${chart(id)}</div>
-  <div><div class="card"><b>Trade</b><div style="margin-top:8px">${trade}</div><p class="mut">Cooldown after each trade: ${+(m.cooldown_seconds / 3600).toFixed(1)} hours</p></div>
+  <div><div class="card"><b>Trade</b><div style="margin-top:8px">${trade}</div><p class="mut">Cooldown after each buy: ${+(m.cooldown_seconds / 3600).toFixed(1)} hours</p></div>
   ${pos ? `<div class="card"><b>Your position</b>${pos}</div>` : ''}${resolve}${adminBox(m)}</div></div>${tradesCard(id)}`;
 }
 function pgPortfolio(){
@@ -225,7 +214,7 @@ const pgRules = () => `<h1>Rules and prize</h1><div class="card" style="max-widt
   <h2 style="margin-top:0">The season</h2><p>The season ends on <b>December 18, 2026 at 3:20 PM Pacific Time</b>. The countdown is at the top of every page. When it reaches zero, trading closes.</p>
   <h2>Your tokens</h2><p>Everyone starts with <b>1,000 tokens</b>. Tokens are free, there is nothing to buy, and they cannot be bought or sold.</p>
   <h2>Trading</h2><p>You can trade on any open market that has already been created. Buy YES or NO with your tokens. The odds move as people buy, so buying early at a low price pays more if you are right. You can cash out a position before the market resolves. Everyone can trade every open market, including markets they created or suggested.</p>
-  <p><b>Cooldown:</b> after you buy or sell in a market, you cannot buy or sell in that same market again until its cooldown ends. The length is shown on each market page. This keeps the game about predictions, not playing the odds.</p>
+  <p><b>Cooldown:</b> after you buy in a market, you cannot buy or cash out in that same market until its cooldown ends. Cashing out does not start a new cooldown. You can hold one position per market at a time, so cash out before betting again. The length is shown on each market page. This keeps the game about predictions, not playing the odds.</p>
   <h2>Create your own market</h2><p>Use <a href="#/suggest">Suggest a market</a> to submit a question. Every suggestion must be <b>approved by an admin</b> before it goes live, and the admin may leave a comment explaining the decision. Once approved, you can trade it like any other market.</p>
   <h2>The prize</h2><p>The person with the <b>most tokens when the countdown ends</b> wins a <b>cash prize</b>. Tokens are counted as your cash balance plus your open stakes at the amount you staked, the same as the Leaderboard. Final standings are recorded when the season ends.</p>
   <h2>Fair play</h2><p>One account per person. Duplicate accounts or cheating can lead to disqualification.</p></div>`;
@@ -280,7 +269,7 @@ const tradesCard = id => {
   const rows = MT[id];
   const body = !rows ? '<p class="mut">Loading...</p>' : !rows.length ? '<p class="mut">No trades yet.</p>' :
     `<table><tr><th>Time</th><th>User</th><th>Action</th><th>Tokens</th><th>YES price after</th></tr>${rows.map(r =>
-      `<tr><td>${new Date(r.ts).toLocaleString()}</td><td>${esc(r.username || 'deleted user')}</td><td>${r.kind === 'buy' ? 'Bought' : 'Cashed out'}${r.side.toUpperCase()}</td><td>${(+r.tokens).toFixed(1)}</td><td>${(+r.price_yes * 100).toFixed(0)}%</td></tr>`).join('')}</table>`;
+      `<tr><td>${new Date(r.ts).toLocaleString()}</td><td>${esc(r.username || 'deleted user')}</td><td>${r.kind === 'buy' ? 'Bought' : 'Cashed out'} ${r.side.toUpperCase()}</td><td>${(+r.tokens).toFixed(1)}</td><td>${(+r.price_yes * 100).toFixed(0)}%</td></tr>`).join('')}</table>`;
   return `<div class="card" style="margin-top:20px"><b>All trades on this market</b> <span class="mut">(admins only)</span>${body}</div>`;
 };
 const toLocalInput = iso => { const d = new Date(iso); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); };
@@ -320,7 +309,7 @@ const reject = id => rpc('reject_proposal', {p_id:id, p_note:$('#pn'+id).value})
 const res = (id, o) => confirm(o === 'void' ? 'Cancel this market and refund everyone\'s stakes? This cannot be undone.' : 'Resolve as ' + o.toUpperCase() + '? This pays out winners and cannot be undone.') && rpc('resolve_market', {p_market:id, p_outcome:o});
 const inv = () => rpc('make_invite').then(c => c && prompt('Share this one-time code:', c));
 const setRole = (u, r) => rpc('set_role', {p_username:u, p_role:r});
-const recordFinal = () => confirm('Record the final standings now? This can only be done once.') && rpc('record_final standings');
+const recordFinal = () => confirm('Record the final standings now? This can only be done once.') && rpc('record_final_standings');
 const redeem = () => rpc('redeem_invite', {p_code:$('#ic').value});
 
 load();
