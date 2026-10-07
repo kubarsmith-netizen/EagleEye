@@ -16,7 +16,7 @@ main{flex:1;padding:30px 40px;max-width:1240px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}.grid .card{margin:0}
 .two{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-top:18px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:16px 0}.stats b{font-size:24px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:16px 0}.stats b{font-size:24px}
 .mk{color:inherit;text-decoration:none;display:block}.mk:hover{border-color:var(--acc)}
 .narrow{max-width:560px}.big{font-size:26px;font-weight:600}
 .bar{height:10px;border-radius:5px;background:var(--no);overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;background:var(--yes)}
@@ -66,32 +66,27 @@ function setTheme(t){ root.dataset.theme = t; try { localStorage.setItem('theme'
 const toggleTheme = () => { setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'); render(); };
 const go = h => { location.hash = '#/' + h; };
 const toast = m => { const t = $('#t'); t.textContent = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); };
+async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (error) toast(error.message); await load(); return data; }
 
-async function rpc(fn, args) {
-  try {
-    const { data, error } = await sb.rpc(fn, args);
-    if (error) {
-      toast('Database error: ' + error.message);
-      return null;
-    }
-    await load();
-    return data;
-  } catch (err) {
-    toast('RPC Error: ' + (err.message || 'Transaction failed'));
-    console.error('RPC Error:', err);
-  }
-}
-
-// ---------- Money Share Pricing Model ----------
-const py = m => {
-  const my = +m.money_yes || 500;
-  const mn = +m.money_no || 500;
-  return my / (my + mn);
-};
-
+// ---------- Pricing: two-pool market (this is ALL of the trading math) ----------
+// Every market holds a YES pool and a NO pool of shares.
+//   Price of YES = NO pool / (YES pool + NO pool)      <- this is the YES %
+//   Price of NO  = 1 - price of YES
+// Each share pays exactly 1 token if its side wins, 0 if it loses.
+//
+// BUY (done by the server, public.trade() in Supabase): your tokens go in, shares come out.
+//   The pools keep  YES pool x NO pool  constant, so a bigger trade moves the price more.
+// CASH OUT: all your shares of that side go back in and tokens come out.
+//   positionValue() is exactly what the server pays you: it solves
+//   (own + shares - t) x (other - t) = own x other for t, the tokens you receive.
+const py = m => +m.pool_no / (+m.pool_yes + +m.pool_no);
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
-const positionValue = (m, p) => +p.shares * sidePrice(m, p.side);
-const boughtAtPrice = (m, p) => +p.shares > 0 ? (+p.invested / +p.shares) : sidePrice(m, p.side);
+const boughtAtPrice = (m, p) => +p.shares > 0 ? +p.invested / +p.shares : sidePrice(m, p.side);   // average price paid per share
+function positionValue(m, p){
+  const own = p.side === 'yes' ? +m.pool_yes : +m.pool_no, other = p.side === 'yes' ? +m.pool_no : +m.pool_yes;
+  const s = +p.shares, B = own + s + other;
+  return 2 * s * other / (B + Math.sqrt(B * B - 4 * s * other));
+}
 
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
 function info(m){
@@ -169,7 +164,6 @@ const sorters = {
   active: (a, b) => (ACT[b.id] || 0) - (ACT[a.id] || 0),
   closing: (a, b) => (a.closes_at ? new Date(a.closes_at) : Infinity) - (b.closes_at ? new Date(b.closes_at) : Infinity) || 0,
 };
-
 function pgMarkets(){
   const list = markets.filter(m => FILTER === 'all' || (FILTER === 'open') === (m.status === 'open'))
     .sort(sorters[SORT]);
@@ -180,104 +174,45 @@ function pgMarkets(){
     <div class="split"><span style="color:var(--yes)">YES ${(y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-y)*100).toFixed(0)}%</span></div>
     <div class="mut" style="margin-top:6px">${mState(m)}${mine ? ' · you have a position' : ''}</div></a>`; }).join('') || '<p class="mut">No markets here yet.</p>'}</div>`;
 }
-
 function pgMarket(id){
   const m = markets.find(x => x.id === id);
   if (!m) return '<p>Market not found. <a href="#/markets">Back to markets</a></p>';
-  const i = info(m), mine = P.filter(p => p.market_id === id);
+  const i = info(m), mine = P.filter(p => p.market_id === id && +p.shares > 0);
   let trade;
   if (!i.open) trade = `<p class="mut">${mState(m)}${m.outcome === 'void' ? '. Stakes were refunded.' : ''}</p>`;
   else if (i.closed) trade = `<p class="mut">${Date.now() >= SEASON_END ? 'The season has ended. Trading is closed.' : 'Trading closed. Waiting for resolution.'}</p>`;
   else if (i.locked) trade = `<p class="mut">Locked until ${new Date(i.until).toLocaleString()}</p>`;
   else trade = `<input id="a${id}" type="number" min="1" placeholder="Tokens to invest">
-    <div class="row">${[10, 50, 100, 250].map(n => `<button class="g" onclick="document.getElementById('a${id}').value=${n}">${n}</button>`).join('')}</div>
+    <div class="row">${[10, 50, 100].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
     <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
-
-  const posRows = mine.map(p => { 
-    const curP = sidePrice(m, p.side);
-    const avgP = boughtAtPrice(m, p);
-    const val = positionValue(m, p);
-    return `<tr>
-      <td><b>${p.side.toUpperCase()}</b></td>
-      <td>${(+p.invested).toFixed(1)}</td>
-      <td>${(avgP * 100).toFixed(0)}%</td>
-      <td>${(curP * 100).toFixed(0)}%</td>
-      <td>${val.toFixed(1)}</td>
-      <td><button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></td>
-    </tr>`; 
-  }).join('');
-
-  const posTable = posRows ? `<div class="card"><b>Your position</b><table>
-    <thead>
-      <tr>
-        <th>Side</th>
-        <th>Amount Invested</th>
-        <th>Percentage Invested</th>
-        <th>Percentage Now</th>
-        <th>Worth Now</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>${posRows}</tbody>
-  </table></div>` : '';
-
-  const resolve = i.open && (i.own || me.role === 'owner' || mine.length > 0) ? `<div class="card"><b>Resolve this market</b><div class="row">
+  const pos = mine.map(p => { const v = positionValue(m, p);
+    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>Cash out for: ${v.toFixed(1)}</span>
+    <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`; }).join('');
+  const resolve = i.open && (i.own || me.role === 'owner') ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
-
   return `<a href="#/markets" class="mut">← All markets</a><h1>${esc(m.question)}</h1>
   <div class="mut">${mState(m)}${m.proposed_by ? ' · Suggested by ' + esc(m.proposed_by) : ''}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}</div>
   <div class="two"><div class="card"><div class="split big"><span style="color:var(--yes)">YES ${(i.y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-i.y)*100).toFixed(0)}%</span></div>
     <div class="bar"><i style="width:${i.y*100}%"></i></div>${chart(id)}</div>
   <div><div class="card"><b>Trade</b><div style="margin-top:8px">${trade}</div><p class="mut">Cooldown after each trade: ${+(m.cooldown_seconds / 3600).toFixed(1)} hours</p></div>
-  ${posTable}${resolve}${adminBox(m)}</div></div>${tradesCard(id)}`;
+  ${pos ? `<div class="card"><b>Your position</b>${pos}</div>` : ''}${resolve}${adminBox(m)}</div></div>${tradesCard(id)}`;
 }
-
 function pgPortfolio(){
-  const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open');
-  let totalInvested = 0, totalValue = 0;
-  
-  const tr = rows.map(({p, m}) => { 
-    const curP = sidePrice(m, p.side);
-    const avgP = boughtAtPrice(m, p);
-    const val = positionValue(m, p); 
-    const i = info(m); 
-    
-    totalInvested += +p.invested; 
-    totalValue += val;
-
+  const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open' && +r.p.shares > 0);
+  const tr = rows.map(({p, m}) => { const i = info(m);
     return `<tr>
       <td><a href="#/market/${m.id}">${esc(m.question)}</a></td>
-      <td><b>${p.side.toUpperCase()}</b></td>
+      <td>${p.side.toUpperCase()}</td>
       <td>${(+p.invested).toFixed(1)}</td>
-      <td>${(avgP * 100).toFixed(0)}%</td>
-      <td>${(curP * 100).toFixed(0)}%</td>
-      <td>${val.toFixed(1)}</td>
+      <td>${(boughtAtPrice(m, p) * 100).toFixed(0)}%</td>
+      <td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td>
+      <td>${positionValue(m, p).toFixed(1)}</td>
       <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td>
-    </tr>`; 
-  }).join('');
-
+    </tr>`; }).join('');
   return `<h1>Portfolio</h1>
-  <div class="stats">
-    <div class="card"><div class="mut">Cash</div><b>${(+me.balance).toFixed(1)}</b></div>
-    <div class="card"><div class="mut">Amount invested</div><b>${totalInvested.toFixed(1)}</b></div>
-    <div class="card"><div class="mut">Worth now</div><b>${totalValue.toFixed(1)}</b></div>
-  </div>
   ${rows.length ? `<div class="card"><table>
-    <thead>
-      <tr>
-        <th>Market</th>
-        <th>Side</th>
-        <th>Amount Invested</th>
-        <th>Percentage Invested</th>
-        <th>Percentage Now</th>
-        <th>Worth Now</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>${tr}</tbody>
-  </table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
+    <tr><th>Market</th><th>Side</th><th>Invested</th><th>Bought at</th><th>Now</th><th>Cash out for</th><th></th></tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
 }
-
 const pgBoard = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Everyone by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
   ${(FINAL.length ? FINAL : LB).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>${(+r.score).toFixed(1)}</td></tr>`).join('')}</table></div>`;
 const statusRows = (list, who) => list.map(p => `<tr><td>${esc(p.question)}</td>${who ? `<td>${esc(p.profiles ? p.profiles.username : 'deleted user')}</td>` : ''}<td><span class="chip">${p.status}</span></td><td>${p.note ? esc(p.note) : '<span class="mut">none</span>'}</td></tr>`).join('');
@@ -364,26 +299,8 @@ async function fetchTrades(id){
 }
 
 // ---------- actions ----------
-window.buy = function(id, side) {
-  const input = document.getElementById('a' + id);
-  const amount = input ? parseFloat(input.value) : 0;
-  
-  if (!amount || isNaN(amount) || amount <= 0) {
-    return toast('Please enter a valid number of tokens.');
-  }
-
-  return rpc('trade', {
-    p_market: id,
-    p_side: side,
-    p_tokens: amount,
-    p_action: 'buy'
-  });
-};
-
-window.sell = function(id, side) {
-  return rpc('trade', {p_market:id, p_side:side, p_tokens:0, p_action:'sell'});
-};
-
+const buy = (id, side) => rpc('trade', {p_market:id, p_side:side, p_tokens:+$('#a'+id).value, p_action:'buy'});
+const sell = (id, side) => rpc('trade', {p_market:id, p_side:side, p_tokens:0, p_action:'sell'});
 async function mk(){
   const id = await rpc('create_market', {p_question:$('#q').value, p_yes:$('#o').value/100, p_cooldown:Math.round($('#c').value*3600), p_closes:$('#d').value ? new Date($('#d').value).toISOString() : null});
   if (id) { toast('Market created'); go('market/' + id); }
@@ -398,7 +315,7 @@ const reject = id => rpc('reject_proposal', {p_id:id, p_note:$('#pn'+id).value})
 const res = (id, o) => confirm(o === 'void' ? 'Cancel this market and refund everyone\'s stakes? This cannot be undone.' : 'Resolve as ' + o.toUpperCase() + '? This pays out winners and cannot be undone.') && rpc('resolve_market', {p_market:id, p_outcome:o});
 const inv = () => rpc('make_invite').then(c => c && prompt('Share this one-time code:', c));
 const setRole = (u, r) => rpc('set_role', {p_username:u, p_role:r});
-const recordFinal = () => confirm('Record the final standings now? This can only be done once.') && rpc('record_final_standings');
+const recordFinal = () => confirm('Record the final standings now? This can only be done once.') && rpc('record_final standings');
 const redeem = () => rpc('redeem_invite', {p_code:$('#ic').value});
 
 load();
