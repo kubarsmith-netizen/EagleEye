@@ -81,7 +81,7 @@ const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
 // Position Value = shares * current spot price
 const positionValue = (m, p) => +p.shares * sidePrice(m, p.side);
 
-// Average Price Paid per Share = total invested / total shares
+// Average Price/Probability Paid per Share
 const boughtAtPrice = (m, p) => +p.shares > 0 ? (+p.invested / +p.shares) : sidePrice(m, p.side);
 
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
@@ -160,6 +160,7 @@ const sorters = {
   active: (a, b) => (ACT[b.id] || 0) - (ACT[a.id] || 0),
   closing: (a, b) => (a.closes_at ? new Date(a.closes_at) : Infinity) - (b.closes_at ? new Date(b.closes_at) : Infinity) || 0,
 };
+
 function pgMarkets(){
   const list = markets.filter(m => FILTER === 'all' || (FILTER === 'open') === (m.status === 'open'))
     .sort(sorters[SORT]);
@@ -170,6 +171,7 @@ function pgMarkets(){
     <div class="split"><span style="color:var(--yes)">YES ${(y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-y)*100).toFixed(0)}%</span></div>
     <div class="mut" style="margin-top:6px">${mState(m)}${mine ? ' · you have a position' : ''}</div></a>`; }).join('') || '<p class="mut">No markets here yet.</p>'}</div>`;
 }
+
 function pgMarket(id){
   const m = markets.find(x => x.id === id);
   if (!m) return '<p>Market not found. <a href="#/markets">Back to markets</a></p>';
@@ -181,49 +183,66 @@ function pgMarket(id){
   else trade = `<input id="a${id}" type="number" min="1" placeholder="Tokens to invest">
     <div class="row">${[10, 50, 100, 250].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
     <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
-  const pos = mine.map(p => { 
-    const v = positionValue(m, p);
-    const bAt = boughtAtPrice(m, p) * 100;
-    const curP = sidePrice(m, p.side) * 100;
-    const pc = +p.invested > 0 ? ((v - +p.invested) / +p.invested) * 100 : 0;
-    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b> · bought at ${bAt.toFixed(0)}%, now ${curP.toFixed(0)}%<br>invested ${(+p.invested).toFixed(1)} → value ${v.toFixed(1)} (${pc >= 0 ? '+' : ''}${pc.toFixed(0)}%)</span>
-    <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`; 
+
+  const posRows = mine.map(p => { 
+    const curP = sidePrice(m, p.side);
+    const avgP = boughtAtPrice(m, p);
+    const val = positionValue(m, p);
+    return `<tr>
+      <td><b>${p.side.toUpperCase()}</b></td>
+      <td>${(+p.invested).toFixed(1)}</td>
+      <td>${(avgP * 100).toFixed(1)}%</td>
+      <td>${(curP * 100).toFixed(1)}%</td>
+      <td>${val.toFixed(1)}</td>
+      <td><button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></td>
+    </tr>`; 
   }).join('');
+
+  const posTable = posRows ? `<div class="card"><b>Your position</b><table>
+    <thead>
+      <tr>
+        <th>Side</th>
+        <th>Money Invested</th>
+        <th>Percentage When Bought</th>
+        <th>Percentage Now</th>
+        <th>How Much You'll Get If You Sell</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>${posRows}</tbody>
+  </table></div>` : '';
+
   const resolve = i.open && (i.own || me.role === 'owner') ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
+
   return `<a href="#/markets" class="mut">← All markets</a><h1>${esc(m.question)}</h1>
   <div class="mut">${mState(m)}${m.proposed_by ? ' · Suggested by ' + esc(m.proposed_by) : ''}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}</div>
   <div class="two"><div class="card"><div class="split big"><span style="color:var(--yes)">YES ${(i.y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-i.y)*100).toFixed(0)}%</span></div>
     <div class="bar"><i style="width:${i.y*100}%"></i></div>${chart(id)}</div>
   <div><div class="card"><b>Trade</b><div style="margin-top:8px">${trade}</div><p class="mut">Cooldown after each trade: ${+(m.cooldown_seconds / 3600).toFixed(1)} hours</p></div>
-  ${pos ? `<div class="card"><b>Your position</b>${pos}</div>` : ''}${resolve}${adminBox(m)}</div></div>${tradesCard(id)}`;
+  ${posTable}${resolve}${adminBox(m)}</div></div>${tradesCard(id)}`;
 }
+
 function pgPortfolio(){
   const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open');
   let totalInvested = 0, totalValue = 0;
   
   const tr = rows.map(({p, m}) => { 
-    const curPrice = sidePrice(m, p.side);
-    const avgPrice = boughtAtPrice(m, p);
+    const curP = sidePrice(m, p.side);
+    const avgP = boughtAtPrice(m, p);
     const val = positionValue(m, p); 
-    const pnl = val - (+p.invested);
-    const pnlPct = +p.invested > 0 ? (pnl / +p.invested) * 100 : 0;
     const i = info(m); 
     
     totalInvested += +p.invested; 
     totalValue += val;
-    
-    const pnlColor = pnl >= 0 ? 'var(--yes)' : 'var(--no)';
-    const pnlSign = pnl >= 0 ? '+' : '';
 
     return `<tr>
       <td><a href="#/market/${m.id}">${esc(m.question)}</a></td>
-      <td>${p.side.toUpperCase()}</td>
-      <td>${(avgPrice * 100).toFixed(0)}%</td>
-      <td>${(curPrice * 100).toFixed(0)}%</td>
+      <td><b>${p.side.toUpperCase()}</b></td>
       <td>${(+p.invested).toFixed(1)}</td>
+      <td>${(avgP * 100).toFixed(1)}%</td>
+      <td>${(curP * 100).toFixed(1)}%</td>
       <td>${val.toFixed(1)}</td>
-      <td style="color:${pnlColor}">${pnlSign}${pnl.toFixed(1)} (${pnlSign}${pnlPct.toFixed(0)}%)</td>
       <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td>
     </tr>`; 
   }).join('');
@@ -235,22 +254,26 @@ function pgPortfolio(){
   return `<h1>Portfolio</h1>
   <div class="stats">
     <div class="card"><div class="mut">Cash</div><b>${(+me.balance).toFixed(1)}</b></div>
-    <div class="card"><div class="mut">Invested</div><b>${totalInvested.toFixed(1)}</b></div>
+    <div class="card"><div class="mut">Money Invested</div><b>${totalInvested.toFixed(1)}</b></div>
     <div class="card"><div class="mut">Current Value</div><b>${totalValue.toFixed(1)}</b></div>
     <div class="card"><div class="mut">Total P&L</div><b style="color:${totalPnlColor}">${totalPnlSign}${totalPnl.toFixed(1)}</b></div>
   </div>
   ${rows.length ? `<div class="card"><table>
-    <tr>
-      <th>Market</th>
-      <th>Side</th>
-      <th>Avg Price</th>
-      <th>Current Price</th>
-      <th>Invested</th>
-      <th>Current Value</th>
-      <th>P&L</th>
-      <th></th>
-    </tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
+    <thead>
+      <tr>
+        <th>Market</th>
+        <th>Side</th>
+        <th>Money Invested</th>
+        <th>Percentage When Bought</th>
+        <th>Percentage Now</th>
+        <th>How Much You'll Get If You Sell</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>${tr}</tbody>
+  </table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
 }
+
 const pgBoard = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Everyone by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
   ${(FINAL.length ? FINAL : LB).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>${(+r.score).toFixed(1)}</td></tr>`).join('')}</table></div>`;
 const statusRows = (list, who) => list.map(p => `<tr><td>${esc(p.question)}</td>${who ? `<td>${esc(p.profiles ? p.profiles.username : 'deleted user')}</td>` : ''}<td><span class="chip">${p.status}</span></td><td>${p.note ? esc(p.note) : '<span class="mut">none</span>'}</td></tr>`).join('');
