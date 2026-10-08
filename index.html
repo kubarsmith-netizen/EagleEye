@@ -77,8 +77,7 @@ const py = m => +m.money_yes / (+m.money_yes + +m.money_no);
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
 const boughtAtPrice = (m, p) => +p.shares > 0 ? +p.invested / +p.shares : sidePrice(m, p.side);
 function positionValue(m, p){
-  const own = p.side === 'yes' ? +m.money_yes : +m.money_no;
-  return Math.min(+p.shares * sidePrice(m, p.side), Math.max(own - 1, 0));  // same cap as the server
+  return +p.shares * sidePrice(m, p.side);  // paid in full, same as the server
 }
 
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
