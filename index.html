@@ -148,7 +148,7 @@ async function load(){
   const [a, b, c, d] = await Promise.all([
     sb.from('profiles').select().eq('id', session.user.id).single(),
     sb.from('markets').select().order('created_at', {ascending:false}),
-    sb.from('positions').select(), sb.from('cooldowns').select()]);
+    sb.from('positions').select().eq('user_id', session.user.id), sb.from('cooldowns').select().eq('user_id', session.user.id)]);
   if (!a.data) { me = null; resetCaches(); return render(); }
   me = a.data; markets = b.data || []; P = c.data || []; CD = d.data || []; MTok = {};
   render();
