@@ -256,7 +256,7 @@ const pgRules = () => `<h1>Rules and prize</h1><div class="card" style="max-widt
 <li>No love life markets.</li>
 </ul>
 
-  
+  <h2>The prize</h2><p>The person with the <b>most tokens when the countdown ends</b> wins a <b>cash prize</b>. Tokens are counted as your cash balance plus your open stakes at the amount you staked, the same as the Leaderboard. Final standings are recorded when the season ends.</p>
   <h2>Fair play</h2><p>One account per person. Duplicate accounts or cheating can lead to disqualification. Collusion with other users is highly prohibited, though influencing the results of a market is encouraged.  automated trading programs will result in immediate disqualification.</p></div>`;
 const pgSuggest = () => `<h1>Suggest a market</h1><p class="mut">An admin reviews every suggestion before it goes live.</p>
   <div class="card narrow"><input id="sq" placeholder="Will ... happen by ...?"><label class="mut" style="margin-top:10px">Closes (optional)<input id="sd" type="datetime-local"></label>
@@ -294,7 +294,7 @@ function render(){
   const waiting = BLOCKING[pg] && (EXTRAS[pg] || []).some(k => !LOADED[k]);
   const body = !pages[pg] ? '<p>Page not found.</p>' : (pg in ok && !ok[pg]) ? '<p class="mut">You do not have access to this page.</p>' : waiting ? '<p class="mut">Loading...</p>' : pages[pg]();
   $('#app').innerHTML = `<div id="shell"><nav><h2 style="margin:0 12px 14px">EagleEye Market</h2>
-    ${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('rules', 'Rules')}
+    ${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('rules', 'Rules and prize')}
     ${staff ? link('create', 'Create market') + link('review', 'Review suggestions', pend || '') : link('suggest', 'Suggest a market')}
     ${owner ? link('admin', 'Admin tools') : ''}${link('account', 'Account')}
     <div class="card" style="margin:auto 0 0"><b>${esc(me.username)}</b> <span class="chip">${me.role}</span><div class="mut">${(+me.balance).toFixed(1)} tokens</div>
