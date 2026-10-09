@@ -170,7 +170,7 @@ let SORT = 'featured';
 const SORTS = {featured:'Featured', newest:'Newest', oldest:'Oldest', high:'Highest YES %', low:'Lowest YES %', active:'Most active (24h)', closing:'Closing soonest'};
 const setSort = v => { SORT = v; render(); };
 const setFilter = f => { FILTER = f; render(); };
-const TREND_MIN = 15;
+const TREND_MIN = 30;
 const isPromoted = m => m.status === 'open' && !!m.promoted_at;
 const trending = m => m.status === 'open' && (ACT[m.id] || 0) >= TREND_MIN;
 const isBoosted = m => m.status === 'open' && !!m.boosted_at;
