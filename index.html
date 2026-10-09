@@ -114,6 +114,8 @@ async function auth(login){
 }
 
 // ---------- data ----------
+let loadTimer = null;
+const loadSoon = () => { if (loadTimer) return; loadTimer = setTimeout(() => { loadTimer = null; if (!document.hidden) load(); }, 5000); };
 async function load(){
   const {data:{session}} = await sb.auth.getSession();
   if (!session) { me = null; return render(); }
@@ -132,8 +134,8 @@ async function load(){
   T = e.data || []; LB = f.data || []; STAFF = g.data || []; INV = h.data || []; PR = i.data || []; FINAL = j.data || []; MTok = {}; ACT = {}; (k.data || []).forEach(r => { ACT[r.market_id] = r.recent; });
   render();
   if (!subscribed) { subscribed = true;
-    sb.channel('m').on('postgres_changes', {event:'*', schema:'public', table:'markets'}, load)
-      .on('postgres_changes', {event:'*', schema:'public', table:'proposals'}, load).subscribe(); }
+    sb.channel('m').on('postgres_changes', {event:'*', schema:'public', table:'markets'}, loadSoon)
+      .on('postgres_changes', {event:'*', schema:'public', table:'proposals'}, loadSoon).subscribe(); }
 }
 
 // ---------- pages ----------
