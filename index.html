@@ -36,6 +36,22 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;bor
 select{font:inherit;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
 #t{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:8px;display:none;max-width:90%;z-index:9}
 @media(max-width:860px){#shell{flex-direction:column}nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}main{padding:16px}.two,.stats{grid-template-columns:1fr}}
+nav a.hot{background:linear-gradient(135deg,#ff7a18,#af002d 55%,#6a11cb);color:#fff;font-weight:700;margin:6px 0;box-shadow:0 2px 12px #af002d66}
+nav a.hot:hover{filter:brightness(1.12);background:linear-gradient(135deg,#ff7a18,#af002d 55%,#6a11cb)}
+nav a.hot.on{outline:2px solid #fff9;outline-offset:-2px}
+.gbanner{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;text-decoration:none;color:#fff;background:linear-gradient(90deg,#ff7a18,#af002d,#6a11cb);border-radius:12px;padding:12px 16px;margin:0 0 16px;font-weight:600}
+.gbanner:hover{filter:brightness(1.08)}.gbanner b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ghero{color:#fff;background:linear-gradient(135deg,#ff7a18,#af002d 55%,#6a11cb);border-radius:16px;padding:28px;margin:0 0 18px}
+.ghero h1{font-size:38px;margin:4px 0 8px}.ghero p{max-width:640px;margin:0 0 14px}
+.gtimer{display:inline-block;background:#0004;border-radius:10px;padding:8px 14px;font-weight:700;font-variant-numeric:tabular-nums}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:12px}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.gcard.lead{border:2px solid #ff7a18;box-shadow:0 4px 18px #ff7a1840}
+.gcard.mine{outline:2px solid var(--acc)}
+.grank{font-size:22px;font-weight:800;color:#ff7a18}.gname{font-size:22px;font-weight:700;margin-top:4px}
+.gbig{font-size:34px;font-weight:800;margin-top:10px}.gbig small{font-size:13px;font-weight:500;color:var(--mut)}
+.gbar{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin:10px 0}.gbar i{display:block;height:100%;background:linear-gradient(90deg,#ff7a18,#af002d)}
+.gtag{display:inline-block;background:linear-gradient(90deg,#ff7a18,#af002d);color:#fff;border-radius:10px;padding:2px 10px;font-size:12px;font-weight:700}
 </style>
 <link rel="icon" href="/favicon.ico">
 </head>
@@ -130,6 +146,18 @@ const FETCH = {
   inv:   async () => { const r = await sb.from('invite_codes').select('code,used_by'); INV = r.data || []; return r; },
   pr:    async () => { const r = await sb.from('proposals').select('id,question,closes_at,status,note,profiles(username)').order('created_at', {ascending:false}).limit(100); PR = r.data || []; return r; },
 };
+let GR = [], MYCLASS = null;
+TTL.gr = 60e3; EXTRAS.grades = ['gr']; BLOCKING.grades = 1;
+FETCH.gr = async () => { const r = await sb.rpc('grade_standings'); GR = r.data || []; return r; };
+const GRADE_END = new Date('2026-10-25T15:20:00-07:00');   // CHANGE THIS to your real deadline
+const GRADE_NAME = {2027:'Seniors', 2028:'Juniors', 2029:'Sophomores', 2030:'Freshmen'};
+function gradeLeft(){
+  const ms = GRADE_END - Date.now();
+  if (ms <= 0) return 'Closed. Winners announced soon';
+  const s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+  return (d ? d + 'd ' : '') + h + 'h ' + m + 'm ' + (s % 60) + 's left';
+}
+setInterval(() => { const e = $('#gcd'); if (e) e.textContent = gradeLeft(); }, 1000);
 const curPage = () => (location.hash.slice(2) || 'markets').split('/')[0];
 async function ensureExtras(){
   if (!me) return;
@@ -150,7 +178,7 @@ async function load(){
     sb.from('markets').select().order('created_at', {ascending:false}),
     sb.from('positions').select().eq('user_id', session.user.id), sb.from('cooldowns').select().eq('user_id', session.user.id)]);
   if (!a.data) { me = null; resetCaches(); return render(); }
-  me = a.data; markets = b.data || []; P = c.data || []; CD = d.data || []; MTok = {};
+  me = a.data; MYCLASS = ((session.user.email || '').match(/(\d{4})@headroyce\.org$/) || [])[1] || null; markets = b.data || []; P = c.data || []; CD = d.data || []; MTok = {};
   render();
   ensureExtras();
 }
@@ -281,7 +309,27 @@ const pgAdmin = () => `<h1>Admin tools</h1><div class="grid"><div class="card"><
   <div class="card"><b>Current admins</b><table>${STAFF.filter(s => s.role === 'admin').map(s => `<tr><td>${esc(s.username)}</td><td><button class="g" data-u="${esc(s.username)}" onclick="setRole(this.dataset.u,'user')">Remove</button></td></tr>`).join('') || '<tr><td class="mut">None yet</td></tr>'}</table></div></div>`;
 const pgAccount = () => `<h1>Account</h1><div class="card narrow"><b>${esc(me.username)}</b> <span class="chip">${me.role}</span><p class="mut">${(+me.balance).toFixed(1)} tokens</p></div>
   ${me.role === 'user' ? `<div class="card narrow"><b>Have an admin invite code?</b><input id="ic" placeholder="Code"><div class="row"><button onclick="redeem()">Redeem</button></div></div>` : ''}`;
-
+const gradeBanner = () => curPage() === 'grades' ? '' : `<a class="gbanner" href="#/grades"><span>🏆 GRADE VS GRADE is live: bonus tokens for the top grades. See the standings</span><b id="gcd">${gradeLeft()}</b></a>`;
+const pgGrades = () => {
+  const rows = (GR || []).slice().sort((a, b) => b.avg_tokens - a.avg_tokens);
+  const topAvg = rows.length ? Math.max(...rows.map(r => +r.avg_tokens)) : 0;
+  const topUsers = rows.length ? Math.max(...rows.map(r => +r.players)) : 0;
+  const cards = rows.map((r, i) => {
+    const avg = +r.avg_tokens, mine = MYCLASS === r.class_of;
+    return `<div class="gcard${i === 0 ? ' lead' : ''}${mine ? ' mine' : ''}">
+      <div class="split"><span class="grank">#${i + 1}</span>${mine ? '<span class="chip">Your grade</span>' : ''}</div>
+      <div class="gname">${GRADE_NAME[r.class_of] || 'Class of ' + esc(r.class_of)}</div>
+      <div class="mut">Class of ${esc(r.class_of)}</div>
+      <div class="gbig">${avg.toFixed(0)}<small> avg tokens</small></div>
+      <div class="gbar"><i style="width:${(avg / (topAvg || 1) * 100).toFixed(0)}%"></i></div>
+      <div class="split mut"><span>${r.players} active players</span><span>Median ${(+r.median_tokens).toFixed(0)}</span></div>
+      <div class="tags" style="margin-top:10px">${avg === topAvg ? '<span class="gtag">Leading average: +1,000 each</span>' : ''}${+r.players === topUsers ? '<span class="gtag">Most players: +500 each</span>' : ''}</div></div>`; }).join('');
+  return `<div class="ghero"><div style="opacity:.8;font-weight:700;letter-spacing:.08em">LIMITED TIME</div><h1>Grade vs Grade</h1>
+    <p>Which grade predicts best? The grade with the <b>highest average tokens</b> wins <b>1,000 bonus tokens</b> for every active player in it. The grade with the <b>most active players</b> wins <b>500</b> for every active player in it.</p>
+    <div class="gtimer" id="gcd">${gradeLeft()}</div></div>
+    <p class="mut">Only verified accounts that have made at least one trade count. Standings refresh about once a minute.</p>
+    <div class="ggrid">${cards || '<p class="mut">No standings yet.</p>'}</div>`;
+};
 // ---------- shell + router ----------
 function render(){
   if (!me) return authView();
@@ -290,17 +338,17 @@ function render(){
   const staff = me.role !== 'user', owner = me.role === 'owner';
   const pend = PR.filter(p => p.status === 'pending').length;
   const link = (id, label, badge) => `<a href="#/${id}" class="${id === pg || (id === 'markets' && pg === 'market') ? 'on' : ''}">${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
-  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount};
+  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount, grades: pgGrades};
   const ok = {create: staff, review: staff, admin: owner, suggest: !staff};
   const waiting = BLOCKING[pg] && (EXTRAS[pg] || []).some(k => !LOADED[k]);
   const body = !pages[pg] ? '<p>Page not found.</p>' : (pg in ok && !ok[pg]) ? '<p class="mut">You do not have access to this page.</p>' : waiting ? '<p class="mut">Loading...</p>' : pages[pg]();
   $('#app').innerHTML = `<div id="shell"><nav><h2 style="margin:0 12px 14px">EagleEye Market</h2>
-    ${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('rules', 'Rules and prize')}
+    ${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}<a href="#/grades" class="hot${pg === 'grades' ? ' on' : ''}">🏆 Grade vs Grade</a>${link('rules', 'Rules and prize')}
     ${staff ? link('create', 'Create market') + link('review', 'Review suggestions', pend || '') : link('suggest', 'Suggest a market')}
     ${owner ? link('admin', 'Admin tools') : ''}${link('account', 'Account')}
     <div class="card" style="margin:auto 0 0"><b>${esc(me.username)}</b> <span class="chip">${me.role}</span><div class="mut">${(+me.balance).toFixed(1)} tokens</div>
     <div class="row"><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button><button class="g" onclick="sb.auth.signOut().then(load)">Log out</button></div></div>
-    </nav><main><div class="card split"><b id="cd">${cdText()}</b><a href="#/rules">Rules and prize</a></div>${body}</main></div>`;
+    </nav><main>${gradeBanner()}<div class="card split"><b id="cd">${cdText()}</b><a href="#/rules">Rules and prize</a></div>${body}</main></div>`;
   for (const k in keep) { const el = document.getElementById(k); if (el) el.value = keep[k]; }
   if (pg === 'market' && staff && !MTok[+arg]) fetchTrades(+arg);
 }
