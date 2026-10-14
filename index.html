@@ -309,7 +309,7 @@ const pgAdmin = () => `<h1>Admin tools</h1><div class="grid"><div class="card"><
   <div class="card"><b>Current admins</b><table>${STAFF.filter(s => s.role === 'admin').map(s => `<tr><td>${esc(s.username)}</td><td><button class="g" data-u="${esc(s.username)}" onclick="setRole(this.dataset.u,'user')">Remove</button></td></tr>`).join('') || '<tr><td class="mut">None yet</td></tr>'}</table></div></div>`;
 const pgAccount = () => `<h1>Account</h1><div class="card narrow"><b>${esc(me.username)}</b> <span class="chip">${me.role}</span><p class="mut">${(+me.balance).toFixed(1)} tokens</p></div>
   ${me.role === 'user' ? `<div class="card narrow"><b>Have an admin invite code?</b><input id="ic" placeholder="Code"><div class="row"><button onclick="redeem()">Redeem</button></div></div>` : ''}`;
-const gradeBanner = () => curPage() === 'grades' ? '' : `<a class="gbanner" href="#/grades"><span>🏆 GRADE VS GRADE is live: bonus tokens for the top grades. See the standings</span><b id="gcd">${gradeLeft()}</b></a>`;
+const gradeBanner = () => curPage() === 'grades' ? '' : `<a class="gbanner" href="#/grades"><span>🏆 GRADE VS GRADE is live! Bonus tokens for the top grades! See the standings</span><b id="gcd">${gradeLeft()}</b></a>`;
 const pgGrades = () => {
   const rows = (GR || []).slice().sort((a, b) => b.avg_tokens - a.avg_tokens);
   const topAvg = rows.length ? Math.max(...rows.map(r => +r.avg_tokens)) : 0;
@@ -324,8 +324,8 @@ const pgGrades = () => {
       <div class="gbar"><i style="width:${(avg / (topAvg || 1) * 100).toFixed(0)}%"></i></div>
       <div class="split mut"><span>${r.players} active players</span><span>Median ${(+r.median_tokens).toFixed(0)}</span></div>
       <div class="tags" style="margin-top:10px">${avg === topAvg ? '<span class="gtag">Leading average: +1,000 each</span>' : ''}${+r.players === topUsers ? '<span class="gtag">Most players: +500 each</span>' : ''}</div></div>`; }).join('');
-  return `<div class="ghero"><div style="opacity:.8;font-weight:700;letter-spacing:.08em">LIMITED TIME</div><h1>Grade vs Grade</h1>
-    <p>Which grade predicts best? The grade with the <b>highest average tokens</b> wins <b>1,000 bonus tokens</b> for every active player in it. The grade with the <b>most active players</b> wins <b>500</b> for every active player in it.</p>
+  return `<div class="ghero"><div style="opacity:.8;font-weight:700;letter-spacing:.08em">LIMITED TIME</div><h1>Grade vs Grade!</h1>
+    <p>Which grade predicts best? The grade with the <b>highest average tokens</b> wins <b>1,000 bonus tokens</b> for every active player in it! The grade with the <b>most active players</b> wins <b>500</b> for every active player in it!</p>
     <div class="gtimer" id="gcd">${gradeLeft()}</div></div>
     <p class="mut">Only verified accounts that have made at least one trade count. Standings refresh about once a minute.</p>
     <div class="ggrid">${cards || '<p class="mut">No standings yet.</p>'}</div>`;
