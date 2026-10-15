@@ -266,7 +266,7 @@ function pgPortfolio(){
 const pgBoard = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Everyone by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
   ${(FINAL.length ? FINAL : LB).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>${(+r.score).toFixed(1)}</td></tr>`).join('')}</table></div>`;
 const statusRows = (list, who) => list.map(p => `<tr><td>${esc(p.question)}</td>${who ? `<td>${esc(p.profiles ? p.profiles.username : 'deleted user')}</td>` : ''}<td><span class="chip">${p.status}</span></td><td>${p.note ? esc(p.note) : '<span class="mut">none</span>'}</td></tr>`).join('');
-const pgRules = () => `<h1>Rules and prize</h1><div class="card" style="max-width:760px">
+const pgRules = () => `<h1>Rules</h1><div class="card" style="max-width:760px">
   <h2 style="margin-top:0">The season</h2><p>The season ends on <b>December 18, 2026 at 3:20 PM Pacific Time</b>. The countdown is at the top of every page. When it reaches zero, trading closes.</p>
   <h2>Your tokens</h2><p>Everyone starts with <b>1,000 tokens</b>. Tokens are free, there is nothing to buy, and they cannot be bought or sold.</p>
   <h2>Trading</h2><p>You can trade on any open market that has already been created. Buy YES or NO with your tokens. The odds move as people buy, so buying early at a low price pays more if you are right. You can cash out a position before the market resolves. Everyone can trade every open market, including markets they created or suggested.</p>
@@ -285,7 +285,7 @@ const pgRules = () => `<h1>Rules and prize</h1><div class="card" style="max-widt
 <li>No insults of any kind and no comments about identity, about a specific person or any group of people.</li>
 </ul>
 
-  <h2>The prize</h2><p>The person with the <b>most tokens when the countdown ends</b> wins a <b>cash prize</b>. Tokens are counted as your cash balance plus your open stakes at the amount you staked, the same as the Leaderboard. Final standings are recorded when the season ends.</p>
+  
   <h2>Fair play</h2><p>One account per person. Duplicate accounts or cheating can lead to disqualification. Collusion with other users is highly prohibited, though influencing the results of a market is encouraged.  automated trading programs will result in immediate disqualification.</p></div>`;
 const pgSuggest = () => `<h1>Suggest a market</h1><p class="mut">An admin reviews every suggestion before it goes live.</p>
   <div class="card narrow"><input id="sq" placeholder="Will ... happen by ...?"><label class="mut" style="margin-top:10px">Closes (optional)<input id="sd" type="datetime-local"></label>
