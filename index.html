@@ -343,12 +343,12 @@ function render(){
   const waiting = BLOCKING[pg] && (EXTRAS[pg] || []).some(k => !LOADED[k]);
   const body = !pages[pg] ? '<p>Page not found.</p>' : (pg in ok && !ok[pg]) ? '<p class="mut">You do not have access to this page.</p>' : waiting ? '<p class="mut">Loading...</p>' : pages[pg]();
   $('#app').innerHTML = `<div id="shell"><nav><h2 style="margin:0 12px 14px">EagleEye Market</h2>
-    ${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}<a href="#/grades" class="hot${pg === 'grades' ? ' on' : ''}">🏆 Grade vs Grade</a>${link('rules', 'Rules and prize')}
+    ${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}<a href="#/grades" class="hot${pg === 'grades' ? ' on' : ''}">🏆 Grade vs Grade</a>${link('rules', 'Rules')}
     ${staff ? link('create', 'Create market') + link('review', 'Review suggestions', pend || '') : link('suggest', 'Suggest a market')}
     ${owner ? link('admin', 'Admin tools') : ''}${link('account', 'Account')}
     <div class="card" style="margin:auto 0 0"><b>${esc(me.username)}</b> <span class="chip">${me.role}</span><div class="mut">${(+me.balance).toFixed(1)} tokens</div>
     <div class="row"><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button><button class="g" onclick="sb.auth.signOut().then(load)">Log out</button></div></div>
-    </nav><main>${gradeBanner()}<div class="card split"><b id="cd">${cdText()}</b><a href="#/rules">Rules and prize</a></div>${body}</main></div>`;
+    </nav><main>${gradeBanner()}<div class="card split"><b id="cd">${cdText()}</b><a href="#/rules">Rules</a></div>${body}</main></div>`;
   for (const k in keep) { const el = document.getElementById(k); if (el) el.value = keep[k]; }
   if (pg === 'market' && staff && !MTok[+arg]) fetchTrades(+arg);
 }
