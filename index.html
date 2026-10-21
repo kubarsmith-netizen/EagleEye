@@ -86,7 +86,7 @@ async function rpc(fn, args){ const {data, error} = await sb.rpc(fn, args); if (
 
 // ---------- Pricing: money-share market (this is ALL of the trading math) ----------
 // Money-share market: each market holds YES money and NO money.
-//   YES % = YES money / (YES money + NO money)
+//   YES % = YES money / (YES money + NO money) 
 //   Bet: your tokens go to your side; your cost basis is the price right after the bet.
 //   Shares = tokens / that price. Value = shares x current price. A win pays 1 per share.
 const py = m => +m.money_yes / (+m.money_yes + +m.money_no);
