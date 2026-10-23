@@ -149,7 +149,7 @@ const FETCH = {
 let GR = [], MYCLASS = null;
 TTL.gr = 60e3; EXTRAS.grades = ['gr']; BLOCKING.grades = 1;
 FETCH.gr = async () => { const r = await sb.rpc('grade_standings'); GR = r.data || []; return r; };
-const GRADE_END = new Date('2026-10-25T15:20:00-07:00');   // CHANGE THIS to your real deadline
+const GRADE_END = new Date('2026-10-23T15:20:00-07:00');   // CHANGE THIS to your real deadline
 const GRADE_NAME = {2027:'Seniors', 2028:'Juniors', 2029:'Sophomores', 2030:'Freshmen'};
 function gradeLeft(){
   const ms = GRADE_END - Date.now();
