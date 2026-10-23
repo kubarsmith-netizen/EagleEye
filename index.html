@@ -243,7 +243,7 @@ const FETCH = {
   inv: async () => { const r = await sb.from('invite_codes').select('code,used_by'); INV = r.data || []; return r; },
   pr: async () => { const r = await sb.from('proposals').select('id,question,closes_at,status,note,profiles(username)').order('created_at', {ascending:false}).limit(100); PR = r.data || []; return r; }
 };
-
+const curPage=()=> (location.hash.slice(2)||'markets').split('/')[0];
 async function ensureExtras(){
   if (!me) return;
   const keys = new Set(EXTRAS[curPage()] || []);
