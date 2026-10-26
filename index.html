@@ -5,16 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>EagleEye Market</title>
 <style>
-:root,[data-theme=light]{
-  --bg:#f4f3ee;--fg:#1d1d1b;--card:#fff;--mut:#6b6b66;
-  --line:#e0dfd8;--yes:#16885a;--no:#c0392b;
-  --acc:#2b4a8b;--side:#ebeae3
-}
-[data-theme=dark]{
-  --bg:#121211;--fg:#ececea;--card:#1c1c1a;--mut:#9a9a94;
-  --line:#2f2f2c;--yes:#3ecf8e;--no:#ef6a62;
-  --acc:#8aa9f0;--side:#181816
-}
+:root,[data-theme=light]{--bg:#f4f3ee;--fg:#1d1d1b;--card:#fff;--mut:#6b6b66;--line:#e0dfd8;--yes:#16885a;--no:#c0392b;--acc:#2b4a8b;--side:#ebeae3}
+[data-theme=dark]{--bg:#121211;--fg:#ececea;--card:#1c1c1a;--mut:#9a9a94;--line:#2f2f2c;--yes:#3ecf8e;--no:#ef6a62;--acc:#8aa9f0;--side:#181816}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,sans-serif}
 h1{margin:0 0 6px;font-size:28px}
@@ -42,6 +34,7 @@ main{flex:1;padding:30px 40px;max-width:1240px}
 .mut{color:var(--mut);font-size:14px}
 a{color:var(--acc)}
 .chip{background:var(--line);color:var(--fg);border-radius:10px;padding:1px 8px;font-size:12px}
+nav a.on .chip{background:#fff3;color:#fff}
 .tags{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px}
 .tag{display:inline-block;padding:4px 20px 4px 11px;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;line-height:1.3;color:#121211;background:#FFFF00;clip-path:polygon(0 0,100% 0,calc(100% - 9px) 50%,100% 100%,0 100%)}
 .tag.promo{background:#FFFF00;color:#121211}
@@ -60,83 +53,72 @@ th{color:var(--mut);font-weight:500}
 .tabs{display:flex;gap:8px;margin:14px 0 18px}
 select{font:inherit;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
 #t{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:8px;display:none;max-width:90%;z-index:9}
-
-/* Sophomore congratulations banner */
-.congrats-banner{
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  min-height:200px;
-  padding:32px 36px;
-  margin:0 0 20px;
-  border-radius:18px;
-  color:#fff;
-  background:linear-gradient(115deg,#182848 0%,#3156a4 48%,#7b2cbf 100%);
-  box-shadow:0 10px 28px #18284830;
-}
-.congrats-banner:after{
-  content:"";
-  position:absolute;
-  width:240px;
-  height:240px;
-  right:8%;
-  top:-100px;
-  border:28px solid #ffffff20;
-  border-radius:50%;
-  box-shadow:0 0 0 24px #ffffff0d,0 0 0 50px #ffffff08;
-  pointer-events:none;
-}
-.congrats-kicker{
-  position:relative;
-  z-index:1;
-  font-size:12px;
-  font-weight:800;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-  opacity:.9;
-}
-.congrats-banner h1{
-  position:relative;
-  z-index:1;
-  font-size:clamp(30px,4vw,46px);
-  line-height:1.1;
-  margin:10px 0;
-}
-.congrats-banner p{
-  position:relative;
-  z-index:1;
-  margin:0;
-  font-size:17px;
-  color:#f0f3ff;
-}
-
-@media(max-width:860px){
-  #shell{flex-direction:column}
-  nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}
-  main{padding:16px}
-  .two,.stats{grid-template-columns:1fr}
-  .congrats-banner{padding:24px;min-height:170px}
-}
+@media(max-width:860px){#shell{flex-direction:column}nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}main{padding:16px}.two,.stats{grid-template-columns:1fr}}
+nav a.hot{background:linear-gradient(135deg,#ff7a18,#af002d 55%,#6a11cb);color:#fff;font-weight:700;margin:6px 0;box-shadow:0 2px 12px #af002d66}
+nav a.hot:hover{filter:brightness(1.12);background:linear-gradient(135deg,#ff7a18,#af002d 55%,#6a11cb)}
+nav a.hot.on{outline:2px solid #fff9;outline-offset:-2px}
+/* Referral Race: its own palette (cyan, emerald, magenta) kept apart from the rest of the site */
+.race-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:12px 16px;margin:0 0 16px;border-radius:12px;color:#fff;background:linear-gradient(110deg,#0891b2,#059669 48%,#db2777);box-shadow:0 2px 14px #0891b255}
+.race-bar .blurb{flex:2 1 280px;font-size:14px;line-height:1.4;text-shadow:0 1px 2px #0005}
+.race-bar a{color:#fff;white-space:nowrap;font-weight:600}
+.lk{display:flex;align-items:center;gap:8px;flex:1 1 320px;min-width:0}
+.lk b{white-space:nowrap}
+.lk input{flex:1 1 120px;max-width:260px;width:auto;min-width:0;margin:0;padding:7px 10px;font-size:13px;background:#ffffff26;border:1px solid #ffffff66;color:#fff}
+.lk button{background:#fff;color:#0b4f5c;font-weight:600;padding:7px 12px;white-space:nowrap}
+.rc{display:inline-block;background:#0003;border-radius:10px;padding:4px 12px;white-space:nowrap}
+nav a.race{background:linear-gradient(110deg,#0891b2,#059669 50%,#db2777);color:#fff;font-weight:700;margin:6px 0;box-shadow:0 2px 12px #0891b255}
+nav a.race:hover{filter:brightness(1.1);background:linear-gradient(110deg,#0891b2,#059669 50%,#db2777)}
+nav a.race.on{outline:2px solid #fff9;outline-offset:-2px}
+.race-hero{padding:22px;margin:0 0 16px;border-radius:14px;color:#fff;background:linear-gradient(120deg,#0891b2,#059669 50%,#db2777);box-shadow:0 4px 20px #0891b244}
+.race-hero h1{margin:0 0 8px}
+.race-hero p{margin:0;max-width:640px;text-shadow:0 1px 2px #0004}
+.race-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.race-board{padding:16px;border:2px solid transparent;border-radius:14px;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(120deg,#0891b2,#059669,#db2777) border-box}
+.rank{display:inline-block;min-width:28px;height:28px;line-height:28px;text-align:center;border-radius:50%;background:#64748b;color:#fff;font-weight:700;font-size:13px}
+.rank.r1{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#3b2a00}
+.rank.r2{background:linear-gradient(135deg,#e5e7eb,#9ca3af);color:#1f2937}
+.rank.r3{background:linear-gradient(135deg,#f59e0b,#b45309);color:#fff}
+tr.mine td{background:#0891b21f;font-weight:600}
+/* STREAKS: floating badge, panel, and leaderboard side card */
+#stk{position:fixed;top:16px;right:20px;z-index:8;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:10px}
+.stk-btn{display:flex;align-items:center;gap:8px;color:#fff;border:0;border-radius:999px;padding:11px 22px;font-size:24px;line-height:1;font-weight:700;background:linear-gradient(135deg,#ff9a1f,#ef2d2d 55%,#c026d3);box-shadow:0 6px 22px #ef2d2d88,inset 0 0 0 2px #ffffff55;text-shadow:0 1px 3px #0006}
+.stk-btn b{font-size:26px}
+.stk-btn:hover{filter:brightness(1.1)}
+.stk-btn.t2{background:linear-gradient(135deg,#ef2d2d,#c026d3 55%,#6d28d9);box-shadow:0 6px 22px #c026d388,inset 0 0 0 2px #ffffff55}
+.stk-btn.t3{background:linear-gradient(135deg,#fbbf24,#f97316 40%,#db2777 75%,#7c3aed);box-shadow:0 6px 24px #fbbf2499,inset 0 0 0 2px #ffffff77}
+.stk-btn.off{background:linear-gradient(135deg,#0ea5e9,#2563eb);box-shadow:0 6px 20px #2563eb77,inset 0 0 0 2px #ffffff55}
+@keyframes stkpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.stk-btn:not(.off){animation:stkpulse 2.4s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.stk-btn{animation:none!important}}
+.stk-panel{color:var(--fg);border:2px solid transparent;border-radius:14px;padding:14px 16px;width:280px;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,#ff9a1f,#ef2d2d,#c026d3) border-box;box-shadow:0 8px 24px #0004}
+.stk-panel p{margin:6px 0 0}
+@media(min-width:861px){main{padding-right:165px}}
+@media(max-width:860px){#stk{top:auto;bottom:16px;right:12px;flex-direction:column}.stk-btn{font-size:19px;padding:9px 16px}.stk-btn b{font-size:21px}}
+.boardwrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.boardwrap>div{min-width:0}
+.side-board th,.side-board td{padding:6px 8px;font-size:13px}
+@media(max-width:1000px){.boardwrap{grid-template-columns:1fr}}
 </style>
 <link rel="icon" href="/favicon.ico">
 </head>
 <body>
 <div id="app"></div>
 <div id="t"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 const SUPABASE_URL = 'https://qwkmyncxomibcpmlguxj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_mwgMhSwlsfRnOtu3h8-hUA_F7xjnxAV';
 const ALLOWED_DOMAINS = ['headroyce.org'];
+const REFERRAL_BONUS = 100; // shown to players; keep equal to v_bonus in the award_referral SQL function
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+try { const r = new URLSearchParams(location.search).get('ref'); if (r) localStorage.setItem('ref', r.trim().toLowerCase()); } catch (e) {}
+const savedRef = () => { try { return localStorage.getItem('ref') || ''; } catch (e) { return ''; } };
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const root = document.documentElement;
-let me = null, markets = [], P = [], CD = [], T = [], LB = [], STAFF = [], INV = [], PR = [], FINAL = [], ACT = {}, MT = {}, MTok = {}, FILTER = 'open';
+let REV = null, me = null, markets = [], P = [], CD = [], T = [], LB = [], STAFF = [], INV = [], PR = [], FINAL = [], ACT = {}, MT = {}, MTok = {}, FILTER = 'open';
+let STK = null, SBD = [], STK_OPEN = false; /* STREAKS state */
 
 const SEASON_END = new Date('2026-12-18T15:20:00-08:00');
 
@@ -161,22 +143,27 @@ function setTheme(t){
   root.dataset.theme = t;
   try { localStorage.setItem('theme', t); } catch (e) {}
 }
+
 (() => {
   let t;
   try { t = localStorage.getItem('theme'); } catch (e) {}
   setTheme(t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 })();
+
 const toggleTheme = () => {
   setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
   render();
 };
+
 const go = h => { location.hash = '#/' + h; };
+
 const toast = m => {
   const t = $('#t');
   t.textContent = m;
   t.style.display = 'block';
   setTimeout(() => t.style.display = 'none', 3500);
 };
+
 async function rpc(fn, args){
   const {data, error} = await sb.rpc(fn, args);
   if (error) toast(error.message);
@@ -189,11 +176,13 @@ async function rpc(fn, args){
 const py = m => +m.money_yes / (+m.money_yes + +m.money_no);
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
 const boughtAtPrice = (m, p) => +p.shares > 0 ? +p.invested / +p.shares : sidePrice(m, p.side);
+
 function positionValue(m, p){
   return +p.shares * sidePrice(m, p.side);
 }
 
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
+
 function info(m){
   const cd = CD.find(c => c.market_id === m.id);
   const until = cd ? new Date(cd.last_trade_at).getTime() + m.cooldown_seconds * 1000 : 0;
@@ -212,41 +201,90 @@ function chart(id){
   return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${grid}<path d="${d}" fill="none" stroke="var(--acc)" stroke-width="2"/>${xs}<text x="${L + pw / 2}" y="${H - 6}" text-anchor="middle" font-size="11" fill="var(--mut)">Trade number (Open = starting odds)</text><text transform="rotate(-90)" x="${-(TP + ph / 2)}" y="12" text-anchor="middle" font-size="11" fill="var(--mut)">YES probability (%)</text></svg>`;
 }
 
-// ---------- Authentication ----------
+// ---------- auth ----------
 function authView(){
   $('#app').innerHTML = `<div style="max-width:420px;margin:12vh auto;padding:16px"><div class="card"><h1>EagleEye Market</h1>
-  <p class="mut">Please sign up with your Head-Royce email </p>
+  <p class="mut">Please sign up with your Head-Royce email</p>
   <input id="u" placeholder="Username (sign up only)"><input id="e" type="email" placeholder="Email"><input id="p" type="password" placeholder="Password">
   <div class="row"><button onclick="auth(true)">Log in</button><button class="g" onclick="auth(false)">Sign up</button><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button></div></div></div>`;
 }
+
 async function auth(login){
   const email = $('#e').value, password = $('#p').value;
   if (!login && ALLOWED_DOMAINS.length && !ALLOWED_DOMAINS.includes(email.split('@').pop().toLowerCase())) return toast('Please use your ' + ALLOWED_DOMAINS.join(' or ') + ' email.');
-  const r = login ? await sb.auth.signInWithPassword({email, password}) : await sb.auth.signUp({email, password, options:{data:{username:$('#u').value}}});
+  const r = login ? await sb.auth.signInWithPassword({email, password}) : await sb.auth.signUp({email, password, options:{data:{username:$('#u').value, referred_by:savedRef()}}});
   if (r.error) return toast(r.error.message);
   if (!r.data.session) return toast('Check your email to confirm, then log in.');
   load();
 }
 
-// ---------- Data ----------
+// ---------- data ----------
 const AT = {}, LOADED = {};
-const TTL = {act:60e3, pts:60e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3};
-const EXTRAS = {markets:['act'], market:['pts'], leaderboard:['lb','final'], admin:['staff','inv','final'], suggest:['pr'], review:['pr']};
-const BLOCKING = {leaderboard:1, admin:1, suggest:1, review:1};
+const TTL = {ev:60e3, act:60e3, pts:60e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3, streak:60e3, sboard:60e3};
+const EXTRAS = {markets:['act'], market:['pts'], leaderboard:['lb','final','sboard'], race:['ev'], admin:['staff','inv','final'], suggest:['pr'], review:['pr']};
+const BLOCKING = {leaderboard:1, race:1, admin:1, suggest:1, review:1};
 
 const FETCH = {
-  act: async () => { const r = await sb.rpc('market_activity'); ACT = {}; (r.data || []).forEach(x => { ACT[x.market_id] = x.recent; }); return r; },
-  pts: async () => { const r = await sb.rpc('price_points'); T = r.data || []; return r; },
-  lb: async () => { const r = await sb.rpc('leaderboard'); LB = r.data || []; return r; },
-  final: async () => { const r = await sb.from('season_final').select('place,username,score').order('place'); FINAL = r.data || []; return r; },
-  staff: async () => { const r = await sb.from('profiles').select('username,role').neq('role','user'); STAFF = r.data || []; return r; },
-  inv: async () => { const r = await sb.from('invite_codes').select('code,used_by'); INV = r.data || []; return r; },
-  pr: async () => { const r = await sb.from('proposals').select('id,question,closes_at,status,note,profiles(username)').order('created_at', {ascending:false}).limit(100); PR = r.data || []; return r; }
+  ev: async () => {
+    const r = await sb.rpc('referral_event_info');
+    REV = r.data || null;
+    return r;
+  },
+  act: async () => {
+    const r = await sb.rpc('market_activity');
+    ACT = {};
+    (r.data || []).forEach(x => { ACT[x.market_id] = x.recent; });
+    return r;
+  },
+  pts: async () => {
+    const r = await sb.rpc('price_points');
+    T = r.data || [];
+    return r;
+  },
+  lb: async () => {
+    const r = await sb.rpc('leaderboard');
+    LB = r.data || [];
+    return r;
+  },
+  final: async () => {
+    const r = await sb.from('season_final').select('place,username,score').order('place');
+    FINAL = r.data || [];
+    return r;
+  },
+  staff: async () => {
+    const r = await sb.from('profiles').select('username,role').neq('role','user');
+    STAFF = r.data || [];
+    return r;
+  },
+  inv: async () => {
+    const r = await sb.from('invite_codes').select('code,used_by');
+    INV = r.data || [];
+    return r;
+  },
+  pr: async () => {
+    const r = await sb.from('proposals').select('id,question,closes_at,status,note,profiles(username)').order('created_at', {ascending:false}).limit(100);
+    PR = r.data || [];
+    return r;
+  },
+  /* STREAKS fetchers */
+  streak: async () => {
+    const r = await sb.rpc('my_streak');
+    STK = (r.data && r.data[0]) || null;
+    return r;
+  },
+  sboard: async () => {
+    const r = await sb.rpc('streak_board');
+    SBD = r.data || [];
+    return r;
+  }
 };
-const curPage=()=> (location.hash.slice(2)||'markets').split('/')[0];
+
 async function ensureExtras(){
   if (!me) return;
-  const keys = new Set(EXTRAS[curPage()] || []);
+  const page = (location.hash.slice(2) || 'markets').split('/')[0];
+  const keys = new Set(EXTRAS[page] || []);
+  keys.add('ev'); // the referral banner appears on every page
+  keys.add('streak'); // STREAKS: the badge appears on every page
   if (me.role !== 'user') keys.add('pr');
   const stale = [...keys].filter(k => !AT[k] || Date.now() - AT[k] > TTL[k]);
   if (!stale.length) return;
@@ -256,12 +294,22 @@ async function ensureExtras(){
     if (r.error) AT[k] = 0;
     LOADED[k] = true;
   }));
+  const cur = (location.hash.slice(2) || 'markets').split('/')[0];
+  if (stale.every(k => k === 'ev' || k === 'streak') && cur === page && page !== 'race') {
+    // only the banner and the streak badge changed: update just those, so typing is never interrupted
+    const rb = $('#rb');
+    if (rb) rb.innerHTML = refBanner();
+    const sw = $('#stkw');
+    if (sw) sw.innerHTML = streakBadge();
+    return;
+  }
   render();
 }
 
 function resetCaches(){
   for (const k in AT) delete AT[k];
   for (const k in LOADED) delete LOADED[k];
+  STK = null; SBD = []; STK_OPEN = false; // STREAKS: clear on logout
 }
 
 async function load(){
@@ -291,7 +339,9 @@ async function load(){
   ensureExtras();
 }
 
+// Keep prices fresh with one small query every 30 seconds.
 const marketSig = ms => JSON.stringify(ms.map(m => [m.id, m.status, m.outcome, m.money_yes, m.money_no, m.promoted_at, m.boosted_at, m.closes_at, m.cooldown_seconds]));
+
 setInterval(async () => {
   if (!me || document.hidden) return;
   const el = document.activeElement;
@@ -303,7 +353,7 @@ setInterval(async () => {
   }
 }, 30000);
 
-// ---------- Pages ----------
+// ---------- pages ----------
 let SORT = 'featured';
 const SORTS = {featured:'Featured', newest:'Newest', oldest:'Oldest', high:'Highest YES %', low:'Lowest YES %', active:'Most active (24h)', closing:'Closing soonest'};
 const setSort = v => { SORT = v; render(); };
@@ -317,6 +367,7 @@ const tags = m => {
   const t = isPromoted(m) ? '<span class="tag promo">Trending!</span>' : trending(m) ? '<span class="tag">Trending!</span>' : '';
   return t ? `<div class="tags">${t}</div>` : '';
 };
+
 const sorters = {
   featured: (a, b) => rank(a) - rank(b) || (rank(a) === 0 ? new Date(b.promoted_at) - new Date(a.promoted_at) : rank(a) === 1 ? ACT[b.id] - ACT[a.id] : rank(a) === 2 ? new Date(b.boosted_at) - new Date(a.boosted_at) : 0),
   newest: (a, b) => new Date(b.created_at) - new Date(a.created_at),
@@ -327,9 +378,42 @@ const sorters = {
   closing: (a, b) => (a.closes_at ? new Date(a.closes_at) : Infinity) - (b.closes_at ? new Date(b.closes_at) : Infinity) || 0
 };
 
+// ---------- Referral Race ----------
+const raceEnd = () => new Date(REV.ends_at).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
+
+function refBanner(){
+  if (!REV) return '';
+  const ended = Date.now() >= new Date(REV.ends_at);
+  const blurb = ended
+    ? 'The Referral Race is over!' + (REV.winner ? ' Congrats to our winner, <b>' + esc(REV.winner) + '</b>!' : '') + ' Keep sharing: you and a friend still each get ' + REFERRAL_BONUS + ' tokens when they join with your link!'
+    : '<b>Referral Race!</b> Bring a friend and you BOTH score ' + REFERRAL_BONUS + ' tokens! The player with the most referrals by ' + raceEnd() + ' wins ' + REV.prize + ' bonus tokens!';
+  return `<div class="race-bar">
+    <div class="blurb">${blurb}</div>
+    <div class="lk"><b>Your Link</b><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your Link">
+    <button onclick="navigator.clipboard.writeText(refLink());toast('Link copied! Go share it!')">Copy it!</button></div>
+    <span class="rc">Your referrals: <b>${REV.mine}</b>!</span>
+    <a href="#/race">See the leaderboard!</a></div>`;
+}
+
+function pgRace(){
+  if (!REV) return '<h1>Referral Race!</h1><p class="mut">No race is running right now. Check back soon!</p>';
+  const ended = Date.now() >= new Date(REV.ends_at);
+  const lead = REV.leaders || [];
+  const at = lead.findIndex(r => r.username === me.username);
+  const rows = lead.map((r, i) => `<tr class="${r.username === me.username ? 'mine' : ''}"><td><span class="rank r${i < 3 ? i + 1 : 0}">${i + 1}</span></td><td>${esc(r.username)}</td><td><b>${r.n}</b></td></tr>`).join('');
+  const status = ended ? (REV.winner ? 'Winner: <b>' + esc(REV.winner) + '</b>! (+' + REV.prize + ' tokens!)' : 'The race has ended!') : 'Ends ' + raceEnd() + '!';
+  const standing = at >= 0 ? 'You are #' + (at + 1) + '!' : (REV.mine > 0 ? 'Not in the top 10 yet. Keep sharing!' : 'No referrals yet. Go get your first!');
+  return `<div class="race-hero"><h1>Referral Race!</h1>
+    <p>Share your link and race to the top! When a friend signs up through it and confirms their email, you each get ${REFERRAL_BONUS} tokens! The player with the most confirmed referrals wins a bonus ${REV.prize} tokens! Ties go to whoever reached the count first, so be quick!</p>
+    <div class="lk" style="margin-top:14px;max-width:480px"><b>Your Link</b><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your Link">
+    <button onclick="navigator.clipboard.writeText(refLink());toast('Link copied! Go share it!')">Copy it!</button></div>
+    <div class="race-stats"><span class="rc">${status}</span><span class="rc">Your referrals: <b>${REV.mine}</b>!</span><span class="rc">${standing}</span></div></div>
+  <div class="race-board"><b>Top 10 racers!</b>${rows ? `<table><tr><th></th><th>Player</th><th>Referrals</th></tr>${rows}</table>` : '<p class="mut">No referrals yet. Be the first!</p>'}</div>`;
+}
+
 function pgMarkets(){
   const list = markets.filter(m => FILTER === 'all' || (FILTER === 'open') === (m.status === 'open')).sort(sorters[SORT]);
-  return `<h1>Markets</h1><div class="tabs">${['open','resolved','all'].map(f => `<button class="${FILTER === f ? '' : 'g'}" onclick="setFilter('${f}')">${f[0].toUpperCase() + f.slice(1)}</button>`).join('')}<select style="margin-left:auto" onchange="setSort(this.value)">${Object.entries(SORTS).map(([k, v]) => `<option value="${k}"${k === SORT ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
+  return `<h1>Markets</h1><div class="tabs">${['open','resolved','all'].map(f => `<button class="${FILTER === f ? '' : 'g'}" onclick="setFilter('${f}')">${f[0].toUpperCase() + f.slice(1)}</button>`).join('')}<select style="margin-left:auto" onchange="setSort(this.value)">${Object.entries(SORTS).map(([k, v]) => `<option value="${k}"${SORT === k ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
   <div class="grid">${list.map(m => {
     const y = py(m), mine = P.some(p => p.market_id === m.id);
     return `<a class="card mk" href="#/market/${m.id}">${tags(m)}<b>${esc(m.question)}</b>${m.proposed_by ? `<div class="mut">Suggested by ${esc(m.proposed_by)}</div>` : ''}
@@ -338,6 +422,13 @@ function pgMarkets(){
     <div class="mut" style="margin-top:6px">${mState(m)}${mine ? ' · you have a position' : ''}</div></a>`;
   }).join('') || '<p class="mut">No markets here yet.</p>'}</div>`;
 }
+
+/* STREAKS: preview of the cash-out bonus (profit only), using the server's current bonus % */
+const stkLine = (m, p) => {
+  if (!STK) return '';
+  const b = Math.max(0, positionValue(m, p) - (+p.invested)) * (+STK.bonus_pct) / 100;
+  return b >= 0.005 ? `<br>Streak bonus: +${b.toFixed(2)}` : '';
+};
 
 function pgMarket(id){
   const m = markets.find(x => x.id === id);
@@ -351,17 +442,20 @@ function pgMarket(id){
   else trade = `<input id="a${id}" type="number" min="1" placeholder="Tokens to invest">
     <div class="row">${[10, 50, 100].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
     <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
+
   const pos = mine.map(p => {
     const v = positionValue(m, p);
-    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>Cash out for: ${v.toFixed(1)}</span>
+    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>Cash out for: ${v.toFixed(1)}${stkLine(m, p)}</span>
     <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`;
   }).join('');
+
   const resolve = i.open && me.role !== 'user' ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
+
   return `<a href="#/markets" class="mut">← All markets</a><h1>${esc(m.question)}</h1>
   <div class="mut">${mState(m)}${m.proposed_by ? ' · Suggested by ' + esc(m.proposed_by) : ''}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}</div>
   <div class="two"><div class="card"><div class="split big"><span style="color:var(--yes)">YES ${(i.y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-i.y)*100).toFixed(0)}%</span></div>
-  <div class="bar"><i style="width:${i.y*100}%"></i></div>${chart(id)}</div>
+    <div class="bar"><i style="width:${i.y*100}%"></i></div>${chart(id)}</div>
   <div><div class="card"><b>Trade</b><div style="margin-top:8px">${trade}</div><p class="mut">Cooldown after each buy: ${+(m.cooldown_seconds / 3600).toFixed(1)} hours</p></div>
   ${pos ? `<div class="card"><b>Your position</b>${pos}</div>` : ''}${resolve}${adminBox(m)}</div></div>${tradesCard(id)}`;
 }
@@ -380,12 +474,26 @@ function pgPortfolio(){
       <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td>
     </tr>`;
   }).join('');
-  return `<h1>Portfolio</h1>${rows.length ? `<div class="card"><table>
+
+  return `<h1>Portfolio</h1>
+  ${rows.length ? `<div class="card"><table>
     <tr><th>Market</th><th>Side</th><th>Invested</th><th>Bought at</th><th>Now</th><th>Cash out for</th><th></th></tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
 }
 
-const pgBoard = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Everyone by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
+/* STREAKS: the original leaderboard is kept as pgBoardMain; pgBoard now wraps it with a side card */
+const pgBoardMain = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Everyone by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
   ${(FINAL.length ? FINAL : LB).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>${(+r.score).toFixed(1)}</td></tr>`).join('')}</table></div>`;
+
+const pgStreakSide = () => {
+  const pts = {};
+  LB.forEach(r => { pts[r.username] = +r.score; });
+  const rows = SBD.slice(0, 10).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>🔥 ${r.streak}</td><td>${pts[r.username] !== undefined ? pts[r.username].toFixed(1) : '-'}</td></tr>`).join('');
+  return `<div class="card side-board"><b>Streak leaders</b>
+  <p class="mut">Make 5 or more trades in a day to build a streak. Each streak day adds 0.1% to your cash-out profit, up to 10%.</p>
+  ${SBD.length ? `<table><tr><th>#</th><th>Player</th><th>Streak</th><th>Tokens</th></tr>${rows}</table>` : '<p class="mut">No streaks yet.</p>'}</div>`;
+};
+
+const pgBoard = () => `<div class="boardwrap"><div>${pgBoardMain()}</div>${pgStreakSide()}</div>`;
 
 const statusRows = (list, who) => list.map(p => `<tr><td>${esc(p.question)}</td>${who ? `<td>${esc(p.profiles ? p.profiles.username : 'deleted user')}</td>` : ''}<td><span class="chip">${p.status}</span></td><td>${p.note ? esc(p.note) : '<span class="mut">none</span>'}</td></tr>`).join('');
 
@@ -396,17 +504,18 @@ const pgRules = () => `<h1>Rules</h1><div class="card" style="max-width:760px">
   <p><b>Cooldown:</b> after you buy in a market, you cannot buy or cash out in that same market until its cooldown ends. Cashing out does not start a new cooldown. You can hold one position per market at a time, so cash out before betting again. The length is shown on each market page. This keeps the game about predictions, not playing the odds.</p>
   <h2>Create your own market</h2><p>Use <a href="#/suggest">Suggest a market</a> to submit a question. Every suggestion must be <b>approved by an admin</b> before it goes live, and the admin may leave a comment explaining the decision. Once approved, you can trade it like any other market.</p>
   <h2>Market Policies</h2>
-  <ul>
-    <li>Markets must be fully objective and non-opinion based.</li>
-    <li>There is a no tolerance policy for completely inappropriate markets; suggestions will result in a temporary ban.</li>
-    <li>95% of all markets should be Head-Royce-related, with exceptions for rare, highly relevant outside-of-school markets.</li>
-    <li>All trades must be able to be confirmed by at least one of the admins.</li>
-    <li>No personal markets are allowed; only faculty names may be used.</li>
-    <li>No obvious markets.</li>
-    <li>Use common sense and avoid suggesting stupid markets.</li>
-    <li>No love life markets.</li>
-    <li>No insults of any kind and no comments about identity, about a specific person or any group of people.</li>
-  </ul>
+<ul>
+<li>Markets must be fully objective and non-opinion based.</li>
+<li>There is a no tolerance policy for completely inappropriate markets; suggestions will result in a temporary ban.</li>
+<li>95% of all markets should be Head-Royce-related, with exceptions for rare, highly relevant outside-of-school markets.</li>
+<li>All trades must be able to be confirmed by at least one of the admins.</li>
+<li>No personal markets are allowed; only faculty names may be used.</li>
+<li>No obvious markets.</li>
+<li>Use common sense and avoid suggesting stupid markets.</li>
+<li>No love life markets.</li>
+<li>No insults of any kind and no comments about identity, about a specific person or any group of people.</li>
+</ul>
+  <h2>Daily streaks</h2><p>Make at least 5 trades in a day to build a streak. Buys and cash-outs both count, and days run midnight to midnight Pacific Time. Each streak day adds 0.1% to the profit on your cash-outs, up to 10%. Missing a day resets the bonus to 0%.</p>
   <h2>Fair play</h2><p>One account per person. Duplicate accounts or cheating can lead to disqualification. Collusion with other users is highly prohibited, though influencing the results of a market is encouraged. Automated trading programs will result in immediate disqualification.</p></div>`;
 
 const pgSuggest = () => `<h1>Suggest a market</h1><p class="mut">An admin reviews every suggestion before it goes live.</p>
@@ -429,14 +538,38 @@ function pgReview(){
 }
 
 const pgAdmin = () => `<h1>Admin tools</h1><div class="grid"><div class="card"><b>Season</b>${Date.now() >= SEASON_END ? (FINAL.length ? '<p class="mut">Final standings are recorded.</p>' : '<p class="mut">Click right after the season ends, before resolving or voiding any market.</p><button onclick="recordFinal()">Record final standings</button>') : '<p class="mut">Available after the season ends.</p>'}</div><div class="card"><b>Invite codes</b><p class="mut">Send a one-time code. They sign up, then redeem it on their Account page.</p>
-  <button onclick="inv()">New admin invite code</button><p class="mut">Unused: ${INV.filter(i => !i.used_by).map(i => '<code>' + i.code + '</code>').join(' ') || 'none'}</p></div>
+  <button onclick="inv()">New admin invite code</button><p class="mut">Unused: ${INV.filter(i => !i.used_by).map(i => '<code>' + i.code + '</code>').join(' ') || 'none'}</p>
   <div class="card"><b>Promote by username</b><input id="pu" placeholder="Username"><div class="row"><button onclick="setRole($('#pu').value,'admin')">Make admin</button></div></div>
   <div class="card"><b>Current admins</b><table>${STAFF.filter(s => s.role === 'admin').map(s => `<tr><td>${esc(s.username)}</td><td><button class="g" data-u="${esc(s.username)}" onclick="setRole(this.dataset.u,'user')">Remove</button></td></tr>`).join('') || '<tr><td class="mut">None yet</td></tr>'}</table></div></div>`;
 
+const refLink = () => location.origin + location.pathname + '?ref=' + me.referral_code;
+
 const pgAccount = () => `<h1>Account</h1><div class="card narrow"><b>${esc(me.username)}</b> <span class="chip">${me.role}</span><p class="mut">${(+me.balance).toFixed(1)} tokens</p></div>
+  <div class="card narrow"><b>Your referral link</b>
+    <p class="mut">Every friend who signs up and confirms their email earns you BOTH a bonus! Share it and rack up referrals!</p>
+    <input readonly value="${esc(refLink())}" onclick="this.select()">
+    <div class="row"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied! Go share it!')">Copy link</button></div></div>
   ${me.role === 'user' ? `<div class="card narrow"><b>Have an admin invite code?</b><input id="ic" placeholder="Code"><div class="row"><button onclick="redeem()">Redeem</button></div></div>` : ''}`;
 
-// ---------- Shell + router ----------
+// ---------- STREAKS: floating badge shown on every page ----------
+const toggleStk = () => { STK_OPEN = !STK_OPEN; render(); };
+function streakBadge(){
+  if (!STK) return '';
+  const n = +STK.streak, t = +STK.today_trades, g = +STK.goal, pct = +STK.bonus_pct;
+  const need = Math.max(0, g - t);
+  const status = need === 0
+    ? 'Today\'s goal is done. Your streak is safe.'
+    : (n > 0 ? `Make ${need} more trade${need === 1 ? '' : 's'} today to keep your streak.` : `Make ${need} more trade${need === 1 ? '' : 's'} today to start a streak.`);
+  const panel = STK_OPEN ? `<div class="stk-panel"><b>Daily streak</b>
+    <p>Streak: <b>${n}</b> day${n === 1 ? '' : 's'}</p>
+    <p>Trades today: <b>${t} / ${g}</b></p>
+    <p>Cash-out bonus: <b>${pct.toFixed(1)}%</b> of profit</p>
+    <p class="mut">${status}</p>
+    <p class="mut">+0.1% per streak day, max 10%. Missing a day resets it to 0%. Days run midnight to midnight Pacific.</p></div>` : '';
+  return `<div id="stk">${panel}<button class="stk-btn${n >= 30 ? ' t3' : n >= 7 ? ' t2' : n ? '' : ' off'}" onclick="toggleStk()" aria-label="Streak details" title="Daily trading streak">🔥 <b>${n}</b></button></div>`;
+}
+
+// ---------- shell + router ----------
 function render(){
   if (!me) return authView();
   const keep = {};
@@ -444,22 +577,25 @@ function render(){
   const [pg, arg] = (location.hash.slice(2) || 'markets').split('/');
   const staff = me.role !== 'user', owner = me.role === 'owner';
   const pend = PR.filter(p => p.status === 'pending').length;
-  const link = (id, label, badge) => `<a href="#/${id}" class="${id === pg || (id === 'markets' && pg === 'market') ? 'on' : ''}">${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
-  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount};
+  const link = (id, label, badge, cls) => `<a href="#/${id}" class="${cls ? cls + ' ' : ''}${id === pg || (id === 'markets' && pg === 'market') ? 'on' : ''}">${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
+  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, race: pgRace, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount};
   const ok = {create: staff, review: staff, admin: owner, suggest: !staff};
   const waiting = BLOCKING[pg] && (EXTRAS[pg] || []).some(k => !LOADED[k]);
   const body = !pages[pg] ? '<p>Page not found.</p>' : (pg in ok && !ok[pg]) ? '<p class="mut">You do not have access to this page.</p>' : waiting ? '<p class="mut">Loading...</p>' : pages[pg]();
+
   $('#app').innerHTML = `<div id="shell"><nav><h2 style="margin:0 12px 14px">EagleEye Market</h2>
-    ${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('rules', 'Rules')}
+    ${link('race', 'Referral Race!', '', 'race')}${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('rules', 'Rules')}
     ${staff ? link('create', 'Create market') + link('review', 'Review suggestions', pend || '') : link('suggest', 'Suggest a market')}
     ${owner ? link('admin', 'Admin tools') : ''}${link('account', 'Account')}
     <div class="card" style="margin:auto 0 0"><b>${esc(me.username)}</b> <span class="chip">${me.role}</span><div class="mut">${(+me.balance).toFixed(1)} tokens</div>
     <div class="row"><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button><button class="g" onclick="sb.auth.signOut().then(load)">Log out</button></div></div>
-    </nav><main><div class="congrats-banner"><div class="congrats-kicker">🏆 GRADE CHAMPIONS 🏆</div><h1>Congrats, Sophomores!</h1><p>You did it — enjoy the bragging rights.</p></div><div class="card split"><b id="cd">${cdText()}</b><a href="#/rules">Rules</a></div>${body}</main></div>`;
+    </nav><main><div class="card split"><b id="cd">${cdText()}</b><a href="#/rules">Rules</a></div><div id="rb">${pg === 'race' ? '' : refBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
+
   for (const k in keep) {
     const el = document.getElementById(k);
     if (el) el.value = keep[k];
   }
+
   if (pg === 'market' && staff && !MTok[+arg]) fetchTrades(+arg);
 }
 
@@ -508,6 +644,7 @@ const clearClose = id => {
   $('#cl'+id).value = '';
   rpc('set_close_date', {p_market:id, p_closes:null});
 };
+
 async function fetchTrades(id){
   MTok[id] = true;
   const {data, error} = await sb.rpc('market_trades', {p_market:id});
@@ -516,7 +653,7 @@ async function fetchTrades(id){
   render();
 }
 
-// ---------- Actions ----------
+// ---------- actions ----------
 const buy = (id, side) => +$('#a'+id).value >= 10 ? rpc('trade', {p_market:id, p_side:side, p_tokens:+$('#a'+id).value, p_action:'buy'}) : toast('Minimum bet is 10 tokens.');
 const sell = (id, side) => rpc('trade', {p_market:id, p_side:side, p_tokens:0, p_action:'sell'});
 
@@ -527,6 +664,7 @@ async function mk(){
     go('market/' + id);
   }
 }
+
 async function propose(){
   const {error} = await sb.rpc('submit_proposal', {p_question:$('#sq').value, p_closes:$('#sd').value ? new Date($('#sd').value).toISOString() : null});
   if (error) return toast(error.message);
@@ -536,15 +674,27 @@ async function propose(){
   AT.pr = 0;
   load();
 }
+
 const approve = id => rpc('approve_proposal', {p_id:id, p_question:$('#pq'+id).value, p_yes:$('#po'+id).value/100, p_cooldown:Math.round($('#pc'+id).value*3600), p_note:$('#pn'+id).value});
 const reject = id => rpc('reject_proposal', {p_id:id, p_note:$('#pn'+id).value});
-const res = (id, o) => confirm(o === 'void' ? 'Cancel this market and refund everyone\'s stakes?' : 'Resolve as ' + o.toUpperCase() + '? This pays out winners and cannot be undone.') && rpc('resolve_market', {p_market:id, p_outcome:o});
+const res = (id, o) => confirm(o === 'void' ? 'Cancel this market and refund everyone\'s stakes? This cannot be undone.' : 'Resolve as ' + o.toUpperCase() + '? This pays out winners and cannot be undone.') && rpc('resolve_market', {p_market:id, p_outcome:o});
 const inv = () => rpc('make_invite').then(c => c && prompt('Share this one-time code:', c));
 const setRole = (u, r) => rpc('set_role', {p_username:u, p_role:r});
 const recordFinal = () => confirm('Record the final standings now? This can only be done once.') && rpc('record_final_standings');
 const redeem = () => rpc('redeem_invite', {p_code:$('#ic').value});
 
-load();
+async function checkReferralAlerts(){
+  if (!me) return;
+  const {data} = await sb.rpc('claim_referral_alerts');
+  if (data && data.length) {
+    toast('New referral! ' + data.map(x => x.username).join(', ') + ' joined with your link! Bonus added!');
+    AT.ev = 0;
+    load();
+  }
+}
+setInterval(() => { if (!document.hidden) checkReferralAlerts(); }, 30000);
+
+load().then(checkReferralAlerts);
 </script>
 </body>
 </html>
