@@ -16,7 +16,7 @@ nav{width:240px;flex-shrink:0;background:var(--side);border-right:1px solid var(
 nav a{padding:10px 12px;border-radius:8px;color:var(--fg);text-decoration:none;display:flex;justify-content:space-between;align-items:center}
 nav a:hover{background:var(--line)}
 nav a.on{background:var(--acc);color:#fff}
-main{flex:1;padding:30px 40px;max-width:1240px}
+main{flex:1;padding:30px 40px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
 .grid .card{margin:0}
@@ -92,7 +92,7 @@ tr.mine td{background:#0891b21f;font-weight:600}
 @media(prefers-reduced-motion:reduce){.stk-btn{animation:none!important}}
 .stk-panel{color:var(--fg);border:2px solid transparent;border-radius:14px;padding:14px 16px;width:280px;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,#ff9a1f,#ef2d2d,#c026d3) border-box;box-shadow:0 8px 24px #0004}
 .stk-panel p{margin:6px 0 0}
-@media(min-width:861px){main{padding-right:165px}}
+@media(min-width:861px){main>.card.split:first-child{margin-right:165px}}
 @media(max-width:860px){#stk{top:auto;bottom:16px;right:12px;flex-direction:column}.stk-btn{font-size:19px;padding:9px 16px}.stk-btn b{font-size:21px}}
 .boardwrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
 .boardwrap>div{min-width:0}
