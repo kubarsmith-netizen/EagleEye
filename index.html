@@ -3,120 +3,101 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://lumsbvchmibxmvrzqtpt.supabase.co wss://lumsbvchmibxmvrzqtpt.supabase.co; img-src 'self' data: blob: https://lumsbvchmibxmvrzqtpt.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
-<meta name="referrer" content="no-referrer">
 <title>EagleEye Market</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root,[data-theme=light]{--bg:#f3f6fb;--fg:#0f172a;--card:#fff;--mut:#5b6678;--line:#dde3ee;--bd:#a9b6cc;--yes:#2a8a62;--no:#bb4d43;--acc:#2f6bd8;--side:#fff;--hov:#eaf1fd}
-[data-theme=dark]{--bg:#050506;--fg:#ececf0;--card:#0e0f12;--mut:#9aa1ae;--line:#1c1f26;--bd:#3a4458;--yes:#38b886;--no:#d96a63;--acc:#5b9bff;--side:#09090b;--hov:#161a24}
-[data-theme=slate]{--bg:#1e2228;--fg:#e8eaee;--card:#272c34;--mut:#9ba3b0;--line:#363c47;--bd:#566073;--yes:#38b886;--no:#d96a63;--acc:#6aa0f5;--side:#191c21;--hov:#303642}
-[data-theme=midnight]{--bg:#081022;--fg:#e6ecf8;--card:#0f1a33;--mut:#8d9bb8;--line:#1b2a4a;--bd:#35508a;--yes:#38b886;--no:#d96a63;--acc:#4d9cff;--side:#0a1429;--hov:#15244a}
-[data-theme=custom]{--side:var(--card);--line:color-mix(in srgb,var(--fg) 16%,var(--bg));--bd:color-mix(in srgb,var(--fg) 34%,var(--bg));--hov:color-mix(in srgb,var(--acc) 12%,var(--card));--mut:color-mix(in srgb,var(--fg) 58%,var(--bg))}
-:root{--grad:linear-gradient(120deg,color-mix(in srgb,var(--acc) 22%,var(--card)),color-mix(in srgb,var(--acc) 5%,var(--card)))}
-[data-pat=dots] body{background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:16px 16px}
-[data-pat=grid] body{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:28px 28px}
-[data-pat=lines] body{background-image:repeating-linear-gradient(45deg,var(--line) 0 1px,transparent 1px 14px)}
+:root,[data-theme=light]{--bg:#f4f3ee;--fg:#1d1d1b;--card:#fff;--mut:#6b6b66;--line:#e0dfd8;--yes:#16885a;--no:#c0392b;--acc:#2b4a8b;--side:#ebeae3}
+[data-theme=dark]{--bg:#121211;--fg:#ececea;--card:#1c1c1a;--mut:#9a9a94;--line:#2f2f2c;--yes:#3ecf8e;--no:#ef6a62;--acc:#8aa9f0;--side:#181816}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
-h1{margin:0 0 8px;font-size:25px;font-weight:600;letter-spacing:-.01em}
-h2{font-size:16px;font-weight:600;margin:26px 0 10px}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,sans-serif}
+h1{margin:0 0 6px;font-size:28px}
+h2{font-size:19px;margin:28px 0 8px}
 #shell{display:flex;min-height:100vh}
-nav{width:196px;flex-shrink:0;background:var(--side);border-right:1.5px solid var(--bd);padding:16px 10px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:1px;font-size:14px}
-nav h2{margin:0 10px 14px;font-size:14px;letter-spacing:.02em}
-nav a{padding:7px 10px;border-radius:6px;color:var(--mut);text-decoration:none;display:flex;gap:10px;align-items:center;font-weight:500}
-nav a svg{flex-shrink:0}
-nav a .chip{margin-left:auto}
-nav a:hover{background:var(--hov);color:var(--fg)}
-nav a.on{background:var(--hov);color:var(--fg);font-weight:600}
-nav a.on svg{color:var(--acc)}
-nav a.me{margin-top:auto;border:1.5px solid var(--bd);padding:8px;color:var(--fg);line-height:1.25}
-nav a.me:hover,nav a.me.on{border-color:var(--acc)}
-nav a.me .av{width:30px;height:30px;font-size:16px;margin:0}
-main{flex:1;padding:30px 38px;min-width:0}
-.card{background:var(--card);border:1.5px solid var(--bd);border-radius:8px;padding:16px;margin:0 0 16px}
+nav{width:240px;flex-shrink:0;background:var(--side);border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:2px}
+nav a{padding:10px 12px;border-radius:8px;color:var(--fg);text-decoration:none;display:flex;justify-content:space-between;align-items:center}
+nav a:hover{background:var(--line)}
+nav a.on{background:var(--acc);color:#fff}
+main{flex:1;padding:30px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
 .grid .card{margin:0}
-.two{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-top:16px}
+.two{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-top:18px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:16px 0}
-.stats .card{margin:0;border-top:3px solid var(--acc)}
-.mk{color:inherit;text-decoration:none;display:block;padding:22px;border-width:2px;transition:transform .12s,box-shadow .12s,border-color .12s}
-.mk:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--acc) 15%,transparent)}
-.mk b{display:block;font-size:18px;line-height:1.35}
-.mk .bar{height:12px;margin:14px 0}
-.mk .split{font-size:19px;font-weight:600}
-.narrow{max-width:540px}
-.big{font-size:23px;font-weight:600}
-.bar{height:8px;border-radius:4px;background:var(--no);overflow:hidden;margin:10px 0}
+.stats b{font-size:24px}
+.mk{color:inherit;text-decoration:none;display:block}
+.mk:hover{border-color:var(--acc)}
+.narrow{max-width:560px}
+.big{font-size:26px;font-weight:600}
+.bar{height:10px;border-radius:5px;background:var(--no);overflow:hidden;margin:10px 0}
 .bar i{display:block;height:100%;background:var(--yes)}
 .split{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
-.mut{color:var(--mut);font-size:13.5px}
+.mut{color:var(--mut);font-size:14px}
 a{color:var(--acc)}
-.chip{background:var(--hov);color:var(--acc);border:1px solid var(--bd);border-radius:6px;padding:0 7px;font-size:11px;font-weight:600}
-.tags{margin:0 0 10px}
-.tag{display:inline-block;padding:2px 10px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#5b9be8,#2f63c8);border-radius:4px}
-input,button,select,textarea{font:inherit;padding:9px 12px;border-radius:6px;border:1.5px solid var(--bd);background:var(--bg);color:var(--fg)}
-input,textarea{width:100%;margin-top:8px}
-textarea{resize:vertical}
-input:focus,textarea:focus,select:focus{outline:0;border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 25%,transparent)}
-label{display:block;flex:1;min-width:140px}
+.chip{background:var(--line);color:var(--fg);border-radius:10px;padding:1px 8px;font-size:12px}
+nav a.on .chip{background:#fff3;color:#fff}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px}
+.tag{display:inline-block;padding:4px 20px 4px 11px;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;line-height:1.3;color:#121211;background:#FFFF00;clip-path:polygon(0 0,100% 0,calc(100% - 9px) 50%,100% 100%,0 100%)}
+.tag.promo{background:#FFFF00;color:#121211}
+input,button{font:inherit;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+input{width:100%;margin-top:8px}
+label{display:block;flex:1;min-width:150px}
 label input{margin-top:4px}
-button{cursor:pointer;background:var(--acc);color:#fff;border:1.5px solid var(--acc);font-weight:500}
+button{cursor:pointer;background:var(--acc);color:#fff;border:0}
 button:disabled{opacity:.4;cursor:default}
-button.y{background:var(--yes);border-color:var(--yes)}button.n{background:var(--no);border-color:var(--no)}
-button.g{background:none;color:var(--fg);border:1.5px solid var(--bd)}
-button.g:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
-.btn{display:inline-block;padding:9px 14px;border-radius:6px;background:var(--acc);color:#fff;cursor:pointer;font-weight:500}
-label.up{flex:none;min-width:0}
-.clr input{padding:2px;height:38px;cursor:pointer}
-.sel{outline:2px solid var(--acc);outline-offset:1px}
+button.y{background:var(--yes)}
+button.n{background:var(--no)}
+button.g{background:none;color:var(--fg);border:1px solid var(--line)}
 table{width:100%;border-collapse:collapse}
-th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
-th{color:var(--acc);font-weight:600;font-size:12px;border-bottom:2px solid var(--bd);text-transform:uppercase;letter-spacing:.04em}
-.mine td{font-weight:600;background:var(--hov)}
-.tabs{display:flex;gap:8px;margin:12px 0 18px;align-items:center}
-.tabs button,.tabs select{height:40px;padding:0 16px;margin:0}
-#t{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--acc);color:#fff;padding:10px 18px;border-radius:8px;display:none;max-width:90%;z-index:9}
-.av{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--hov);border:1px solid var(--bd);font-size:12px;font-weight:600;flex-shrink:0;margin-right:6px;vertical-align:middle;color:var(--fg);overflow:hidden}
-.av img{width:100%;height:100%;object-fit:cover}
-.nm{display:inline-flex;align-items:center;max-width:100%;border-radius:6px;padding:1px 8px 1px 2px;white-space:nowrap}
-.nm.bn{padding:2px 10px 2px 3px}
-.avs{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:10px}
-.avs button{padding:5px;font-size:18px}
-main>.card.split:first-child{background:var(--card);border-top:3px solid var(--acc)}
-.race-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 18px;margin:0 0 16px;border-radius:8px;border:1.5px solid #5b8fe0;background:linear-gradient(110deg,#1b3a9e,#2459b8 55%,#2f7fc9);color:#fff}
-.race-bar a{color:#fff;font-weight:600}
-.race-bar .rc{background:#ffffff22;border-color:#ffffff44;color:#fff}
-.race-bar .lk input{background:#ffffff1f;border-color:#ffffff55;color:#fff}
-.race-bar .lk button{background:#fff;color:#1b3a9e;border-color:#fff}
-.chip.ev{background:#fff;color:#1b3a9e;border-color:#fff}
-.race-bar .blurb{flex:2 1 280px}
-.lk{display:flex;align-items:center;gap:8px;flex:1 1 300px;min-width:0}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:500}
+.tabs{display:flex;gap:8px;margin:14px 0 18px}
+select{font:inherit;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+#t{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:8px;display:none;max-width:90%;z-index:9}
+@media(max-width:860px){#shell{flex-direction:column}nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}main{padding:16px}.two,.stats{grid-template-columns:1fr}}
+nav a.hot{background:linear-gradient(135deg,#ff7a18,#af002d 55%,#6a11cb);color:#fff;font-weight:700;margin:6px 0;box-shadow:0 2px 12px #af002d66}
+nav a.hot:hover{filter:brightness(1.12);background:linear-gradient(135deg,#ff7a18,#af002d 55%,#6a11cb)}
+nav a.hot.on{outline:2px solid #fff9;outline-offset:-2px}
+/* Referral Race: its own palette (cyan, emerald, magenta) kept apart from the rest of the site */
+.race-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:12px 16px;margin:0 0 16px;border-radius:12px;color:#fff;background:linear-gradient(110deg,#0891b2,#059669 48%,#db2777);box-shadow:0 2px 14px #0891b255}
+.race-bar .blurb{flex:2 1 280px;font-size:14px;line-height:1.4;text-shadow:0 1px 2px #0005}
+.race-bar a{color:#fff;white-space:nowrap;font-weight:600}
+.lk{display:flex;align-items:center;gap:8px;flex:1 1 320px;min-width:0}
 .lk b{white-space:nowrap}
-.lk input{flex:1 1 120px;max-width:260px;width:auto;min-width:0;margin:0;padding:6px 9px;font-size:13px}
-.lk button{padding:6px 11px;white-space:nowrap}
-.rc{display:inline-block;background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:3px 10px;white-space:nowrap}
-.race-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.rank{display:inline-block;min-width:26px;height:26px;line-height:24px;text-align:center;border-radius:6px;background:var(--hov);border:1px solid var(--bd);font-weight:600;font-size:12px}
-.rank.r1{background:var(--acc);border-color:var(--acc);color:#fff}
-#stk{position:fixed;top:26px;right:36px;z-index:8;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:10px}
-.stk-btn{display:flex;align-items:center;gap:8px;color:#fff;border:0;border-radius:999px;padding:10px 22px;font-size:22px;line-height:1;font-weight:700;background:linear-gradient(135deg,#7dd3fc,#3b82f6 55%,#1d4ed8);box-shadow:0 6px 22px #3b82f6bb,inset 0 0 0 2px #ffffff77;text-shadow:0 1px 3px #0b2a6a88}
-.stk-btn b{font-size:24px}
+.lk input{flex:1 1 120px;max-width:260px;width:auto;min-width:0;margin:0;padding:7px 10px;font-size:13px;background:#ffffff26;border:1px solid #ffffff66;color:#fff}
+.lk button{background:#fff;color:#0b4f5c;font-weight:600;padding:7px 12px;white-space:nowrap}
+.rc{display:inline-block;background:#0003;border-radius:10px;padding:4px 12px;white-space:nowrap}
+nav a.race{background:linear-gradient(110deg,#0891b2,#059669 50%,#db2777);color:#fff;font-weight:700;margin:6px 0;box-shadow:0 2px 12px #0891b255}
+nav a.race:hover{filter:brightness(1.1);background:linear-gradient(110deg,#0891b2,#059669 50%,#db2777)}
+nav a.race.on{outline:2px solid #fff9;outline-offset:-2px}
+.race-hero{padding:22px;margin:0 0 16px;border-radius:14px;color:#fff;background:linear-gradient(120deg,#0891b2,#059669 50%,#db2777);box-shadow:0 4px 20px #0891b244}
+.race-hero h1{margin:0 0 8px}
+.race-hero p{margin:0;max-width:640px;text-shadow:0 1px 2px #0004}
+.race-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.race-board{padding:16px;border:2px solid transparent;border-radius:14px;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(120deg,#0891b2,#059669,#db2777) border-box}
+.rank{display:inline-block;min-width:28px;height:28px;line-height:28px;text-align:center;border-radius:50%;background:#64748b;color:#fff;font-weight:700;font-size:13px}
+.rank.r1{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#3b2a00}
+.rank.r2{background:linear-gradient(135deg,#e5e7eb,#9ca3af);color:#1f2937}
+.rank.r3{background:linear-gradient(135deg,#f59e0b,#b45309);color:#fff}
+tr.mine td{background:#0891b21f;font-weight:600}
+/* STREAKS: floating badge, panel, and leaderboard side card */
+#stk{position:fixed;top:34px;right:40px;z-index:8;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:10px}
+.stk-btn{display:flex;align-items:center;gap:8px;color:#fff;border:0;border-radius:999px;padding:11px 22px;font-size:24px;line-height:1;font-weight:700;background:linear-gradient(135deg,#ff9a1f,#ef2d2d 55%,#c026d3);box-shadow:0 6px 22px #ef2d2d88,inset 0 0 0 2px #ffffff55;text-shadow:0 1px 3px #0006}
+.stk-btn b{font-size:26px}
 .stk-btn:hover{filter:brightness(1.1)}
-.stk-btn.off{background:linear-gradient(135deg,#bae6fd,#60a5fa);box-shadow:0 4px 14px #60a5fa88,inset 0 0 0 2px #ffffff77}
-@keyframes stkpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-.stk-btn:not(.off){animation:stkpulse 2.6s ease-in-out infinite}
+.stk-btn.t2{background:linear-gradient(135deg,#ef2d2d,#c026d3 55%,#6d28d9);box-shadow:0 6px 22px #c026d388,inset 0 0 0 2px #ffffff55}
+.stk-btn.t3{background:linear-gradient(135deg,#fbbf24,#f97316 40%,#db2777 75%,#7c3aed);box-shadow:0 6px 24px #fbbf2499,inset 0 0 0 2px #ffffff77}
+.stk-btn.off{background:linear-gradient(135deg,#0ea5e9,#2563eb);box-shadow:0 6px 20px #2563eb77,inset 0 0 0 2px #ffffff55}
+@keyframes stkpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.stk-btn:not(.off){animation:stkpulse 2.4s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){.stk-btn{animation:none!important}}
-.stk-panel{background:var(--card);border:2px solid var(--acc);border-radius:8px;padding:14px 16px;width:280px}
+.stk-panel{color:var(--fg);border:2px solid transparent;border-radius:14px;padding:14px 16px;width:280px;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,#ff9a1f,#ef2d2d,#c026d3) border-box;box-shadow:0 8px 24px #0004}
 .stk-panel p{margin:6px 0 0}
-@media(min-width:861px){main>.card.split:first-child{margin-right:120px}}
-.boardwrap{display:grid;grid-template-columns:7fr 4fr;gap:20px;align-items:start}
+@media(min-width:861px){main>.card.split:first-child{margin-right:135px}}
+@media(max-width:860px){#stk{top:auto;bottom:16px;right:12px;flex-direction:column}.stk-btn{font-size:19px;padding:9px 16px}.stk-btn b{font-size:21px}}
+.boardwrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
 .boardwrap>div{min-width:0}
-.sm table{font-size:12.5px}.sm th,.sm td{padding:5px 7px}.sm h1{font-size:21px}
+.side-board th,.side-board td{padding:6px 8px;font-size:13px}
 @media(max-width:1000px){.boardwrap{grid-template-columns:1fr}}
-@media(max-width:860px){#shell{flex-direction:column}nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}nav h2{width:100%}nav a.me{margin-top:0}main{padding:16px}.two,.stats{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}#stk{top:auto;bottom:16px;right:12px}}
 </style>
 <link rel="icon" href="/favicon.ico">
 </head>
@@ -125,73 +106,57 @@ main>.card.split:first-child{background:var(--card);border-top:3px solid var(--a
 <div id="t"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
-const SUPABASE_URL = 'https://lumsbvchmibxmvrzqtpt.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_2FD2bNN5kt9U954xwnfidg_HEZu7b2M';
+const SUPABASE_URL = 'https://qwkmyncxomibcpmlguxj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_mwgMhSwlsfRnOtu3h8-hUA_F7xjnxAV';
 const ALLOWED_DOMAINS = ['headroyce.org'];
-const REFERRAL_BONUS = 100; // keep equal to v_bonus in the award_referral SQL function
+const REFERRAL_BONUS = 100; // shown to players; keep equal to v_bonus in the award_referral SQL function
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-try { const r = new URLSearchParams(location.search).get('ref'); if (r) localStorage.setItem('ref', r.trim().toLowerCase().slice(0, 16)); } catch (e) {}
+try { const r = new URLSearchParams(location.search).get('ref'); if (r) localStorage.setItem('ref', r.trim().toLowerCase()); } catch (e) {}
 const savedRef = () => { try { return localStorage.getItem('ref') || ''; } catch (e) { return ''; } };
 const $ = s => document.querySelector(s);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const root = document.documentElement;
 let REV = null, me = null, markets = [], P = [], CD = [], T = [], LB = [], STAFF = [], INV = [], PR = [], FINAL = [], ACT = {}, MT = {}, MTok = {}, FILTER = 'open';
-let STK = null, SBD = [], STK_OPEN = false;
-let SHOPERR = '', CO = {}, SHOP = [], OWN = [], STAT = null, HIST = [], IDEAS = [];
-
-const AV = ['🦅','🐺','🦊','🐼','🐯','🦁','🐸','🐙','🦉','🐧','🦄','🐲','🚀','⚡','🌙','🔥','🎯','🎲','🎸','📈','🧠','👾','🎨','🏀'];
-const THEMES = {light:'Light', dark:'Dark', slate:'Slate', midnight:'Midnight', custom:'Custom'};
-const CK = {bg:'--bg', card:'--card', fg:'--fg', acc:'--acc'};
-const AVURL = SUPABASE_URL + '/storage/v1/object/public/avatars/';
-const PATS = {none:'None', dots:'Dots', grid:'Grid', lines:'Lines'};
-const IC = {race:'M5 21V4M5 4h11l-2 4 2 4H5', markets:'M3 17l6-6 4 4 8-8M15 7h6v6', portfolio:'M3 8h18v12H3zM8 8V5h8v3', leaderboard:'M6 20V10M12 20V4M18 20v-7', shop:'M5 7h14l-1 13H6zM9 7a3 3 0 016 0', rules:'M6 3h12v18H6zM9 8h6M9 12h6', suggest:'M12 5v14M5 12h14', create:'M12 5v14M5 12h14', review:'M5 12l5 5 9-10', admin:'M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z', ideas:'M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z'};
-const svg = d => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
-
-// avatar + banner + icon + name, wherever a name appears
-const avatar = (u, s) => {
-  const c = (me && u === me.username) ? me : (CO[u] || {}), st = s ? ` style="width:${s}px;height:${s}px;font-size:${Math.round(s * .55)}px"` : '';
-  if (c.avatar_path) return `<span class="av"${st}><img src="${AVURL}${esc(c.avatar_path)}" alt="" onerror="this.remove()"></span>`;
-  const i = c.avatar ? +c.avatar.slice(1) : -1;
-  return `<span class="av"${st}>${AV[i] || esc(String(u || '?')[0].toUpperCase())}</span>`;
-};
-const nm = u => {
-  const c = CO[u] || {}, ic = SHOP.find(x => x.id === c.icon), bn = SHOP.find(x => x.id === c.banner);
-  return `<span class="nm${bn ? ' bn' : ''}"${bn ? ` style="${esc(bn.art)}"` : ''}>${avatar(u)}${ic ? esc(ic.art) + '&nbsp;' : ''}${esc(u)}</span>`;
-};
+let STK = null, SBD = [], STK_OPEN = false; /* STREAKS state */
 
 const SEASON_END = new Date('2026-12-18T15:20:00-08:00');
+
 function cdText(){
   const ms = SEASON_END - Date.now();
   if (ms <= 0) return 'The season has ended. Trading is closed.';
   const s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
   return `Season ends ${SEASON_END.toLocaleString([], {dateStyle:'medium', timeStyle:'short'})} · ${d}d ${h}h ${m}m ${s % 60}s left`;
 }
+
 let seasonOver = Date.now() >= SEASON_END;
 setInterval(() => {
   const e = $('#cd');
   if (e) e.textContent = cdText();
-  if (!seasonOver && Date.now() >= SEASON_END) { seasonOver = true; render(); }
+  if (!seasonOver && Date.now() >= SEASON_END) {
+    seasonOver = true;
+    render();
+  }
 }, 1000);
 
 function setTheme(t){
   root.dataset.theme = t;
   try { localStorage.setItem('theme', t); } catch (e) {}
 }
+
 (() => {
   let t;
   try { t = localStorage.getItem('theme'); } catch (e) {}
-  setTheme(THEMES[t] ? t : 'dark');
+  setTheme(t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 })();
-const toggleTheme = () => { setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'); render(); };
-const applyLook = () => {
-  if (me.theme && THEMES[me.theme]) setTheme(me.theme);
-  for (const k in CK) root.style.removeProperty(CK[k]);
-  if (me.theme === 'custom' && me.colors) for (const k in CK) if (/^#[0-9a-f]{6}$/i.test(me.colors[k] || '')) root.style.setProperty(CK[k], me.colors[k]);
-  root.dataset.pat = me.pattern || 'none';
+
+const toggleTheme = () => {
+  setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+  render();
 };
 
 const go = h => { location.hash = '#/' + h; };
+
 const toast = m => {
   const t = $('#t');
   t.textContent = m;
@@ -199,9 +164,9 @@ const toast = m => {
   setTimeout(() => t.style.display = 'none', 3500);
 };
 
-async function rpc(fn, args, ok){
+async function rpc(fn, args){
   const {data, error} = await sb.rpc(fn, args);
-  if (error) toast(/schema cache/i.test(error.message) ? 'The latest SQL update has not been applied to this Supabase project yet. Run supabase-fix-all.sql in the SQL Editor of the project your site uses.' : error.message); else if (ok) toast(ok);
+  if (error) toast(error.message);
   for (const k in AT) AT[k] = 0;
   await load();
   return data;
@@ -211,7 +176,11 @@ async function rpc(fn, args, ok){
 const py = m => +m.money_yes / (+m.money_yes + +m.money_no);
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
 const boughtAtPrice = (m, p) => +p.shares > 0 ? +p.invested / +p.shares : sidePrice(m, p.side);
-const positionValue = (m, p) => +p.shares * sidePrice(m, p.side);
+
+function positionValue(m, p){
+  return +p.shares * sidePrice(m, p.side);
+}
+
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
 
 function info(m){
@@ -234,19 +203,16 @@ function chart(id){
 
 // ---------- auth ----------
 function authView(){
-  $('#app').innerHTML = `<div style="max-width:400px;margin:12vh auto;padding:16px"><div class="card"><h1>EagleEye Market</h1>
+  $('#app').innerHTML = `<div style="max-width:420px;margin:12vh auto;padding:16px"><div class="card"><h1>EagleEye Market</h1>
   <p class="mut">Please sign up with your Head-Royce email</p>
-  <input id="u" placeholder="Username (sign up only, 3-20 letters/numbers)" maxlength="20"><input id="e" type="email" placeholder="Email"><input id="p" type="password" placeholder="Password" minlength="8">
+  <input id="u" placeholder="Username (sign up only)"><input id="e" type="email" placeholder="Email"><input id="p" type="password" placeholder="Password">
   <div class="row"><button onclick="auth(true)">Log in</button><button class="g" onclick="auth(false)">Sign up</button><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button></div></div></div>`;
 }
+
 async function auth(login){
-  const email = $('#e').value.trim(), password = $('#p').value, username = $('#u').value.trim();
-  if (!login) {
-    if (ALLOWED_DOMAINS.length && !ALLOWED_DOMAINS.includes(email.split('@').pop().toLowerCase())) return toast('Please use your ' + ALLOWED_DOMAINS.join(' or ') + ' email.');
-    if (!/^[A-Za-z0-9_.-]{3,20}$/.test(username)) return toast('Username: 3-20 letters, numbers, dot, dash or underscore.');
-    if (password.length < 8) return toast('Use a password of at least 8 characters.');
-  }
-  const r = login ? await sb.auth.signInWithPassword({email, password}) : await sb.auth.signUp({email, password, options:{data:{username, referred_by:savedRef()}}});
+  const email = $('#e').value, password = $('#p').value;
+  if (!login && ALLOWED_DOMAINS.length && !ALLOWED_DOMAINS.includes(email.split('@').pop().toLowerCase())) return toast('Please use your ' + ALLOWED_DOMAINS.join(' or ') + ' email.');
+  const r = login ? await sb.auth.signInWithPassword({email, password}) : await sb.auth.signUp({email, password, options:{data:{username:$('#u').value, referred_by:savedRef()}}});
   if (r.error) return toast(r.error.message);
   if (!r.data.session) return toast('Check your email to confirm, then log in.');
   load();
@@ -254,37 +220,71 @@ async function auth(login){
 
 // ---------- data ----------
 const AT = {}, LOADED = {};
-const TTL = {ev:60e3, act:60e3, pts:60e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3, streak:60e3, sboard:60e3, co:60e3, shop:60e3, stats:30e3, hist:30e3, ideas:30e3};
-const EXTRAS = {markets:['act'], market:['pts'], leaderboard:['lb','final','sboard'], race:['ev'], admin:['staff','inv','final'], suggest:['pr'], review:['pr'], shop:['shop'], account:['stats','hist','shop'], ideas:['ideas']};
-const BLOCKING = {leaderboard:1, race:1, admin:1, suggest:1, review:1, shop:1, account:1, ideas:1};
+const TTL = {ev:60e3, act:60e3, pts:60e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3, streak:60e3, sboard:60e3};
+const EXTRAS = {markets:['act'], market:['pts'], leaderboard:['lb','final','sboard'], race:['ev'], admin:['staff','inv','final'], suggest:['pr'], review:['pr']};
+const BLOCKING = {leaderboard:1, race:1, admin:1, suggest:1, review:1};
 
 const FETCH = {
-  ev: async () => { const r = await sb.rpc('referral_event_info'); REV = r.data || null; return r; },
-  act: async () => { const r = await sb.rpc('market_activity'); ACT = {}; (r.data || []).forEach(x => { ACT[x.market_id] = x.recent; }); return r; },
-  pts: async () => { const r = await sb.rpc('price_points'); T = r.data || []; return r; },
-  lb: async () => { const r = await sb.rpc('leaderboard'); LB = r.data || []; return r; },
-  final: async () => { const r = await sb.from('season_final').select('place,username,score').order('place'); FINAL = r.data || []; return r; },
-  staff: async () => { const r = await sb.from('profiles').select('username,role').neq('role','user'); STAFF = r.data || []; return r; },
-  inv: async () => { const r = await sb.from('invite_codes').select('code,used_by'); INV = r.data || []; return r; },
-  pr: async () => { const r = await sb.from('proposals').select('id,question,closes_at,status,note,cooldown_seconds,profiles(username)').order('created_at', {ascending:false}).limit(100); PR = r.data || []; return r; },
-  streak: async () => { const r = await sb.rpc('my_streak'); STK = (r.data && r.data[0]) || null; return r; },
-  sboard: async () => { const r = await sb.rpc('streak_board'); SBD = r.data || []; return r; },
-  co: async () => { const r = await sb.rpc('cosmetics'); CO = {}; (r.data || []).forEach(x => { CO[x.username] = x; }); return r; },
-  shop: async () => {
-    const [a, b] = await Promise.all([sb.from('shop_items').select().order('sort'), sb.from('user_items').select('item_id')]);
-    SHOPERR = (a.error && a.error.message) || ''; SHOP = a.data || []; OWN = (b.data || []).map(x => x.item_id);
-    return a.error ? a : b;
+  ev: async () => {
+    const r = await sb.rpc('referral_event_info');
+    REV = r.data || null;
+    return r;
   },
-  stats: async () => { const r = await sb.rpc('my_stats'); STAT = (r.data && r.data[0]) || null; return r; },
-  hist: async () => { const r = await sb.rpc('my_trades'); HIST = r.data || []; return r; },
-  ideas: async () => { const r = await sb.from('site_ideas').select('id,body,status,created_at,profiles(username)').order('created_at', {ascending:false}).limit(200); IDEAS = r.data || []; return r; }
+  act: async () => {
+    const r = await sb.rpc('market_activity');
+    ACT = {};
+    (r.data || []).forEach(x => { ACT[x.market_id] = x.recent; });
+    return r;
+  },
+  pts: async () => {
+    const r = await sb.rpc('price_points');
+    T = r.data || [];
+    return r;
+  },
+  lb: async () => {
+    const r = await sb.rpc('leaderboard');
+    LB = r.data || [];
+    return r;
+  },
+  final: async () => {
+    const r = await sb.from('season_final').select('place,username,score').order('place');
+    FINAL = r.data || [];
+    return r;
+  },
+  staff: async () => {
+    const r = await sb.from('profiles').select('username,role').neq('role','user');
+    STAFF = r.data || [];
+    return r;
+  },
+  inv: async () => {
+    const r = await sb.from('invite_codes').select('code,used_by');
+    INV = r.data || [];
+    return r;
+  },
+  pr: async () => {
+    const r = await sb.from('proposals').select('id,question,closes_at,status,note,profiles(username)').order('created_at', {ascending:false}).limit(100);
+    PR = r.data || [];
+    return r;
+  },
+  /* STREAKS fetchers */
+  streak: async () => {
+    const r = await sb.rpc('my_streak');
+    STK = (r.data && r.data[0]) || null;
+    return r;
+  },
+  sboard: async () => {
+    const r = await sb.rpc('streak_board');
+    SBD = r.data || [];
+    return r;
+  }
 };
 
 async function ensureExtras(){
   if (!me) return;
   const page = (location.hash.slice(2) || 'markets').split('/')[0];
   const keys = new Set(EXTRAS[page] || []);
-  ['ev', 'streak', 'co', 'shop'].forEach(k => keys.add(k));
+  keys.add('ev'); // the referral banner appears on every page
+  keys.add('streak'); // STREAKS: the badge appears on every page
   if (me.role !== 'user') keys.add('pr');
   const stale = [...keys].filter(k => !AT[k] || Date.now() - AT[k] > TTL[k]);
   if (!stale.length) return;
@@ -296,8 +296,11 @@ async function ensureExtras(){
   }));
   const cur = (location.hash.slice(2) || 'markets').split('/')[0];
   if (stale.every(k => k === 'ev' || k === 'streak') && cur === page && page !== 'race') {
-    const rb = $('#rb'); if (rb) rb.innerHTML = refBanner();
-    const sw = $('#stkw'); if (sw) sw.innerHTML = streakBadge();
+    // only the banner and the streak badge changed: update just those, so typing is never interrupted
+    const rb = $('#rb');
+    if (rb) rb.innerHTML = refBanner();
+    const sw = $('#stkw');
+    if (sw) sw.innerHTML = streakBadge();
     return;
   }
   render();
@@ -306,21 +309,28 @@ async function ensureExtras(){
 function resetCaches(){
   for (const k in AT) delete AT[k];
   for (const k in LOADED) delete LOADED[k];
-  STK = null; SBD = []; STK_OPEN = false; CO = {}; SHOP = []; OWN = []; STAT = null; HIST = []; IDEAS = [];
+  STK = null; SBD = []; STK_OPEN = false; // STREAKS: clear on logout
 }
 
 async function load(){
   const {data:{session}} = await sb.auth.getSession();
-  if (!session) { me = null; resetCaches(); return render(); }
+  if (!session) {
+    me = null;
+    resetCaches();
+    return render();
+  }
   const [a, b, c, d] = await Promise.all([
     sb.from('profiles').select().eq('id', session.user.id).single(),
     sb.from('markets').select().order('created_at', {ascending:false}),
     sb.from('positions').select().eq('user_id', session.user.id),
     sb.from('cooldowns').select().eq('user_id', session.user.id)
   ]);
-  if (!a.data) { me = null; resetCaches(); return render(); }
+  if (!a.data) {
+    me = null;
+    resetCaches();
+    return render();
+  }
   me = a.data;
-  applyLook();
   markets = b.data || [];
   P = c.data || [];
   CD = d.data || [];
@@ -329,13 +339,18 @@ async function load(){
   ensureExtras();
 }
 
+// Keep prices fresh with one small query every 30 seconds.
 const marketSig = ms => JSON.stringify(ms.map(m => [m.id, m.status, m.outcome, m.money_yes, m.money_no, m.promoted_at, m.boosted_at, m.closes_at, m.cooldown_seconds]));
+
 setInterval(async () => {
   if (!me || document.hidden) return;
   const el = document.activeElement;
   if (el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)) return;
   const r = await sb.from('markets').select().order('created_at', {ascending:false});
-  if (r.data && marketSig(r.data) !== marketSig(markets)) { markets = r.data; render(); }
+  if (r.data && marketSig(r.data) !== marketSig(markets)) {
+    markets = r.data;
+    render();
+  }
 }, 30000);
 
 // ---------- pages ----------
@@ -348,7 +363,10 @@ const isPromoted = m => m.status === 'open' && !!m.promoted_at;
 const trending = m => m.status === 'open' && (ACT[m.id] || 0) >= TREND_MIN;
 const isBoosted = m => m.status === 'open' && !!m.boosted_at;
 const rank = m => isPromoted(m) ? 0 : trending(m) ? 1 : isBoosted(m) ? 2 : 3;
-const tags = m => (isPromoted(m) || trending(m)) ? '<div class="tags"><span class="tag">Trending!</span></div>' : '';
+const tags = m => {
+  const t = isPromoted(m) ? '<span class="tag promo">Trending!</span>' : trending(m) ? '<span class="tag">Trending!</span>' : '';
+  return t ? `<div class="tags">${t}</div>` : '';
+};
 
 const sorters = {
   featured: (a, b) => rank(a) - rank(b) || (rank(a) === 0 ? new Date(b.promoted_at) - new Date(a.promoted_at) : rank(a) === 1 ? ACT[b.id] - ACT[a.id] : rank(a) === 2 ? new Date(b.boosted_at) - new Date(a.boosted_at) : 0),
@@ -362,31 +380,35 @@ const sorters = {
 
 // ---------- Referral Race ----------
 const raceEnd = () => new Date(REV.ends_at).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
+
 function refBanner(){
   if (!REV) return '';
   const ended = Date.now() >= new Date(REV.ends_at);
   const blurb = ended
-    ? 'The Referral Race is over!' + (REV.winner ? ' Congrats to <b>' + esc(REV.winner) + '</b>!' : '') + ' You and a friend still each get ' + REFERRAL_BONUS + ' tokens when they join with your link.'
-    : '<b>Referral Race!</b> Bring a friend and you both get ' + REFERRAL_BONUS + ' tokens. Most referrals by ' + raceEnd() + ' wins ' + REV.prize + ' bonus tokens.';
-  return `<div class="race-bar"><div class="blurb"><span class="chip ev">EVENT</span> ${blurb}</div>
-    <div class="lk"><b>Your link</b><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your link">
-    <button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy</button></div>
-    <span class="rc">Referrals: <b>${REV.mine}</b></span><a href="#/race">Leaderboard</a></div>`;
+    ? 'The Referral Race is over!' + (REV.winner ? ' Congrats to our winner, <b>' + esc(REV.winner) + '</b>!' : '') + ' Keep sharing: you and a friend still each get ' + REFERRAL_BONUS + ' tokens when they join with your link!'
+    : '<b>Referral Race!</b> Bring a friend and you BOTH score ' + REFERRAL_BONUS + ' tokens! The player with the most referrals by ' + raceEnd() + ' wins ' + REV.prize + ' bonus tokens!';
+  return `<div class="race-bar">
+    <div class="blurb">${blurb}</div>
+    <div class="lk"><b>Your Link</b><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your Link">
+    <button onclick="navigator.clipboard.writeText(refLink());toast('Link copied! Go share it!')">Copy it!</button></div>
+    <span class="rc">Your referrals: <b>${REV.mine}</b>!</span>
+    <a href="#/race">See the leaderboard!</a></div>`;
 }
 
 function pgRace(){
-  if (!REV) return '<h1>Referral Race</h1><p class="mut">No race is running right now. Check back soon.</p>';
+  if (!REV) return '<h1>Referral Race!</h1><p class="mut">No race is running right now. Check back soon!</p>';
   const ended = Date.now() >= new Date(REV.ends_at);
   const lead = REV.leaders || [];
   const at = lead.findIndex(r => r.username === me.username);
-  const rows = lead.map((r, i) => `<tr class="${r.username === me.username ? 'mine' : ''}"><td><span class="rank r${i < 3 ? i + 1 : 0}">${i + 1}</span></td><td>${nm(r.username)}</td><td><b>${r.n}</b></td></tr>`).join('');
-  const status = ended ? (REV.winner ? 'Winner: <b>' + esc(REV.winner) + '</b> (+' + REV.prize + ' tokens)' : 'The race has ended') : 'Ends ' + raceEnd();
-  const standing = at >= 0 ? 'You are #' + (at + 1) : (REV.mine > 0 ? 'Not in the top 10 yet' : 'No referrals yet');
-  return `<h1>Referral Race</h1><div class="card"><p style="margin-top:0">Share your link. When a friend signs up through it and confirms their email, you each get ${REFERRAL_BONUS} tokens. The player with the most confirmed referrals wins a bonus ${REV.prize} tokens. Ties go to whoever reached the count first.</p>
-    <div class="lk" style="max-width:480px"><b>Your link</b><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your link">
-    <button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy</button></div>
-    <div class="race-stats"><span class="rc">${status}</span><span class="rc">Your referrals: <b>${REV.mine}</b></span><span class="rc">${standing}</span></div></div>
-  <div class="card"><b>Top 10</b>${rows ? `<table><tr><th></th><th>Player</th><th>Referrals</th></tr>${rows}</table>` : '<p class="mut">No referrals yet. Be the first!</p>'}</div>`;
+  const rows = lead.map((r, i) => `<tr class="${r.username === me.username ? 'mine' : ''}"><td><span class="rank r${i < 3 ? i + 1 : 0}">${i + 1}</span></td><td>${esc(r.username)}</td><td><b>${r.n}</b></td></tr>`).join('');
+  const status = ended ? (REV.winner ? 'Winner: <b>' + esc(REV.winner) + '</b>! (+' + REV.prize + ' tokens!)' : 'The race has ended!') : 'Ends ' + raceEnd() + '!';
+  const standing = at >= 0 ? 'You are #' + (at + 1) + '!' : (REV.mine > 0 ? 'Not in the top 10 yet. Keep sharing!' : 'No referrals yet. Go get your first!');
+  return `<div class="race-hero"><h1>Referral Race!</h1>
+    <p>Share your link and race to the top! When a friend signs up through it and confirms their email, you each get ${REFERRAL_BONUS} tokens! The player with the most confirmed referrals wins a bonus ${REV.prize} tokens! Ties go to whoever reached the count first, so be quick!</p>
+    <div class="lk" style="margin-top:14px;max-width:480px"><b>Your Link</b><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your Link">
+    <button onclick="navigator.clipboard.writeText(refLink());toast('Link copied! Go share it!')">Copy it!</button></div>
+    <div class="race-stats"><span class="rc">${status}</span><span class="rc">Your referrals: <b>${REV.mine}</b>!</span><span class="rc">${standing}</span></div></div>
+  <div class="race-board"><b>Top 10 racers!</b>${rows ? `<table><tr><th></th><th>Player</th><th>Referrals</th></tr>${rows}</table>` : '<p class="mut">No referrals yet. Be the first!</p>'}</div>`;
 }
 
 function pgMarkets(){
@@ -394,13 +416,14 @@ function pgMarkets(){
   return `<h1>Markets</h1><div class="tabs">${['open','resolved','all'].map(f => `<button class="${FILTER === f ? '' : 'g'}" onclick="setFilter('${f}')">${f[0].toUpperCase() + f.slice(1)}</button>`).join('')}<select style="margin-left:auto" onchange="setSort(this.value)">${Object.entries(SORTS).map(([k, v]) => `<option value="${k}"${SORT === k ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
   <div class="grid">${list.map(m => {
     const y = py(m), mine = P.some(p => p.market_id === m.id);
-    return `<a class="card mk" href="#/market/${m.id}">${tags(m)}<b>${esc(m.question)}</b>${m.proposed_by ? `<div class="mut" style="margin-top:4px">Suggested by ${nm(m.proposed_by)}</div>` : ''}
+    return `<a class="card mk" href="#/market/${m.id}">${tags(m)}<b>${esc(m.question)}</b>${m.proposed_by ? `<div class="mut">Suggested by ${esc(m.proposed_by)}</div>` : ''}
     <div class="bar"><i style="width:${y*100}%"></i></div>
     <div class="split"><span style="color:var(--yes)">YES ${(y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-y)*100).toFixed(0)}%</span></div>
     <div class="mut" style="margin-top:6px">${mState(m)}${mine ? ' · you have a position' : ''}</div></a>`;
   }).join('') || '<p class="mut">No markets here yet.</p>'}</div>`;
 }
 
+/* STREAKS: preview of the cash-out bonus (profit only), using the server's current bonus % */
 const stkLine = (m, p) => {
   if (!STK) return '';
   const b = Math.max(0, positionValue(m, p) - (+p.invested)) * (+STK.bonus_pct) / 100;
@@ -419,15 +442,18 @@ function pgMarket(id){
   else trade = `<input id="a${id}" type="number" min="1" placeholder="Tokens to invest">
     <div class="row">${[10, 50, 100].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
     <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
+
   const pos = mine.map(p => {
     const v = positionValue(m, p);
     return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>Cash out for: ${v.toFixed(1)}${stkLine(m, p)}</span>
     <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`;
   }).join('');
+
   const resolve = i.open && me.role !== 'user' ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
+
   return `<a href="#/markets" class="mut">← All markets</a><h1>${esc(m.question)}</h1>
-  <div class="mut">${mState(m)}${m.proposed_by ? ' · Suggested by ' + nm(m.proposed_by) : ''}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}</div>
+  <div class="mut">${mState(m)}${m.proposed_by ? ' · Suggested by ' + esc(m.proposed_by) : ''}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}</div>
   <div class="two"><div class="card"><div class="split big"><span style="color:var(--yes)">YES ${(i.y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-i.y)*100).toFixed(0)}%</span></div>
     <div class="bar"><i style="width:${i.y*100}%"></i></div>${chart(id)}</div>
   <div><div class="card"><b>Trade</b><div style="margin-top:8px">${trade}</div><p class="mut">Cooldown after each buy: ${+(m.cooldown_seconds / 3600).toFixed(1)} hours</p></div>
@@ -438,32 +464,45 @@ function pgPortfolio(){
   const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open' && +r.p.shares > 0);
   const tr = rows.map(({p, m}) => {
     const i = info(m);
-    return `<tr><td><a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${(+p.invested).toFixed(1)}</td><td>${(boughtAtPrice(m, p) * 100).toFixed(0)}%</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${positionValue(m, p).toFixed(1)}</td>
-      <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td></tr>`;
+    return `<tr>
+      <td><a href="#/market/${m.id}">${esc(m.question)}</a></td>
+      <td>${p.side.toUpperCase()}</td>
+      <td>${(+p.invested).toFixed(1)}</td>
+      <td>${(boughtAtPrice(m, p) * 100).toFixed(0)}%</td>
+      <td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td>
+      <td>${positionValue(m, p).toFixed(1)}</td>
+      <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td>
+    </tr>`;
   }).join('');
-  return `<h1>Portfolio</h1>${rows.length ? `<div class="card"><table><tr><th>Market</th><th>Side</th><th>Invested</th><th>Bought at</th><th>Now</th><th>Cash out for</th><th></th></tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
+
+  return `<h1>Portfolio</h1>
+  ${rows.length ? `<div class="card"><table>
+    <tr><th>Market</th><th>Side</th><th>Invested</th><th>Bought at</th><th>Now</th><th>Cash out for</th><th></th></tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
 }
 
-// Leaderboard + compact streak board, side by side
-function pgBoard(){
-  const mc = u => u === me.username ? ' class="mine"' : '';
-  const rows = (FINAL.length ? FINAL : LB).map((r, i) => `<tr${mc(r.username)}><td>${i + 1}</td><td>${nm(r.username)}</td><td>${(+r.score).toFixed(1)}</td></tr>`).join('');
-  const srows = SBD.slice(0, 8).map((r, i) => `<tr${mc(r.username)}><td>${i + 1}</td><td>${nm(r.username)}</td><td>🔥 ${r.streak}</td></tr>`).join('');
-  return `<div class="boardwrap"><div><h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Cash plus open stakes (at cost).'}</p>
-    <div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>${rows}</table></div></div>
-    <div class="sm"><h1>Streaks</h1><p class="mut">5+ trades a day. +0.1% cash-out profit per day, max 10%.</p>
-    <div class="card">${SBD.length ? `<table><tr><th>#</th><th>Player</th><th>Streak</th></tr>${srows}</table>` : '<p class="mut">No streaks yet.</p>'}</div></div></div>`;
-}
+/* STREAKS: the original leaderboard is kept as pgBoardMain; pgBoard now wraps it with a side card */
+const pgBoardMain = () => `<h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Everyone by cash plus open stakes (at cost).'}</p><div class="card"><table><tr><th>#</th><th>Player</th><th>Tokens</th></tr>
+  ${(FINAL.length ? FINAL : LB).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>${(+r.score).toFixed(1)}</td></tr>`).join('')}</table></div>`;
 
-const hrs = s => +((+s || 3600) / 3600).toFixed(2) + 'h';
-const statusRows = (list, who) => list.map(p => `<tr><td>${esc(p.question)}</td>${who ? `<td>${p.profiles ? nm(p.profiles.username) : 'deleted user'}</td>` : ''}<td>${hrs(p.cooldown_seconds)}</td><td><span class="chip">${p.status}</span></td><td>${p.note ? esc(p.note) : '<span class="mut">none</span>'}</td></tr>`).join('');
+const pgStreakSide = () => {
+  const pts = {};
+  LB.forEach(r => { pts[r.username] = +r.score; });
+  const rows = SBD.slice(0, 10).map((r, i) => `<tr${r.username === me.username ? ' style="font-weight:600"' : ''}><td>${i+1}</td><td>${esc(r.username)}</td><td>🔥 ${r.streak}</td><td>${pts[r.username] !== undefined ? pts[r.username].toFixed(1) : '-'}</td></tr>`).join('');
+  return `<div class="card side-board"><b>Streak leaders</b>
+  <p class="mut">Make 5 or more trades in a day to build a streak. Each streak day adds 0.1% to your cash-out profit, up to 10%.</p>
+  ${SBD.length ? `<table><tr><th>#</th><th>Player</th><th>Streak</th><th>Tokens</th></tr>${rows}</table>` : '<p class="mut">No streaks yet.</p>'}</div>`;
+};
+
+const pgBoard = () => `<div class="boardwrap"><div>${pgBoardMain()}</div>${pgStreakSide()}</div>`;
+
+const statusRows = (list, who) => list.map(p => `<tr><td>${esc(p.question)}</td>${who ? `<td>${esc(p.profiles ? p.profiles.username : 'deleted user')}</td>` : ''}<td><span class="chip">${p.status}</span></td><td>${p.note ? esc(p.note) : '<span class="mut">none</span>'}</td></tr>`).join('');
 
 const pgRules = () => `<h1>Rules</h1><div class="card" style="max-width:760px">
   <h2 style="margin-top:0">The season</h2><p>The season ends on <b>December 18, 2026 at 3:20 PM Pacific Time</b>. The countdown is at the top of every page. When it reaches zero, trading closes.</p>
-  <h2>Your tokens</h2><p>Everyone starts with <b>1,000 tokens</b>. Tokens are free, there is nothing to buy with real money, and they cannot be bought or sold. You can spend tokens on profile icons and banners in the Shop.</p>
-  <h2>Trading</h2><p>You can trade on any open market. Buy YES or NO with your tokens. The odds move as people buy, so buying early at a low price pays more if you are right. You can cash out a position before the market resolves. Everyone can trade every open market, including markets they suggested.</p>
-  <p><b>Cooldown:</b> after you buy in a market, you cannot buy or cash out in that same market until its cooldown ends. Cashing out does not start a new cooldown. You can hold one position per market at a time, so cash out before betting again. The length is shown on each market page.</p>
-  <h2>Suggest a market</h2><p>Use <a href="#/suggest">Suggest a market</a> to submit a question and, if you like, a cooldown (default 1 hour). Every suggestion must be <b>approved by an admin</b> before it goes live, and the admin may leave a comment. Approved markets always show who suggested them.</p>
+  <h2>Your tokens</h2><p>Everyone starts with <b>1,000 tokens</b>. Tokens are free, there is nothing to buy, and they cannot be bought or sold.</p>
+  <h2>Trading</h2><p>You can trade on any open market that has already been created. Buy YES or NO with your tokens. The odds move as people buy, so buying early at a low price pays more if you are right. You can cash out a position before the market resolves. Everyone can trade every open market, including markets they created or suggested.</p>
+  <p><b>Cooldown:</b> after you buy in a market, you cannot buy or cash out in that same market until its cooldown ends. Cashing out does not start a new cooldown. You can hold one position per market at a time, so cash out before betting again. The length is shown on each market page. This keeps the game about predictions, not playing the odds.</p>
+  <h2>Create your own market</h2><p>Use <a href="#/suggest">Suggest a market</a> to submit a question. Every suggestion must be <b>approved by an admin</b> before it goes live, and the admin may leave a comment explaining the decision. Once approved, you can trade it like any other market.</p>
   <h2>Market Policies</h2>
 <ul>
 <li>Markets must be fully objective and non-opinion based.</li>
@@ -477,173 +516,109 @@ const pgRules = () => `<h1>Rules</h1><div class="card" style="max-width:760px">
 <li>No insults of any kind and no comments about identity, about a specific person or any group of people.</li>
 </ul>
   <h2>Daily streaks</h2><p>Make at least 5 trades in a day to build a streak. Buys and cash-outs both count, and days run midnight to midnight Pacific Time. Each streak day adds 0.1% to the profit on your cash-outs, up to 10%. Missing a day resets the bonus to 0%.</p>
-  <h2>Usernames and profiles</h2><p>Keep usernames and profile choices appropriate. Names that imitate staff are not allowed.</p>
   <h2>Fair play</h2><p>One account per person. Duplicate accounts or cheating can lead to disqualification. Collusion with other users is highly prohibited, though influencing the results of a market is encouraged. Automated trading programs will result in immediate disqualification.</p></div>`;
 
 const pgSuggest = () => `<h1>Suggest a market</h1><p class="mut">An admin reviews every suggestion before it goes live.</p>
-  <div class="card narrow"><input id="sq" placeholder="Will ... happen by ...?" maxlength="300">
-  <div class="row"><label class="mut">Closes (optional)<input id="sd" type="datetime-local"></label><label class="mut">Cooldown in hours (optional, default 1)<input id="sc" type="number" min="0" max="168" step="0.5" placeholder="1"></label></div>
+  <div class="card narrow"><input id="sq" placeholder="Will ... happen by ...?"><label class="mut" style="margin-top:10px">Closes (optional)<input id="sd" type="datetime-local"></label>
   <div class="row"><button onclick="propose()">Submit for review</button></div></div>
-  <h2>Your suggestions</h2>${PR.length ? `<div class="card"><table><tr><th>Question</th><th>Cooldown</th><th>Status</th><th>Admin comment</th></tr>${statusRows(PR)}</table></div>` : '<p class="mut">None yet.</p>'}`;
+  <h2>Your suggestions</h2>${PR.length ? `<div class="card"><table><tr><th>Question</th><th>Status</th><th>Admin comment</th></tr>${statusRows(PR)}</table></div>` : '<p class="mut">None yet.</p>'}`;
 
-const pgCreate = () => `<h1>Create market</h1><div class="card narrow"><input id="q" placeholder="Question, e.g. Will it snow on Dec 25?" maxlength="300">
-  <div class="row"><label class="mut">Opening YES %<input id="o" type="number" value="50"></label><label class="mut">Cooldown (hours)<input id="c" type="number" value="1"></label></div>
+const pgCreate = () => `<h1>Create market</h1><div class="card narrow"><input id="q" placeholder="Question, e.g. Will it snow on Dec 25?">
+  <div class="row"><label class="mut">Opening YES %<input id="o" type="number" value="50"></label><label class="mut">Cooldown (hours)<input id="c" type="number" value="24"></label></div>
   <div class="row"><label class="mut">Closes (optional)<input id="d" type="datetime-local"></label></div><div class="row"><button onclick="mk()">Create market</button></div></div>`;
 
 function pgReview(){
   const pend = PR.filter(p => p.status === 'pending'), done = PR.filter(p => p.status !== 'pending');
-  return `<h1>Review suggestions</h1><div class="grid">${pend.map(p => `<div class="card"><span class="mut">From ${p.profiles ? nm(p.profiles.username) : '?'}${p.closes_at ? ' · closes ' + new Date(p.closes_at).toLocaleString() : ''}</span>
-    <input id="pq${p.id}" value="${esc(p.question)}" maxlength="300">
-    <div class="row"><label class="mut">Opening YES %<input id="po${p.id}" type="number" value="50"></label><label class="mut">Cooldown (hours)<input id="pc${p.id}" type="number" step="0.5" value="${+((p.cooldown_seconds || 3600) / 3600).toFixed(2)}"></label></div>
+  return `<h1>Review suggestions</h1><div class="grid">${pend.map(p => `<div class="card"><span class="mut">From ${esc(p.profiles ? p.profiles.username : '?')}${p.closes_at ? ' · closes ' + new Date(p.closes_at).toLocaleString() : ''}</span>
+    <input id="pq${p.id}" value="${esc(p.question)}">
+    <div class="row"><label class="mut">Opening YES %<input id="po${p.id}" type="number" value="50"></label><label class="mut">Cooldown (hours)<input id="pc${p.id}" type="number" value="24"></label></div>
     <input id="pn${p.id}" placeholder="Comment: why approve or reject? (optional, shown to the user)">
     <div class="row"><button class="y" onclick="approve(${p.id})">Approve</button><button class="n" onclick="reject(${p.id})">Reject</button></div></div>`).join('') || '<p class="mut">Nothing waiting for review.</p>'}</div>
-  ${done.length ? `<h2>Already reviewed</h2><div class="card"><table><tr><th>Question</th><th>Suggested by</th><th>Cooldown</th><th>Result</th><th>Comment</th></tr>${statusRows(done, true)}</table></div>` : ''}`;
+  ${done.length ? `<h2>Already reviewed</h2><div class="card"><table><tr><th>Question</th><th>Suggested by</th><th>Result</th><th>Comment</th></tr>${statusRows(done, true)}</table></div>` : ''}`;
 }
 
 const pgAdmin = () => `<h1>Admin tools</h1><div class="grid"><div class="card"><b>Season</b>${Date.now() >= SEASON_END ? (FINAL.length ? '<p class="mut">Final standings are recorded.</p>' : '<p class="mut">Click right after the season ends, before resolving or voiding any market.</p><button onclick="recordFinal()">Record final standings</button>') : '<p class="mut">Available after the season ends.</p>'}</div><div class="card"><b>Invite codes</b><p class="mut">Send a one-time code. They sign up, then redeem it on their Account page.</p>
-  <button onclick="inv()">New admin invite code</button><p class="mut">Unused: ${INV.filter(i => !i.used_by).map(i => '<code>' + esc(i.code) + '</code>').join(' ') || 'none'}</p></div>
+  <button onclick="inv()">New admin invite code</button><p class="mut">Unused: ${INV.filter(i => !i.used_by).map(i => '<code>' + i.code + '</code>').join(' ') || 'none'}</p>
   <div class="card"><b>Promote by username</b><input id="pu" placeholder="Username"><div class="row"><button onclick="setRole($('#pu').value,'admin')">Make admin</button></div></div>
-  <div class="card"><b>Reset a profile picture</b><input id="ra" placeholder="Username"><div class="row"><button onclick="rpc('reset_avatar',{p_username:$('#ra').value},'Picture reset')">Reset</button></div></div>
-  <div class="card"><b>Current admins</b><table>${STAFF.filter(s => s.role === 'admin').map(s => `<tr><td>${nm(s.username)}</td><td><button class="g" data-u="${esc(s.username)}" onclick="setRole(this.dataset.u,'user')">Remove</button></td></tr>`).join('') || '<tr><td class="mut">None yet</td></tr>'}</table></div></div>`;
+  <div class="card"><b>Current admins</b><table>${STAFF.filter(s => s.role === 'admin').map(s => `<tr><td>${esc(s.username)}</td><td><button class="g" data-u="${esc(s.username)}" onclick="setRole(this.dataset.u,'user')">Remove</button></td></tr>`).join('') || '<tr><td class="mut">None yet</td></tr>'}</table></div></div>`;
 
 const refLink = () => location.origin + location.pathname + '?ref=' + me.referral_code;
 
-// ---------- Shop ----------
-function pgShop(){
-  const card = x => {
-    const own = OWN.includes(x.id), on = me.icon === x.id || me.banner === x.id;
-    const prev = x.kind === 'icon' ? `<span class="big">${esc(x.art)}</span>` : `<span class="nm bn" style="${esc(x.art)}">${avatar(me.username)}${esc(me.username)}</span>`;
-    const btn = own ? `<button class="g" onclick="equip('${x.kind}','${on ? '' : x.id}')">${on ? 'Unequip' : 'Equip'}</button>`
-      : `<button ${+me.balance < +x.price ? 'disabled' : ''} onclick="buyItem('${x.id}')">Buy · ${x.price}</button>`;
-    return `<div class="card split"><div>${prev}<div class="mut" style="margin-top:4px">${esc(x.name)}${own ? ' · owned' : ''}</div></div>${btn}</div>`;
-  };
-  const by = k => SHOP.filter(x => x.kind === k).map(card).join('');
-  return `<h1>Shop</h1>${SHOP.length ? '' : `<div class="card"><b>The shop is empty.</b><p class="mut">${esc(SHOPERR || 'No items were found in the database.')} If this mentions the schema cache or a missing table, supabase-fix-all.sql has not been applied to this project yet.</p></div>`}<p class="mut">Spend tokens on banners and icons. They show next to your name everywhere. You have <b>${(+me.balance).toFixed(1)}</b> tokens.</p>
-    <h2>Banners</h2><div class="grid">${by('banner')}</div><h2>Icons</h2><div class="grid">${by('icon')}</div>`;
-}
-const buyItem = id => rpc('buy_item', {p_item:id}, 'Purchased!');
-const equip = (kind, id) => rpc('equip_item', {p_kind:kind, p_item:id});
+const pgAccount = () => `<h1>Account</h1><div class="card narrow"><b>${esc(me.username)}</b> <span class="chip">${me.role}</span><p class="mut">${(+me.balance).toFixed(1)} tokens</p></div>
+  <div class="card narrow"><b>Your referral link</b>
+    <p class="mut">Every friend who signs up and confirms their email earns you BOTH a bonus! Share it and rack up referrals!</p>
+    <input readonly value="${esc(refLink())}" onclick="this.select()">
+    <div class="row"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied! Go share it!')">Copy link</button></div></div>
+  ${me.role === 'user' ? `<div class="card narrow"><b>Have an admin invite code?</b><input id="ic" placeholder="Code"><div class="row"><button onclick="redeem()">Redeem</button></div></div>` : ''}`;
 
-// ---------- Account ----------
-function pgAccount(){
-  const s = STAT || {}, p = +s.net_profit || 0, cl = me.colors || {};
-  const stat = (l, v) => `<div class="card"><div class="mut">${l}</div><div class="big">${v}</div></div>`;
-  const hist = HIST.length ? `<table><tr><th>Time</th><th>Market</th><th>Action</th><th>Tokens</th><th>YES after</th></tr>${HIST.map(r =>
-    `<tr><td>${new Date(r.ts).toLocaleString()}</td><td><a href="#/market/${r.market_id}">${esc(r.question)}</a></td><td>${r.kind === 'buy' ? 'Bought' : 'Cashed out'} ${r.side.toUpperCase()}</td><td>${(+r.tokens).toFixed(1)}</td><td>${(+r.price_yes * 100).toFixed(0)}%</td></tr>`).join('')}</table>` : '<p class="mut">No trades yet.</p>';
-  const pick = (obj, key) => `<div class="row">${Object.entries(obj).map(([k, v]) => `<button class="g${(me[key] || (key === 'pattern' ? 'none' : 'light')) === k ? ' sel' : ''}" onclick="look({${key}:'${k}'})">${v}</button>`).join('')}</div>`;
-  const col = (id, l, k, d) => `<label class="mut clr">${l}<input id="${id}" type="color" value="${esc(cl[k] || d)}" oninput="prevC()"></label>`;
-  return `<h1>Account</h1>
-  <div class="card split" style="background:var(--grad)"><div class="row" style="margin:0">${avatar(me.username, 48)}<div>${nm(me.username)}<div class="mut">${me.role}</div></div></div><button class="g" onclick="sb.auth.signOut().then(load)">Log out</button></div>
-  <div class="stats">${stat('Tokens', (+me.balance).toFixed(1))}${stat('Net worth', (+s.net_worth || 0).toFixed(1))}${stat('Net profit', (p >= 0 ? '+' : '') + p.toFixed(1))}${stat('Trades', s.trades || 0)}</div>
-  <div class="mut" style="margin:-4px 0 14px">Net profit counts trading gains only: it excludes referral bonuses and adds back what you spent in the Shop (${(+s.shop_spent || 0).toFixed(0)} so far).</div>
-  <div class="two"><div><div class="card"><b>Trade history</b> <span class="mut">(last 100)</span>${hist}</div></div>
-  <div>
-    <div class="card"><b>Profile picture</b><div class="row">${avatar(me.username, 56)}<label class="up"><input type="file" accept="image/jpeg,image/png,image/webp" onchange="uploadAvatar(this)" hidden><span class="btn">Upload image</span></label>${me.avatar_path ? '<button class="g" onclick="rmAvatar()">Remove</button>' : ''}</div>
-      <p class="mut">Or pick an emoji:</p><div class="avs">${AV.map((e, i) => `<button class="g${me.avatar === 'a' + i && !me.avatar_path ? ' sel' : ''}" onclick="look({avatar:'a${i}'})">${e}</button>`).join('')}</div></div>
-    <div class="card"><b>Username</b><input id="nu" value="${esc(me.username)}" maxlength="20"><div class="row"><button onclick="rpc('change_username',{p_name:$('#nu').value},'Username updated')">Save username</button></div><p class="mut" style="margin-bottom:0">3-20 letters, numbers, . _ - · once every 24 hours.</p></div>
-    <div class="card"><b>Color theme</b>${pick(THEMES, 'theme')}
-      <div style="margin-top:14px"><b>Make your own</b><div class="row">${col('cbg', 'Background', 'bg', '#f3f6fb')}${col('ccard', 'Cards', 'card', '#ffffff')}${col('cfg', 'Text', 'fg', '#0f172a')}${col('cacc', 'Highlight', 'acc', '#2f6bd8')}</div>
-      <div class="row"><button onclick="saveColors()">Save custom colors</button></div></div>
-      <div style="margin-top:14px"><b>Background pattern</b></div>${pick(PATS, 'pattern')}</div>
-    <div class="card"><b>Banner and icon</b><p class="mut">Buy and equip them in the <a href="#/shop">Shop</a>.</p></div>
-    <div class="card"><b>Your referral link</b><p class="mut">Every friend who signs up and confirms their email earns you both a bonus.</p><input readonly value="${esc(refLink())}" onclick="this.select()"><div class="row"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div></div>
-    ${me.role === 'user' ? `<div class="card"><b>Have an admin invite code?</b><input id="ic" placeholder="Code"><div class="row"><button onclick="redeem()">Redeem</button></div></div>` : ''}
-  </div></div>`;
-}
-const look = o => rpc('set_look', {p_avatar:o.avatar || null, p_theme:o.theme || null, p_pattern:o.pattern || null}, 'Saved');
-const prevC = () => { root.dataset.theme = 'custom'; [['bg','cbg'],['card','ccard'],['fg','cfg'],['acc','cacc']].forEach(([k, i]) => root.style.setProperty(CK[k], $('#' + i).value)); };
-const saveColors = () => rpc('set_colors', {p_bg:$('#cbg').value, p_card:$('#ccard').value, p_fg:$('#cfg').value, p_acc:$('#cacc').value}, 'Colors saved');
-const rmAvatar = async () => { const old = me.avatar_path; await rpc('set_avatar_path', {p_path:null}, 'Picture removed'); if (old) sb.storage.from('avatars').remove([old]); };
-function uploadAvatar(inp){
-  const f = inp.files[0]; inp.value = '';
-  if (!f) return;
-  if (!/^image\/(jpeg|png|webp)$/.test(f.type) || f.size > 8e6) return toast('Choose a JPG, PNG or WebP under 8 MB.');
-  const url = URL.createObjectURL(f), img = new Image();
-  img.onerror = () => toast('Could not read that image.');
-  img.onload = () => {
-    const s = Math.min(img.width, img.height), c = document.createElement('canvas'), x = c.getContext('2d');
-    c.width = c.height = 192;
-    x.fillStyle = '#fff'; x.fillRect(0, 0, 192, 192);
-    x.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, 192, 192);
-    URL.revokeObjectURL(url);
-    c.toBlob(async b => {
-      const path = me.id + '/' + Date.now() + '.jpg', old = me.avatar_path;
-      const up = await sb.storage.from('avatars').upload(path, b, {contentType:'image/jpeg'});
-      if (up.error) return toast(/bucket not found/i.test(up.error.message) ? 'The latest SQL update has not been applied to this Supabase project yet. Run supabase-fix-all.sql in the SQL Editor of the project your site uses.' : up.error.message);
-      await rpc('set_avatar_path', {p_path:path}, 'Picture updated');
-      if (old) sb.storage.from('avatars').remove([old]);
-    }, 'image/jpeg', .86);
-  };
-  img.src = url;
-}
-
-// ---------- Idea Box ----------
-function pgIdeas(){
-  const own = me.role === 'owner';
-  const rows = IDEAS.map(x => `<tr><td>${esc(x.body)}</td>${own ? `<td>${x.profiles ? nm(x.profiles.username) : '?'}</td>` : ''}<td>${new Date(x.created_at).toLocaleDateString()}</td><td><span class="chip">${x.status}</span>${own ? `<div class="row">${['planned', 'done', 'declined'].map(s => `<button class="g" onclick="setIdea(${x.id},'${s}')">${s}</button>`).join('')}</div>` : ''}</td></tr>`).join('');
-  return `<h1>Idea Box</h1><p class="mut">Got an idea for the website? New features, fixes, shop items, anything. It goes straight to the owner.</p>
-  <div class="card narrow"><textarea id="ib" rows="4" maxlength="500" placeholder="I think the site should..."></textarea><div class="row"><button onclick="sendIdea()">Send idea</button><span class="mut">Up to 5 per day</span></div></div>
-  <h2>${own ? 'All ideas' : 'Your ideas'}</h2>${IDEAS.length ? `<div class="card"><table><tr><th>Idea</th>${own ? '<th>From</th>' : ''}<th>Sent</th><th>Status</th></tr>${rows}</table></div>` : '<p class="mut">None yet.</p>'}`;
-}
-async function sendIdea(){
-  const {error} = await sb.rpc('submit_idea', {p_body:$('#ib').value});
-  if (error) return toast(error.message);
-  toast('Sent to the owner. Thanks!');
-  $('#ib').value = ''; AT.ideas = 0; ensureExtras();
-}
-const setIdea = (id, s) => rpc('set_idea_status', {p_id:id, p_status:s});
-
-// ---------- Streak badge ----------
+// ---------- STREAKS: floating badge shown on every page ----------
 const toggleStk = () => { STK_OPEN = !STK_OPEN; render(); };
 function streakBadge(){
   if (!STK) return '';
   const n = +STK.streak, t = +STK.today_trades, g = +STK.goal, pct = +STK.bonus_pct;
   const need = Math.max(0, g - t);
-  const status = need === 0 ? 'Today\'s goal is done. Your streak is safe.'
+  const status = need === 0
+    ? 'Today\'s goal is done. Your streak is safe.'
     : (n > 0 ? `Make ${need} more trade${need === 1 ? '' : 's'} today to keep your streak.` : `Make ${need} more trade${need === 1 ? '' : 's'} today to start a streak.`);
   const panel = STK_OPEN ? `<div class="stk-panel"><b>Daily streak</b>
-    <p>Streak: <b>${n}</b> day${n === 1 ? '' : 's'}</p><p>Trades today: <b>${t} / ${g}</b></p><p>Cash-out bonus: <b>${pct.toFixed(1)}%</b> of profit</p>
-    <p class="mut">${status}</p><p class="mut">+0.1% per streak day, max 10%. Missing a day resets it. Days run midnight to midnight Pacific.</p></div>` : '';
-  return `<div id="stk">${panel}<button class="stk-btn${n ? '' : ' off'}" onclick="toggleStk()" aria-label="Streak details" title="Daily trading streak">🔥 <b>${n}</b></button></div>`;
+    <p>Streak: <b>${n}</b> day${n === 1 ? '' : 's'}</p>
+    <p>Trades today: <b>${t} / ${g}</b></p>
+    <p>Cash-out bonus: <b>${pct.toFixed(1)}%</b> of profit</p>
+    <p class="mut">${status}</p>
+    <p class="mut">+0.1% per streak day, max 10%. Missing a day resets it to 0%. Days run midnight to midnight Pacific.</p></div>` : '';
+  return `<div id="stk">${panel}<button class="stk-btn${n >= 30 ? ' t3' : n >= 7 ? ' t2' : n ? '' : ' off'}" onclick="toggleStk()" aria-label="Streak details" title="Daily trading streak">🔥 <b>${n}</b></button></div>`;
 }
 
 // ---------- shell + router ----------
 function render(){
   if (!me) return authView();
   const keep = {};
-  document.querySelectorAll('input[id],textarea[id]').forEach(i => keep[i.id] = i.value);
+  document.querySelectorAll('input[id]').forEach(i => keep[i.id] = i.value);
   const [pg, arg] = (location.hash.slice(2) || 'markets').split('/');
   const staff = me.role !== 'user', owner = me.role === 'owner';
   const pend = PR.filter(p => p.status === 'pending').length;
-  const link = (id, label, badge) => `<a href="#/${id}" class="${id === pg || (id === 'markets' && pg === 'market') ? 'on' : ''}">${svg(IC[id])}${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
-  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, race: pgRace, shop: pgShop, ideas: pgIdeas, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount};
+  const link = (id, label, badge, cls) => `<a href="#/${id}" class="${cls ? cls + ' ' : ''}${id === pg || (id === 'markets' && pg === 'market') ? 'on' : ''}">${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
+  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, race: pgRace, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount};
   const ok = {create: staff, review: staff, admin: owner, suggest: !staff};
   const waiting = BLOCKING[pg] && (EXTRAS[pg] || []).some(k => !LOADED[k]);
   const body = !pages[pg] ? '<p>Page not found.</p>' : (pg in ok && !ok[pg]) ? '<p class="mut">You do not have access to this page.</p>' : waiting ? '<p class="mut">Loading...</p>' : pages[pg]();
 
-  $('#app').innerHTML = `<div id="shell"><nav><h2>EagleEye Market</h2>
-    ${link('race', 'Referral Race')}${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('shop', 'Shop')}${link('ideas', 'Idea Box')}${link('rules', 'Rules')}
-    ${staff ? link('create', 'Create market') + link('review', 'Review', pend || '') : link('suggest', 'Suggest a market')}
-    ${owner ? link('admin', 'Admin tools') : ''}
-    <a href="#/account" class="me${pg === 'account' ? ' on' : ''}">${avatar(me.username, 30)}<span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis">${esc(me.username)}</b><span class="mut">${(+me.balance).toFixed(0)} tokens</span></span></a>
-    </nav><main><div class="card split"><span><span class="chip">SEASON</span> <b id="cd" style="font-weight:500">${cdText()}</b></span><a href="#/rules">Rules</a></div><div id="rb">${pg === 'race' ? '' : refBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
+  $('#app').innerHTML = `<div id="shell"><nav><h2 style="margin:0 12px 14px">EagleEye Market</h2>
+    ${link('race', 'Referral Race!', '', 'race')}${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('rules', 'Rules')}
+    ${staff ? link('create', 'Create market') + link('review', 'Review suggestions', pend || '') : link('suggest', 'Suggest a market')}
+    ${owner ? link('admin', 'Admin tools') : ''}${link('account', 'Account')}
+    <div class="card" style="margin:auto 0 0"><b>${esc(me.username)}</b> <span class="chip">${me.role}</span><div class="mut">${(+me.balance).toFixed(1)} tokens</div>
+    <div class="row"><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button><button class="g" onclick="sb.auth.signOut().then(load)">Log out</button></div></div>
+    </nav><main><div class="card split"><b id="cd">${cdText()}</b><a href="#/rules">Rules</a></div><div id="rb">${pg === 'race' ? '' : refBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
 
-  for (const k in keep) { const el = document.getElementById(k); if (el) el.value = keep[k]; }
+  for (const k in keep) {
+    const el = document.getElementById(k);
+    if (el) el.value = keep[k];
+  }
+
   if (pg === 'market' && staff && !MTok[+arg]) fetchTrades(+arg);
 }
 
-addEventListener('hashchange', () => { render(); scrollTo(0, 0); ensureExtras(); });
+addEventListener('hashchange', () => {
+  render();
+  scrollTo(0, 0);
+  ensureExtras();
+});
 
 const tradesCard = id => {
   if (me.role === 'user') return '';
   const rows = MT[id];
   const body = !rows ? '<p class="mut">Loading...</p>' : !rows.length ? '<p class="mut">No trades yet.</p>' :
     `<table><tr><th>Time</th><th>User</th><th>Action</th><th>Tokens</th><th>YES price after</th></tr>${rows.map(r =>
-      `<tr><td>${new Date(r.ts).toLocaleString()}</td><td>${r.username ? nm(r.username) : 'deleted user'}</td><td>${r.kind === 'buy' ? 'Bought' : 'Cashed out'} ${r.side.toUpperCase()}</td><td>${(+r.tokens).toFixed(1)}</td><td>${(+r.price_yes * 100).toFixed(0)}%</td></tr>`).join('')}</table>`;
-  return `<div class="card" style="margin-top:18px"><b>All trades on this market</b> <span class="mut">(admins only)</span>${body}</div>`;
+      `<tr><td>${new Date(r.ts).toLocaleString()}</td><td>${esc(r.username || 'deleted user')}</td><td>${r.kind === 'buy' ? 'Bought' : 'Cashed out'} ${r.side.toUpperCase()}</td><td>${(+r.tokens).toFixed(1)}</td><td>${(+r.price_yes * 100).toFixed(0)}%</td></tr>`).join('')}</table>`;
+  return `<div class="card" style="margin-top:20px"><b>All trades on this market</b> <span class="mut">(admins only)</span>${body}</div>`;
 };
 
-const toLocalInput = iso => { const d = new Date(iso); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); };
+const toLocalInput = iso => {
+  const d = new Date(iso);
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 16);
+};
 
 const adminBox = m => me.role === 'user' ? '' : `<div class="card"><b>Admin controls</b>
   ${m.status === 'open' ? `<div class="row"><button class="g" onclick="promote(${m.id},${!m.promoted_at})">${m.promoted_at ? 'Remove promotion' : 'Promote to top of Markets page'}</button>
@@ -665,7 +640,10 @@ const setClose = id => {
   if (!v) return toast('Pick a date and time, or use "No close time".');
   rpc('set_close_date', {p_market:id, p_closes:new Date(v).toISOString()});
 };
-const clearClose = id => { $('#cl'+id).value = ''; rpc('set_close_date', {p_market:id, p_closes:null}); };
+const clearClose = id => {
+  $('#cl'+id).value = '';
+  rpc('set_close_date', {p_market:id, p_closes:null});
+};
 
 async function fetchTrades(id){
   MTok[id] = true;
@@ -681,15 +659,18 @@ const sell = (id, side) => rpc('trade', {p_market:id, p_side:side, p_tokens:0, p
 
 async function mk(){
   const id = await rpc('create_market', {p_question:$('#q').value, p_yes:$('#o').value/100, p_cooldown:Math.round($('#c').value*3600), p_closes:$('#d').value ? new Date($('#d').value).toISOString() : null});
-  if (id) { toast('Market created'); go('market/' + id); }
+  if (id) {
+    toast('Market created');
+    go('market/' + id);
+  }
 }
 
 async function propose(){
-  const h = parseFloat($('#sc').value);
-  const {error} = await sb.rpc('submit_proposal', {p_question:$('#sq').value, p_closes:$('#sd').value ? new Date($('#sd').value).toISOString() : null, p_cooldown:h >= 0 ? Math.round(h * 3600) : null});
+  const {error} = await sb.rpc('submit_proposal', {p_question:$('#sq').value, p_closes:$('#sd').value ? new Date($('#sd').value).toISOString() : null});
   if (error) return toast(error.message);
   toast('Submitted for review');
-  $('#sq').value = ''; $('#sd').value = ''; $('#sc').value = '';
+  $('#sq').value = '';
+  $('#sd').value = '';
   AT.pr = 0;
   load();
 }
