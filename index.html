@@ -187,7 +187,9 @@ const svg = d => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" st
 // shop art: built-in items store CSS/emoji, uploaded items store "img:<path>"
 const isImg = x => String(x.art).startsWith('img:');
 const imgUrl = x => SHOPURL + x.art.slice(4);
-const bannerStyle = x => isImg(x) ? `background:url('${imgUrl(x)}') center/cover no-repeat;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.7)` : x.art;
+const bannerStyle = x => isImg(x)
+  ? `background-image:linear-gradient(color-mix(in srgb,var(--bg) 20%,transparent),color-mix(in srgb,var(--bg) 20%,transparent)),url('${imgUrl(x)}');background-position:center;background-size:cover;background-repeat:no-repeat;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.7)`
+  : x.art;
 const iconHtml = (x, s) => isImg(x) ? `<img class="ic" src="${esc(imgUrl(x))}" alt=""${s ? ` style="width:${s}px;height:${s}px"` : ''}>` : `<span class="ice">${esc(x.art)}</span>`;
 // shop items and earned (special) items share the same look-up
 const itemById = id => id ? (SHOP.find(x => x.id === id) || SPECIAL.find(x => x.id === id)) : undefined;
