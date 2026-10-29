@@ -144,6 +144,8 @@ nav a,.chip,.rc,.rank,.nm{border-radius:12px}
 .tag{border-radius:8px}
 .bar{border-radius:999px}
 #t{border-radius:14px}
+/* inventory: earned items you do not hold yet */
+.dim{opacity:.6}
 </style>
 <link rel="icon" href="/favicon.ico">
 </head>
@@ -167,6 +169,9 @@ let REV = null, me = null, markets = [], P = [], CD = [], T = [], LB = [], STAFF
 let STK = null, SBD = [], STK_OPEN = false;
 let SHOPERR = '', CO = {}, SHOP = [], OWN = [], STAT = null, HIST = [], IDEAS = [];
 let SHOPFILE = null, SHOPFILE_URL = '';
+// special (earned) banners and icons
+let SPECIAL = [], SHELD = [], SHOLD = [], SPFILE = null, SPFILE_URL = '';
+let lastRender = 0;
 
 const AV = ['🦅','🐺','🦊','🐼','🐯','🦁','🐸','🐙','🦉','🐧','🦄','🐲','🚀','⚡','🌙','🔥','🎯','🎲','🎸','📈','🧠','👾','🎨','🏀'];
 const THEMES = {light:'Light', dark:'Dark', slate:'Slate', midnight:'Midnight', custom:'Custom'};
@@ -174,6 +179,7 @@ const CK = {bg:'--bg', card:'--card', fg:'--fg', acc:'--acc'};
 const AVURL = SUPABASE_URL + '/storage/v1/object/public/avatars/';
 const SHOPURL = SUPABASE_URL + '/storage/v1/object/public/shop-art/';
 const PATS = {none:'None', dots:'Dots', grid:'Grid', lines:'Lines'};
+const CRIT = {top_streak:'Highest daily streak (ties share it)', top_referrals:'Most referrals (ties share it)'};
 const IC = {race:'M5 21V4M5 4h11l-2 4 2 4H5', markets:'M3 17l6-6 4 4 8-8M15 7h6v6', portfolio:'M3 8h18v12H3zM8 8V5h8v3', leaderboard:'M6 20V10M12 20V4M18 20v-7', shop:'M5 7h14l-1 13H6zM9 7a3 3 0 016 0', rules:'M6 3h12v18H6zM9 8h6M9 12h6', suggest:'M12 5v14M5 12h14', create:'M12 5v14M5 12h14', review:'M5 12l5 5 9-10', admin:'M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z', ideas:'M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z'};
 const svg = d => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
 
@@ -182,6 +188,10 @@ const isImg = x => String(x.art).startsWith('img:');
 const imgUrl = x => SHOPURL + x.art.slice(4);
 const bannerStyle = x => isImg(x) ? `background:url('${imgUrl(x)}') center/cover no-repeat;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.7)` : x.art;
 const iconHtml = (x, s) => isImg(x) ? `<img class="ic" src="${esc(imgUrl(x))}" alt=""${s ? ` style="width:${s}px;height:${s}px"` : ''}>` : `<span class="ice">${esc(x.art)}</span>`;
+// shop items and earned (special) items share the same look-up
+const itemById = id => id ? (SHOP.find(x => x.id === id) || SPECIAL.find(x => x.id === id)) : undefined;
+// small preview of an icon or banner on the current user
+const itemPrev = x => x.kind === 'icon' ? `<span class="big">${iconHtml(x, 36)}</span>` : `<span class="nm bn prevbn" style="${esc(bannerStyle(x))}">${avatar(me.username)}${esc(me.username)}</span>`;
 
 // avatar + banner + icon + name, wherever a name appears
 const avatar = (u, s) => {
@@ -193,12 +203,12 @@ const avatar = (u, s) => {
 };
 // s = avatar size, flat = skip the banner (used on leaderboards, where the whole row is the banner)
 const nm = (u, s, flat) => {
-  const c = CO[u] || {}, ic = SHOP.find(x => x.id === c.icon), bn = flat ? null : SHOP.find(x => x.id === c.banner);
+  const c = CO[u] || {}, ic = itemById(c.icon), bn = flat ? null : itemById(c.banner);
   return `<span class="nm${bn ? ' bn' : ''}"${bn ? ` style="${esc(bannerStyle(bn))}"` : ''}>${avatar(u, s)}${esc(u)}${ic ? iconHtml(ic) : ''}</span>`;
 };
 // one leaderboard row; the banner covers the entire row
 const lbRow = (i, u, val, s) => {
-  const c = CO[u] || {}, bn = SHOP.find(x => x.id === c.banner);
+  const c = CO[u] || {}, bn = itemById(c.banner);
   return `<div class="lbr${me && u === me.username ? ' mine' : ''}"${bn ? ` style="${esc(bannerStyle(bn))}"` : ''}><span class="rank r${i < 3 ? i + 1 : 0}">${i + 1}</span><span>${nm(u, s, true)}</span><span class="val">${val}</span></div>`;
 };
 
@@ -214,6 +224,11 @@ setInterval(() => {
   const e = $('#cd');
   if (e) e.textContent = cdText();
   if (!seasonOver && Date.now() >= SEASON_END) { seasonOver = true; render(); }
+  // a cooldown just ran out: redraw so the Cash out / Buy buttons unlock
+  if (me && CD.some(c => c.until > lastRender && c.until <= Date.now())) {
+    const el = document.activeElement;
+    if (!(el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName))) render();
+  }
 }, 1000);
 
 function setTheme(t){
@@ -243,7 +258,7 @@ const toast = m => {
 
 async function rpc(fn, args, ok){
   const {data, error} = await sb.rpc(fn, args);
-  if (error) toast(/schema cache/i.test(error.message) ? 'The latest SQL update has not been applied to this Supabase project yet. Run supabase-fix-all.sql in the SQL Editor of the project your site uses.' : error.message); else if (ok) toast(ok);
+  if (error) toast(/schema cache/i.test(error.message) ? 'The latest SQL update has not been applied to this Supabase project yet. Run update.sql in the SQL Editor of the project your site uses.' : error.message); else if (ok) toast(ok);
   for (const k in AT) AT[k] = 0;
   await load();
   return data;
@@ -256,9 +271,11 @@ const boughtAtPrice = (m, p) => +p.shares > 0 ? +p.invested / +p.shares : sidePr
 const positionValue = (m, p) => +p.shares * sidePrice(m, p.side);
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
 
+// CD holds {market_id, until} where "until" was worked out from the SERVER's clock, so a wrong
+// clock on the player's device can no longer keep a cooldown (or a 0-hour cooldown) locked.
 function info(m){
   const cd = CD.find(c => c.market_id === m.id);
-  const until = cd ? new Date(cd.last_trade_at).getTime() + m.cooldown_seconds * 1000 : 0;
+  const until = cd ? cd.until : 0;
   return {y: py(m), open: m.status === 'open', closed: !!(m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END, locked: until > Date.now(), until, own: m.creator === me.id, prop: m.proposer_id === me.id};
 }
 
@@ -296,9 +313,9 @@ async function auth(login){
 
 // ---------- data ----------
 const AT = {}, LOADED = {};
-const TTL = {ev:60e3, act:60e3, pts:60e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3, streak:60e3, sboard:60e3, co:60e3, shop:60e3, stats:30e3, hist:30e3, ideas:30e3};
-const EXTRAS = {markets:['act'], market:['pts'], leaderboard:['lb','final','sboard'], race:['ev'], admin:['staff','inv','final'], suggest:['pr'], review:['pr'], shop:['shop'], account:['stats','hist','shop'], ideas:['ideas']};
-const BLOCKING = {leaderboard:1, race:1, admin:1, suggest:1, review:1, shop:1, account:1, ideas:1};
+const TTL = {ev:60e3, act:60e3, pts:60e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3, streak:60e3, sboard:60e3, co:60e3, shop:60e3, special:60e3, stats:30e3, hist:30e3, ideas:30e3};
+const EXTRAS = {markets:['act'], market:['pts'], leaderboard:['lb','final','sboard'], race:['ev'], admin:['staff','inv','final','special'], suggest:['pr'], review:['pr'], shop:['shop'], account:['stats','hist','shop'], inventory:['shop','special'], ideas:['ideas']};
+const BLOCKING = {leaderboard:1, race:1, admin:1, suggest:1, review:1, shop:1, account:1, inventory:1, ideas:1};
 
 const FETCH = {
   ev: async () => { const r = await sb.rpc('referral_event_info'); REV = r.data || null; return r; },
@@ -317,6 +334,23 @@ const FETCH = {
     SHOPERR = (a.error && a.error.message) || ''; SHOP = a.data || []; OWN = (b.data || []).map(x => x.item_id);
     return a.error ? a : b;
   },
+  // earned banners/icons: first let the server hand them out, then load them, who holds them, and refresh names + my profile
+  special: async () => {
+    await sb.rpc('refresh_special_items');
+    const [a, b, c, d, e] = await Promise.all([
+      sb.from('special_items').select().order('id'),
+      sb.from('special_awards').select('item_id'),
+      sb.rpc('special_holders'),
+      sb.rpc('cosmetics'),
+      sb.from('profiles').select().eq('id', me.id).single()
+    ]);
+    SPECIAL = (a.data || []).map(r => ({id:'sp_' + r.id, rid:r.id, kind:r.kind, name:r.name, criteria:r.criteria, art:r.art, price:0, special:true}));
+    SHELD = (b.data || []).map(r => 'sp_' + r.item_id);
+    SHOLD = c.data || [];
+    if (d.data) { CO = {}; d.data.forEach(x => { CO[x.username] = x; }); }
+    if (e.data) me = e.data;
+    return a.error ? a : b;
+  },
   stats: async () => { const r = await sb.rpc('my_stats'); STAT = (r.data && r.data[0]) || null; return r; },
   hist: async () => { const r = await sb.rpc('my_trades'); HIST = r.data || []; return r; },
   ideas: async () => { const r = await sb.from('site_ideas').select('id,body,status,created_at,profiles(username)').order('created_at', {ascending:false}).limit(200); IDEAS = r.data || []; return r; }
@@ -329,7 +363,7 @@ async function ensureExtras(){
   if (!me) return;
   const page = (location.hash.slice(2) || 'markets').split('/')[0];
   const keys = new Set(EXTRAS[page] || []);
-  ['ev', 'streak', 'co', 'shop'].forEach(k => keys.add(k));
+  ['ev', 'streak', 'co', 'shop', 'special'].forEach(k => keys.add(k));
   if (me.role !== 'user') keys.add('pr');
   if (me.role === 'owner') keys.add('ideas');
   const stale = [...keys].filter(k => !AT[k] || Date.now() - AT[k] > TTL[k]);
@@ -353,6 +387,7 @@ function resetCaches(){
   for (const k in AT) delete AT[k];
   for (const k in LOADED) delete LOADED[k];
   STK = null; SBD = []; STK_OPEN = false; CO = {}; SHOP = []; OWN = []; STAT = null; HIST = []; IDEAS = [];
+  SPECIAL = []; SHELD = []; SHOLD = [];
 }
 
 async function load(){
@@ -362,14 +397,15 @@ async function load(){
     sb.from('profiles').select().eq('id', session.user.id).single(),
     sb.from('markets').select().order('created_at', {ascending:false}),
     sb.from('positions').select().eq('user_id', session.user.id),
-    sb.from('cooldowns').select().eq('user_id', session.user.id)
+    sb.rpc('my_cooldowns')
   ]);
   if (!a.data) { me = null; resetCaches(); return render(); }
   me = a.data;
   applyLook();
   markets = b.data || [];
   P = c.data || [];
-  CD = d.data || [];
+  const t0 = Date.now();
+  CD = (d.data || []).map(x => ({market_id: x.market_id, until: t0 + Math.round(+x.secs_left * 1000)}));
   MTok = {};
   render();
   ensureExtras();
@@ -388,6 +424,8 @@ setInterval(async () => {
     const q = await FETCH.ideas();
     if (!q.error) { LOADED.ideas = true; AT.ideas = Date.now(); if (ideaNew() !== before) render(); }
   }
+  // keep earned banners/icons current (streak leaders change during the day)
+  if (SPECIAL.length && Date.now() - (AT.special || 0) > 55e3) { AT.special = 0; AT.co = 0; ensureExtras(); }
 }, 30000);
 
 // ---------- pages ----------
@@ -556,7 +594,7 @@ const pgAdmin = () => `<h1>Admin tools</h1><div class="grid"><div class="card"><
   <div class="card"><b>Promote by username</b><input id="pu" placeholder="Username"><div class="row"><button onclick="setRole($('#pu').value,'admin')">Make admin</button></div></div>
   <div class="card"><b>Reset a profile picture</b><input id="ra" placeholder="Username"><div class="row"><button onclick="rpc('reset_avatar',{p_username:$('#ra').value},'Picture reset')">Reset</button></div></div>
   <div class="card"><b>Current admins</b><table>${STAFF.filter(s => s.role === 'admin').map(s => `<tr><td>${nm(s.username)}</td><td><button class="g" data-u="${esc(s.username)}" onclick="setRole(this.dataset.u,'user')">Remove</button></td></tr>`).join('') || '<tr><td class="mut">None yet</td></tr>'}</table></div>
-  ${shopUploadCard()}</div>`;
+  ${shopUploadCard()}${specialAdminCard()}</div>`;
 
 // ---------- Shop uploads (owner) ----------
 const shopUploadCard = () => `<div class="card" style="grid-column:1/-1"><b>Add a banner or icon to the shop</b>
@@ -569,13 +607,16 @@ const shopUploadCard = () => `<div class="card" style="grid-column:1/-1"><b>Add 
   <button onclick="uploadShopItem()" ${SHOPFILE ? '' : 'disabled'}>Upload and add to shop</button></div>
   <div id="shp"></div></div>`;
 
+// preview used by both upload cards: kind = 'banner' or 'icon', url = local image
+const uploadPreview = (kind, url) => kind === 'banner'
+  ? `<div class="lbr" style="margin-top:12px;background:url('${url}') center/cover no-repeat;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.7)"><span class="rank">1</span><span><span class="nm">${avatar(me.username, 44)}${esc(me.username)}</span></span><span class="val">1000.0</span></div>`
+  : `<div class="row" style="margin-top:12px"><span class="nm" style="font-size:16px;font-weight:600">${avatar(me.username, 44)}${esc(me.username)}<img class="ic" src="${url}" alt="" style="margin-left:7px"></span></div>`;
+
 function showShopPreview(){
   const el = $('#shp'), k = $('#sk');
   if (!el || !k) return;
   if (!SHOPFILE_URL) { el.innerHTML = ''; return; }
-  el.innerHTML = k.value === 'banner'
-    ? `<div class="lbr" style="margin-top:12px;background:url('${SHOPFILE_URL}') center/cover no-repeat;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.7)"><span class="rank">1</span><span><span class="nm">${avatar(me.username, 44)}${esc(me.username)}</span></span><span class="val">1000.0</span></div>`
-    : `<div class="row" style="margin-top:12px"><span class="nm" style="font-size:16px;font-weight:600">${avatar(me.username, 44)}${esc(me.username)}<img class="ic" src="${SHOPFILE_URL}" alt="" style="margin-left:7px"></span></div>`;
+  el.innerHTML = uploadPreview(k.value, SHOPFILE_URL);
 }
 function pickShopFile(inp){
   const f = inp.files[0]; inp.value = '';
@@ -587,9 +628,10 @@ function pickShopFile(inp){
 }
 const loadImg = url => new Promise((ok, bad) => { const i = new Image(); i.onload = () => ok(i); i.onerror = bad; i.src = url; });
 const toBlob = (c, t, q) => new Promise(r => c.toBlob(r, t, q));
-async function prepShopImage(kind){
-  if (SHOPFILE.type === 'image/gif' && SHOPFILE.size <= 1048576) return {blob: SHOPFILE, ext: 'gif'}; // keeps animation
-  const img = await loadImg(SHOPFILE_URL);
+// shrink / convert a chosen image (used by shop uploads and special-item uploads)
+async function prepImage(file, fileUrl, kind){
+  if (file.type === 'image/gif' && file.size <= 1048576) return {blob: file, ext: 'gif'}; // keeps animation
+  const img = await loadImg(fileUrl);
   const max = kind === 'banner' ? 1000 : 128, k = Math.min(1, max / Math.max(img.width, img.height));
   const w = Math.max(1, Math.round(img.width * k)), h = Math.max(1, Math.round(img.height * k));
   const c = document.createElement('canvas'); c.width = w; c.height = h;
@@ -599,19 +641,20 @@ async function prepShopImage(kind){
   if (!ext) throw new Error('encode');
   return {blob: b, ext};
 }
+const artPath = (kind, ext) => kind + 's/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8).padEnd(6, 'x') + '.' + ext;
 async function uploadShopItem(){
   if (!SHOPFILE) return toast('Choose an image first.');
   const kind = $('#sk').value, name = $('#sn').value.trim(), price = +$('#spr').value;
   if (!name) return toast('Give it a name.');
   if (!(price >= 0)) return toast('Enter a price.');
   let p;
-  try { p = await prepShopImage(kind); } catch (e) { return toast('Could not read that image.'); }
+  try { p = await prepImage(SHOPFILE, SHOPFILE_URL, kind); } catch (e) { return toast('Could not read that image.'); }
   if (p.blob.size > 1048576) return toast('That image is still over 1 MB after resizing. Try a smaller one.');
-  const path = kind + 's/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8).padEnd(6, 'x') + '.' + p.ext;
+  const path = artPath(kind, p.ext);
   const up = await sb.storage.from('shop-art').upload(path, p.blob, {contentType: p.blob.type});
-  if (up.error) return toast(/bucket not found/i.test(up.error.message) ? 'Run supabase-update.sql in the Supabase SQL Editor first.' : up.error.message);
+  if (up.error) return toast(/bucket not found/i.test(up.error.message) ? 'Run update.sql in the Supabase SQL Editor first.' : up.error.message);
   const {error} = await sb.rpc('add_shop_item', {p_kind:kind, p_name:name, p_price:price, p_path:path});
-  if (error) { sb.storage.from('shop-art').remove([path]); return toast(/schema cache/i.test(error.message) ? 'Run supabase-update.sql in the Supabase SQL Editor first.' : error.message); }
+  if (error) { sb.storage.from('shop-art').remove([path]); return toast(/schema cache/i.test(error.message) ? 'Run update.sql in the Supabase SQL Editor first.' : error.message); }
   URL.revokeObjectURL(SHOPFILE_URL); SHOPFILE = null; SHOPFILE_URL = '';
   $('#sn').value = '';
   toast('Added to the shop!');
@@ -619,25 +662,75 @@ async function uploadShopItem(){
   await load();
 }
 
+// ---------- Special (earned) banners and icons (owner) ----------
+const holdersOf = x => SHOLD.filter(h => h.item_id === x.rid).map(h => h.username);
+const specialAdminCard = () => `<div class="card" style="grid-column:1/-1"><b>Special banners and icons</b>
+  <p class="mut">These are earned, not bought. The player who qualifies gets the item equipped automatically (they can still unequip it), and it moves to the next player as soon as someone else takes the lead. Ties share it. Banners work best around 10:1 (like 1000 × 100); transparent PNGs work well for icons.</p>
+  <div class="row"><label class="mut">Type<select id="spk" onchange="showSpecialPreview()"><option value="banner">Banner</option><option value="icon">Icon</option></select></label>
+  <label class="mut">Name<input id="spn" maxlength="30" placeholder="e.g. Streak Champion"></label>
+  <label class="mut">Given to<select id="spc"><option value="top_streak">${CRIT.top_streak}</option><option value="top_referrals">${CRIT.top_referrals}</option></select></label></div>
+  <div class="row"><label class="up"><input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onchange="pickSpecialFile(this)" hidden><span class="btn">Choose image</span></label>
+  <span class="mut">${SPFILE ? esc(SPFILE.name) : 'No image chosen'}</span>
+  <button onclick="uploadSpecialItem()" ${SPFILE ? '' : 'disabled'}>Upload and create</button></div>
+  <div id="spp"></div>
+  ${SPECIAL.length ? `<table style="margin-top:14px"><tr><th>Preview</th><th>Name</th><th>Given to</th><th>Holder right now</th><th></th></tr>${SPECIAL.map(x => `<tr><td>${itemPrev(x)}</td><td>${esc(x.name)}<div class="mut">${x.kind}</div></td><td>${CRIT[x.criteria] || esc(x.criteria)}</td><td>${holdersOf(x).map(u => nm(u)).join(' ') || '<span class="mut">nobody yet</span>'}</td><td><button class="g" onclick="delSpecial(${x.rid})">Delete</button></td></tr>`).join('')}</table>` : '<p class="mut" style="margin-bottom:0">No special items yet.</p>'}</div>`;
+
+function showSpecialPreview(){
+  const el = $('#spp'), k = $('#spk');
+  if (!el || !k) return;
+  if (!SPFILE_URL) { el.innerHTML = ''; return; }
+  el.innerHTML = uploadPreview(k.value, SPFILE_URL);
+}
+function pickSpecialFile(inp){
+  const f = inp.files[0]; inp.value = '';
+  if (!f) return;
+  if (!/^image\/(png|jpeg|webp|gif)$/.test(f.type) || f.size > 10e6) return toast('Choose a PNG, JPG, WebP or GIF under 10 MB.');
+  if (SPFILE_URL) URL.revokeObjectURL(SPFILE_URL);
+  SPFILE = f; SPFILE_URL = URL.createObjectURL(f);
+  render();
+}
+async function uploadSpecialItem(){
+  if (!SPFILE) return toast('Choose an image first.');
+  const kind = $('#spk').value, name = $('#spn').value.trim(), crit = $('#spc').value;
+  if (!name) return toast('Give it a name.');
+  let p;
+  try { p = await prepImage(SPFILE, SPFILE_URL, kind); } catch (e) { return toast('Could not read that image.'); }
+  if (p.blob.size > 1048576) return toast('That image is still over 1 MB after resizing. Try a smaller one.');
+  const path = artPath(kind, p.ext);
+  const up = await sb.storage.from('shop-art').upload(path, p.blob, {contentType: p.blob.type});
+  if (up.error) return toast(/bucket not found/i.test(up.error.message) ? 'Run update.sql in the Supabase SQL Editor first.' : up.error.message);
+  const {error} = await sb.rpc('add_special_item', {p_kind:kind, p_name:name, p_criteria:crit, p_path:path});
+  if (error) { sb.storage.from('shop-art').remove([path]); return toast(/schema cache|could not find the function/i.test(error.message) ? 'Run update.sql in the Supabase SQL Editor first.' : error.message); }
+  URL.revokeObjectURL(SPFILE_URL); SPFILE = null; SPFILE_URL = '';
+  $('#spn').value = '';
+  toast('Created! It was handed out right away.');
+  for (const k in AT) AT[k] = 0;
+  await load();
+}
+const delSpecial = id => confirm('Delete this special item? Anyone wearing it gets their previous item back.') && rpc('delete_special_item', {p_id:id}, 'Deleted');
+
 const refLink = () => location.origin + location.pathname + '?ref=' + me.referral_code;
 
 // ---------- Shop ----------
 function pgShop(){
   const card = x => {
     const own = OWN.includes(x.id), on = me.icon === x.id || me.banner === x.id;
-    const prev = x.kind === 'icon' ? `<span class="big">${iconHtml(x, 36)}</span>` : `<span class="nm bn prevbn" style="${esc(bannerStyle(x))}">${avatar(me.username)}${esc(me.username)}</span>`;
+    const prev = itemPrev(x);
     const btn = own ? `<button class="g" onclick="equip('${x.kind}','${on ? '' : x.id}')">${on ? 'Unequip' : 'Equip'}</button>`
       : `<button ${+me.balance < +x.price ? 'disabled' : ''} onclick="buyItem('${x.id}')">Buy · ${x.price}</button>`;
     return `<div class="card split"><div>${prev}<div class="mut" style="margin-top:4px">${esc(x.name)}${own ? ' · owned' : ''}</div></div>${btn}</div>`;
   };
   const by = k => SHOP.filter(x => x.kind === k).map(card).join('');
-  return `<h1>Shop</h1>${SHOP.length ? '' : `<div class="card"><b>The shop is empty.</b><p class="mut">${esc(SHOPERR || 'No items were found in the database.')} If this mentions the schema cache or a missing table, supabase-fix-all.sql has not been applied to this project yet.</p></div>`}<p class="mut">Spend tokens on banners and icons. They show next to your name everywhere. You have <b>${(+me.balance).toFixed(1)}</b> tokens.</p>
+  return `<h1>Shop</h1>${SHOP.length ? '' : `<div class="card"><b>The shop is empty.</b><p class="mut">${esc(SHOPERR || 'No items were found in the database.')} If this mentions the schema cache or a missing table, update.sql has not been applied to this project yet.</p></div>`}<p class="mut">Spend tokens on banners and icons. They show next to your name everywhere. You have <b>${(+me.balance).toFixed(1)}</b> tokens. Everything you own is in your <a href="#/inventory">Inventory</a>.</p>
     <h2>Banners</h2><div class="grid">${by('banner')}</div><h2>Icons</h2><div class="grid">${by('icon')}</div>`;
 }
 const buyItem = id => rpc('buy_item', {p_item:id}, 'Purchased!');
 const equip = (kind, id) => rpc('equip_item', {p_kind:kind, p_item:id});
 
 // ---------- Account ----------
+// Profile / Inventory tabs shown at the top of both account pages
+const acctTabs = cur => `<div class="tabs"><button class="${cur === 'account' ? '' : 'g'}" onclick="go('account')">Profile</button><button class="${cur === 'inventory' ? '' : 'g'}" onclick="go('inventory')">Inventory</button></div>`;
+
 function pgAccount(){
   const s = STAT || {}, p = +s.net_profit || 0, cl = me.colors || {};
   const stat = (l, v) => `<div class="card"><div class="mut">${l}</div><div class="big">${v}</div></div>`;
@@ -645,7 +738,7 @@ function pgAccount(){
     `<tr><td>${new Date(r.ts).toLocaleString()}</td><td><a href="#/market/${r.market_id}">${esc(r.question)}</a></td><td>${r.kind === 'buy' ? 'Bought' : 'Cashed out'} ${r.side.toUpperCase()}</td><td>${(+r.tokens).toFixed(1)}</td><td>${(+r.price_yes * 100).toFixed(0)}%</td></tr>`).join('')}</table>` : '<p class="mut">No trades yet.</p>';
   const pick = (obj, key) => `<div class="row">${Object.entries(obj).map(([k, v]) => `<button class="g${(me[key] || (key === 'pattern' ? 'none' : 'light')) === k ? ' sel' : ''}" onclick="look({${key}:'${k}'})">${v}</button>`).join('')}</div>`;
   const col = (id, l, k, d) => `<label class="mut clr">${l}<input id="${id}" type="color" value="${esc(cl[k] || d)}" oninput="prevC()"></label>`;
-  return `<h1>Account</h1>
+  return `<h1>Account</h1>${acctTabs('account')}
   <div class="card split" style="background:var(--grad)"><div class="row" style="margin:0">${avatar(me.username, 48)}<div>${nm(me.username)}<div class="mut">${me.role}</div></div></div><button class="g" onclick="sb.auth.signOut().then(load)">Log out</button></div>
   <div class="stats">${stat('Tokens', (+me.balance).toFixed(1))}${stat('Net worth', (+s.net_worth || 0).toFixed(1))}${stat('Net profit', (p >= 0 ? '+' : '') + p.toFixed(1))}${stat('Trades', s.trades || 0)}</div>
   <div class="mut" style="margin:-4px 0 14px">Net profit counts trading gains only: it excludes referral bonuses and adds back what you spent in the Shop (${(+s.shop_spent || 0).toFixed(0)} so far).</div>
@@ -658,10 +751,34 @@ function pgAccount(){
       <div style="margin-top:14px"><b>Make your own</b><div class="row">${col('cbg', 'Background', 'bg', '#f3f6fb')}${col('ccard', 'Cards', 'card', '#ffffff')}${col('cfg', 'Text', 'fg', '#0f172a')}${col('cacc', 'Highlight', 'acc', '#2f6bd8')}</div>
       <div class="row"><button onclick="saveColors()">Save custom colors</button></div></div>
       <div style="margin-top:14px"><b>Background pattern</b></div>${pick(PATS, 'pattern')}</div>
-    <div class="card"><b>Banner and icon</b><p class="mut">Buy and equip them in the <a href="#/shop">Shop</a>.</p></div>
+    <div class="card"><b>Banner and icon</b><p class="mut">Buy them in the <a href="#/shop">Shop</a>, then equip them from your <a href="#/inventory">Inventory</a>.</p></div>
     <div class="card"><b>Your referral link</b><p class="mut">Every friend who signs up and confirms their email earns you both a bonus.</p><input readonly value="${esc(refLink())}" onclick="this.select()"><div class="row"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div></div>
     ${me.role === 'user' ? `<div class="card"><b>Have an admin invite code?</b><input id="ic" placeholder="Code"><div class="row"><button onclick="redeem()">Redeem</button></div></div>` : ''}
   </div></div>`;
+}
+
+// ---------- Inventory ----------
+// everything you own: bought shop items + earned items you hold right now
+function pgInventory(){
+  const mine = SHOP.filter(x => OWN.includes(x.id)).concat(SPECIAL.filter(x => SHELD.includes(x.id)));
+  const locked = SPECIAL.filter(x => !SHELD.includes(x.id));
+  const card = x => {
+    const on = me.icon === x.id || me.banner === x.id;
+    return `<div class="card split"><div>${itemPrev(x)}<div class="mut" style="margin-top:4px">${esc(x.name)}${x.special ? ' <span class="chip">EARNED</span>' : ''}${on ? ' <span class="chip">EQUIPPED</span>' : ''}${x.special ? `<br>${CRIT[x.criteria] || ''}` : ''}</div></div>
+      <button class="g" onclick="equip('${x.kind}','${on ? '' : x.id}')">${on ? 'Unequip' : 'Equip'}</button></div>`;
+  };
+  const section = (title, kind) => {
+    const items = mine.filter(x => x.kind === kind);
+    return `<h2>${title}</h2>` + (items.length ? `<div class="grid">${items.map(card).join('')}</div>` : `<p class="mut">No ${title.toLowerCase()} yet. <a href="#/shop">Visit the Shop</a>.</p>`);
+  };
+  const lockedCard = x => {
+    const h = holdersOf(x);
+    return `<div class="card"><div class="dim">${itemPrev(x)}</div><div class="mut" style="margin-top:6px">${esc(x.name)} <span class="chip">LOCKED</span><br>Earned by having the ${esc(CRIT[x.criteria] || '').replace(/^./, c => c.toLowerCase())}<br>Held by: ${h.length ? h.map(u => nm(u)).join(' ') : 'nobody yet'}</div></div>`;
+  };
+  return `<h1>Account</h1>${acctTabs('inventory')}
+  <p class="mut">Everything you own. Equipped items show next to your name everywhere. Buy more in the <a href="#/shop">Shop</a>.</p>
+  ${section('Banners', 'banner')}${section('Icons', 'icon')}
+  ${locked.length ? `<h2>Earnable</h2><p class="mut">Special items you can win. Hold the lead and it is equipped for you automatically.</p><div class="grid">${locked.map(lockedCard).join('')}</div>` : ''}`;
 }
 const look = o => rpc('set_look', {p_avatar:o.avatar || null, p_theme:o.theme || null, p_pattern:o.pattern || null}, 'Saved');
 const prevC = () => { root.dataset.theme = 'custom'; [['bg','cbg'],['card','ccard'],['fg','cfg'],['acc','cacc']].forEach(([k, i]) => root.style.setProperty(CK[k], $('#' + i).value)); };
@@ -682,7 +799,7 @@ function uploadAvatar(inp){
     c.toBlob(async b => {
       const path = me.id + '/' + Date.now() + '.jpg', old = me.avatar_path;
       const up = await sb.storage.from('avatars').upload(path, b, {contentType:'image/jpeg'});
-      if (up.error) return toast(/bucket not found/i.test(up.error.message) ? 'The latest SQL update has not been applied to this Supabase project yet. Run supabase-fix-all.sql in the SQL Editor of the project your site uses.' : up.error.message);
+      if (up.error) return toast(/bucket not found/i.test(up.error.message) ? 'The latest SQL update has not been applied to this Supabase project yet. Run update.sql in the SQL Editor of the project your site uses.' : up.error.message);
       await rpc('set_avatar_path', {p_path:path}, 'Picture updated');
       if (old) sb.storage.from('avatars').remove([old]);
     }, 'image/jpeg', .86);
@@ -722,6 +839,7 @@ function streakBadge(){
 
 // ---------- shell + router ----------
 function render(){
+  lastRender = Date.now();
   if (!me) return authView();
   const keep = {};
   document.querySelectorAll('input[id],textarea[id],select[id]').forEach(i => keep[i.id] = i.value);
@@ -729,7 +847,7 @@ function render(){
   const staff = me.role !== 'user', owner = me.role === 'owner';
   const pend = PR.filter(p => p.status === 'pending').length;
   const link = (id, label, badge) => `<a href="#/${id}" class="${id === pg || (id === 'markets' && pg === 'market') ? 'on' : ''}">${svg(IC[id])}${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
-  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, race: pgRace, shop: pgShop, ideas: pgIdeas, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount};
+  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, race: pgRace, shop: pgShop, ideas: pgIdeas, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount, inventory: pgInventory};
   const ok = {create: staff, review: staff, admin: owner, suggest: !staff};
   const waiting = BLOCKING[pg] && (EXTRAS[pg] || []).some(k => !LOADED[k]);
   const body = !pages[pg] ? '<p>Page not found.</p>' : (pg in ok && !ok[pg]) ? '<p class="mut">You do not have access to this page.</p>' : waiting ? '<p class="mut">Loading...</p>' : pages[pg]();
@@ -738,11 +856,11 @@ function render(){
     ${link('race', 'Referral Race')}${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('shop', 'Shop')}${link('ideas', 'Idea Box', ideaNew() || '')}${link('rules', 'Rules')}
     ${staff ? link('create', 'Create market') + link('review', 'Review', pend || '') : link('suggest', 'Suggest a market')}
     ${owner ? link('admin', 'Admin tools') : ''}
-    <a href="#/account" class="me${pg === 'account' ? ' on' : ''}">${avatar(me.username, 30)}<span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis">${esc(me.username)}</b><span class="mut">${(+me.balance).toFixed(0)} tokens</span></span></a>
+    <a href="#/account" class="me${pg === 'account' || pg === 'inventory' ? ' on' : ''}">${avatar(me.username, 30)}<span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis">${esc(me.username)}</b><span class="mut">${(+me.balance).toFixed(0)} tokens</span></span></a>
     </nav><main><div class="card split"><span><span class="chip">SEASON</span> <b id="cd" style="font-weight:500">${cdText()}</b></span><a href="#/rules">Rules</a></div><div id="rb">${pg === 'race' ? '' : refBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
 
   for (const k in keep) { const el = document.getElementById(k); if (el) el.value = keep[k]; }
-  if (pg === 'admin') showShopPreview();
+  if (pg === 'admin') { showShopPreview(); showSpecialPreview(); }
   if (pg === 'market' && staff && !MTok[+arg]) fetchTrades(+arg);
 }
 
