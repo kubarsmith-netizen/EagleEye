@@ -36,6 +36,7 @@ nav a.on svg{color:var(--acc)}
 nav a.me{margin-top:auto;border:1.5px solid var(--bd);padding:8px;color:var(--fg);line-height:1.25}
 nav a.me:hover,nav a.me.on{border-color:var(--acc)}
 nav a.me .av{width:30px;height:30px;font-size:16px;margin:0}
+nav a.me.bn .mut{color:inherit;opacity:.9}
 main{flex:1;padding:30px 38px;min-width:0}
 .card{background:var(--card);border:1.5px solid var(--bd);border-radius:8px;padding:16px;margin:0 0 16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
@@ -846,6 +847,7 @@ function render(){
   const [pg, arg] = (location.hash.slice(2) || 'markets').split('/');
   const staff = me.role !== 'user', owner = me.role === 'owner';
   const pend = PR.filter(p => p.status === 'pending').length;
+  const meBn = itemById(me.banner);
   const link = (id, label, badge) => `<a href="#/${id}" class="${id === pg || (id === 'markets' && pg === 'market') ? 'on' : ''}">${svg(IC[id])}${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
   const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, race: pgRace, shop: pgShop, ideas: pgIdeas, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount, inventory: pgInventory};
   const ok = {create: staff, review: staff, admin: owner, suggest: !staff};
@@ -856,7 +858,7 @@ function render(){
     ${link('race', 'Referral Race')}${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('shop', 'Shop')}${link('ideas', 'Idea Box', ideaNew() || '')}${link('rules', 'Rules')}
     ${staff ? link('create', 'Create market') + link('review', 'Review', pend || '') : link('suggest', 'Suggest a market')}
     ${owner ? link('admin', 'Admin tools') : ''}
-    <a href="#/account" class="me${pg === 'account' || pg === 'inventory' ? ' on' : ''}">${avatar(me.username, 30)}<span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis">${esc(me.username)}</b><span class="mut">${(+me.balance).toFixed(0)} tokens</span></span></a>
+    <a href="#/account" class="me${pg === 'account' || pg === 'inventory' ? ' on' : ''}${meBn ? ' bn' : ''}"${meBn ? ` style="${esc(bannerStyle(meBn))}"` : ''}>${avatar(me.username, 30)}<span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis">${esc(me.username)}</b><span class="mut">${(+me.balance).toFixed(0)} tokens</span></span></a>
     </nav><main><div class="card split"><span><span class="chip">SEASON</span> <b id="cd" style="font-weight:500">${cdText()}</b></span><a href="#/rules">Rules</a></div><div id="rb">${pg === 'race' ? '' : refBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
 
   for (const k in keep) { const el = document.getElementById(k); if (el) el.value = keep[k]; }
