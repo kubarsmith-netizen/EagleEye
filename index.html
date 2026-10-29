@@ -179,7 +179,8 @@ const iconHtml = (x, s) => isImg(x) ? `<img class="ic" src="${esc(imgUrl(x))}" a
 const avatar = (u, s) => {
   const c = (me && u === me.username) ? me : (CO[u] || {}), st = s ? ` style="width:${s}px;height:${s}px;font-size:${Math.round(s * .55)}px"` : '';
   if (c.avatar_path) return `<span class="av"${st}><img src="${AVURL}${esc(c.avatar_path)}" alt="" onerror="this.remove()"></span>`;
-  const i = c.avatar ? +c.avatar.slice(1) : -1;
+  const hs = String(u || '?').split('').reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 0);
+  const i = c.avatar ? +c.avatar.slice(1) : hs % AV.length;
   return `<span class="av"${st}>${AV[i] || esc(String(u || '?')[0].toUpperCase())}</span>`;
 };
 // s = avatar size, flat = skip the banner (used on leaderboards, where the whole row is the banner)
