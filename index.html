@@ -39,23 +39,23 @@ nav a.me .av{width:30px;height:30px;font-size:16px;margin:0}
 nav a.me.bn .mut{color:inherit;opacity:.9}
 main{flex:1;padding:30px 38px;min-width:0}
 .card{background:var(--card);border:1.5px solid var(--bd);border-radius:8px;padding:16px;margin:0 0 16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
 .grid .card{margin:0}
 .two{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-top:16px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:16px 0}
-.stats .card{margin:0;border-top:px solid var(--acc)}
+.stats .card{margin:0;border-top:3px solid var(--acc)}
 .mk{color:inherit;text-decoration:none;display:block;padding:22px;border-width:2px;transition:transform .12s,box-shadow .12s,border-color .12s}
 .mk:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--acc) 15%,transparent)}
-.mk b{display:block;font-size:18px;line-height:1.5}
+.mk b{display:block;font-size:18px;line-height:1.35}
 .mk .bar{height:12px;margin:14px 0}
 .mk .split{font-size:19px;font-weight:600}
 .narrow{max-width:540px}
-.big{font-size:2px;font-weight:600}
+.big{font-size:23px;font-weight:600}
 .bar{height:8px;border-radius:4px;background:var(--no);overflow:hidden;margin:10px 0}
 .bar i{display:block;height:100%;background:var(--yes)}
 .split{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
-.mut{color:var(--mut);font-size:1.5px}
+.mut{color:var(--mut);font-size:13.5px}
 a{color:var(--acc)}
 .chip{background:var(--hov);color:var(--acc);border:1px solid var(--bd);border-radius:6px;padding:0 7px;font-size:11px;font-weight:600}
 .tags{margin:0 0 10px}
@@ -298,14 +298,14 @@ function chart(id){
 function authView(){
   $('#app').innerHTML = `<div style="max-width:400px;margin:12vh auto;padding:16px"><div class="card"><h1>EagleEye Market</h1>
   <p class="mut">Please sign up with your Head-Royce email</p>
-  <input id="u" placeholder="Username (sign up only, 2-20 letters/numbers)" maxlength="20"><input id="e" type="email" placeholder="Email"><input id="p" type="password" placeholder="Password" minlength="8">
+  <input id="u" placeholder="Username (sign up only, 3-20 letters/numbers)" maxlength="20"><input id="e" type="email" placeholder="Email"><input id="p" type="password" placeholder="Password" minlength="8">
   <div class="row"><button onclick="auth(true)">Log in</button><button class="g" onclick="auth(false)">Sign up</button><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button></div></div></div>`;
 }
 async function auth(login){
   const email = $('#e').value.trim(), password = $('#p').value, username = $('#u').value.trim();
   if (!login) {
     if (ALLOWED_DOMAINS.length && !ALLOWED_DOMAINS.includes(email.split('@').pop().toLowerCase())) return toast('Please use your ' + ALLOWED_DOMAINS.join(' or ') + ' email.');
-    if (!/^[A-Za-z0-9_.-]{3,20}$/.test(username)) return toast('Username: 2-20 letters, numbers, dot, dash or underscore.');
+    if (!/^[A-Za-z0-9_.-]{3,20}$/.test(username)) return toast('Username: 3-20 letters, numbers, dot, dash or underscore.');
     if (password.length < 8) return toast('Use a password of at least 8 characters.');
   }
   const r = login ? await sb.auth.signInWithPassword({email, password}) : await sb.auth.signUp({email, password, options:{data:{username, referred_by:savedRef()}}});
