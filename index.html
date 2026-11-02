@@ -86,6 +86,7 @@ table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:9px 10px;border-bottom:var(--bw) solid var(--line)}
 th{color:var(--acc);font-weight:600;font-size:12px;border-bottom:var(--bw) solid var(--bd);text-transform:uppercase;letter-spacing:.04em}
 .mine td{font-weight:600;background:var(--hov)}
+.search{max-width:420px;margin:6px 0 4px}
 .tabs{display:flex;gap:8px;margin:12px 0 18px;align-items:center}
 .tabs button,.tabs select{height:40px;padding:0 16px;margin:0}
 #t{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--acc);color:#fff;padding:10px 18px;border-radius:8px;display:none;max-width:90%;z-index:9}
@@ -533,17 +534,30 @@ async function fetchUser(name){
   render();
 }
 
-function pgMarkets(){
-  const motw = FILTER === 'resolved' ? null : markets.find(m => m.is_motw && m.status === 'open');
-  const list = markets.filter(m => m !== motw && (FILTER === 'all' || (FILTER === 'open') === (m.status === 'open'))).sort(sorters[SORT]);
-  return `<h1>Markets</h1><div class="tabs">${['open','resolved','all'].map(f => `<button class="${FILTER === f ? '' : 'g'}" onclick="setFilter('${f}')">${f[0].toUpperCase() + f.slice(1)}</button>`).join('')}<select style="margin-left:auto" onchange="setSort(this.value)">${Object.entries(SORTS).map(([k, v]) => `<option value="${k}"${SORT === k ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
-  <div class="grid">${motw ? motwCard(motw) : ''}${list.map(m => {
+// search boxes (markets page and leaderboard)
+let QM = '', QU = '';
+const matchQ = (q, ...fields) => { q = q.trim().toLowerCase(); return !q || fields.some(f => String(f || '').toLowerCase().includes(q)); };
+
+// the grid of market cards; while searching, every market is searched (open and resolved)
+function marketGrid(){
+  const searching = QM.trim() !== '';
+  const ok = m => matchQ(QM, m.question, m.proposed_by);
+  const m0 = (searching || FILTER !== 'resolved') ? markets.find(m => m.is_motw && m.status === 'open') : null;
+  const motw = m0 && ok(m0) ? m0 : null;
+  const list = markets.filter(m => m !== motw && ok(m) && (searching || FILTER === 'all' || (FILTER === 'open') === (m.status === 'open'))).sort(sorters[SORT]);
+  return (motw ? motwCard(motw) : '') + (list.map(m => {
     const y = py(m), mine = P.some(p => p.market_id === m.id);
     return `<a class="card mk" href="#/market/${m.id}">${tags(m)}<b>${esc(m.question)}</b>${m.proposed_by ? `<div class="mut" style="margin-top:4px">Suggested by ${nm(m.proposed_by)}</div>` : ''}
     <div class="bar"><i style="width:${y*100}%"></i></div>
     <div class="split"><span style="color:var(--yes)">YES ${(y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-y)*100).toFixed(0)}%</span></div>
     <div class="mut" style="margin-top:6px">${mState(m)}${mine ? ' · you have a position' : ''}</div></a>`;
-  }).join('') || (motw ? '' : '<p class="mut">No markets here yet.</p>')}</div>`;
+  }).join('') || (motw ? '' : `<p class="mut">${searching ? 'No markets match your search.' : 'No markets here yet.'}</p>`));
+}
+
+function pgMarkets(){
+  return `<h1>Markets</h1><input id="qm" class="search" type="search" placeholder="Search markets" value="${esc(QM)}" autocomplete="off" oninput="QM=this.value;$('#mg').innerHTML=marketGrid()">
+  <div class="tabs">${['open','resolved','all'].map(f => `<button class="${FILTER === f ? '' : 'g'}" onclick="setFilter('${f}')">${f[0].toUpperCase() + f.slice(1)}</button>`).join('')}<select style="margin-left:auto" onchange="setSort(this.value)">${Object.entries(SORTS).map(([k, v]) => `<option value="${k}"${SORT === k ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
+  <div class="grid" id="mg">${marketGrid()}</div>`;
 }
 
 // total that lands in your account on cash-out: payout (2x profit on the Market of the Week) + streak bonus
@@ -590,11 +604,17 @@ function pgPortfolio(){
 }
 
 // Leaderboard + compact streak board, side by side
+// leaderboard rows, filtered by the search box; each row keeps its real rank
+function boardRows(){
+  const rows = (FINAL.length ? FINAL : LB).map((r, i) => ({r, i})).filter(x => matchQ(QU, x.r.username))
+    .map(x => lbRow(x.i, x.r.username, (+x.r.score).toFixed(1), 44)).join('');
+  return rows || '<p class="mut">No players match your search.</p>';
+}
 function pgBoard(){
-  const rows = (FINAL.length ? FINAL : LB).map((r, i) => lbRow(i, r.username, (+r.score).toFixed(1), 44)).join('');
   const srows = SBD.slice(0, 8).map((r, i) => lbRow(i, r.username, '🔥 ' + r.streak, 34)).join('');
   return `<div class="boardwrap"><div><h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Cash plus open stakes (at cost).'}</p>
-    <div class="card"><div class="lb"><div class="lbh"><span>#</span><span>Player</span><span>Tokens</span></div>${rows}</div></div></div>
+    <input id="qu" class="search" type="search" placeholder="Search players" value="${esc(QU)}" autocomplete="off" oninput="QU=this.value;$('#lres').innerHTML=boardRows()">
+    <div class="card"><div class="lb"><div class="lbh"><span>#</span><span>Player</span><span>Tokens</span></div><div class="lb" id="lres">${boardRows()}</div></div></div></div>
     <div class="sm"><h1>Streaks</h1><p class="mut">5+ trades a day. +0.1% cash-out profit per day, max 10%.</p>
     <div class="card">${SBD.length ? `<div class="lb"><div class="lbh"><span>#</span><span>Player</span><span>Streak</span></div>${srows}</div>` : '<p class="mut">No streaks yet.</p>'}</div></div></div>`;
 }
