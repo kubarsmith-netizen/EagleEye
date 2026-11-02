@@ -163,6 +163,7 @@ nav a,.chip,.rc,.rank,.nm{border-radius:12px}
 .boardwrap h1{font-size:25px;margin:0 0 8px}
 .boardwrap>div>p{margin:0 0 12px}
 .boardwrap .card{margin:0}
+.boardwrap .sm .card{align-self:start}
 .lbtools{display:flex;align-items:center;gap:8px;height:40px;margin:0 0 12px}
 .lbtools .search{flex:1 1 auto;width:auto;max-width:none;height:40px;margin:0}
 .lbtools select{height:40px;margin:0;padding:0 12px}
@@ -638,13 +639,13 @@ function boardRows(){
 function pgBoard(){
   const mode = LBX ? LBSORT : 'tokens_desc', key = mode.split('_')[0];
   const opts = Object.entries(LBSORTS).filter(([k]) => LBX || k.startsWith('tokens')).map(([k, v]) => `<option value="${k}"${mode === k ? ' selected' : ''}>${v}</option>`).join('');
-  const srows = SBD.slice(0, 8).map((r, i) => lbRow(i, r.username, '🔥 ' + r.streak, 34)).join('');
+  const srows = SBD.map((r, i) => lbRow(i, r.username, '🔥 ' + r.streak, 34)).join('');
   return `<div class="boardwrap">
     <div><h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Cash plus open stakes (at cost).'}</p>
       <div class="lbtools"><input id="qu" class="search" type="search" placeholder="Search players" value="${esc(QU)}" autocomplete="off" oninput="QU=this.value;$('#lres').innerHTML=boardRows()"><select onchange="LBSORT=this.value;render()" aria-label="Sort leaderboard">${opts}</select></div>
       <div class="card"><div class="lb"><div class="lbh"><span>#</span><span>Player</span><span>${LBCOL[key]}</span></div><div class="lb" id="lres">${boardRows()}</div></div></div></div>
     <div class="sm"><h1>Streaks</h1><p class="mut">5+ trades a day. +0.1% cash-out profit per day, max 10%.</p>
-      <div class="lbtools"><span class="mut">Top 8 current streaks</span></div>
+      <div class="lbtools"><span class="mut">Current streaks</span></div>
       <div class="card">${SBD.length ? `<div class="lb"><div class="lbh"><span>#</span><span>Player</span><span>Streak</span></div>${srows}</div>` : '<p class="mut">No streaks yet.</p>'}</div></div></div>`;
 }
 
