@@ -105,6 +105,11 @@ main>.card.split:first-child{background:var(--card);border-top:var(--bw) solid v
 .lk input{flex:1 1 120px;max-width:260px;width:auto;min-width:0;margin:0;padding:6px 9px;font-size:13px}
 .lk button{padding:6px 11px;white-space:nowrap}
 .rc{display:inline-block;background:var(--card);border:var(--bw) solid var(--bd);border-radius:6px;padding:3px 10px;white-space:nowrap}
+.ev-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 18px;margin:0 0 16px;border-radius:18px;border:var(--bw) solid #5b8fe0;background:linear-gradient(110deg,#1b3a9e,#2459b8 55%,#2f7fc9);color:#fff}
+.ev-bar a{color:#fff;font-weight:600}
+.ev-bar .rc{background:#ffffff22;border-color:#ffffff44;color:#fff}
+.ev-bar .blurb{flex:2 1 280px}
+.chip.ev{background:#fff;color:#1b3a9e;border-color:#fff}
 .ev-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .rank{display:inline-block;min-width:26px;height:26px;line-height:24px;text-align:center;border-radius:6px;background:var(--hov);border:var(--bw) solid var(--bd);font-weight:600;font-size:12px;color:var(--fg)}
 .rank.r1{background:var(--acc);border-color:var(--acc);color:#fff}
@@ -384,6 +389,7 @@ async function ensureExtras(){
   }));
   const cur = (location.hash.slice(2) || 'markets').split('/')[0];
   if (stale.every(k => k === 'ev' || k === 'te' || k === 'streak') && cur === page && page !== 'frenzy') {
+    const rb = $('#rb'); if (rb) rb.innerHTML = frenzyBanner();
     const sw = $('#stkw'); if (sw) sw.innerHTML = streakBadge();
     return;
   }
@@ -473,6 +479,18 @@ const motwCard = m => {
 };
 
 // ---------- Trading Frenzy (event) ----------
+// banner shown at the top of every page (hidden on the Frenzy page itself, and 2 days after the event ends)
+function frenzyBanner(){
+  if (!TE || Date.now() > new Date(TE.ends_at).getTime() + 2 * 864e5) return '';
+  const ended = Date.now() >= new Date(TE.ends_at);
+  const end = new Date(TE.ends_at).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
+  const lead = (TE.leaders || [])[0];
+  const blurb = ended
+    ? 'The Trading Frenzy is over!' + (TE.winner ? ' Congrats to <b>' + esc(TE.winner) + '</b>!' : '')
+    : '<b>Trading Frenzy!</b> Every buy and cash-out counts. Most trades by ' + end + ' wins ' + TE.prize + ' bonus tokens and a special banner.' + (lead ? ' Leading now: <b>' + esc(lead.username) + '</b> (' + lead.n + ').' : '');
+  return `<div class="ev-bar"><div class="blurb"><span class="chip ev">EVENT</span> ${blurb}</div><span class="rc">Your trades: <b>${TE.mine}</b></span><a href="#/frenzy">Leaderboard</a></div>`;
+}
+
 function pgFrenzy(){
   if (!TE) return '<h1>Trading Frenzy</h1><p class="mut">No event is running right now. Check back soon.</p>';
   const ended = Date.now() >= new Date(TE.ends_at);
@@ -603,7 +621,7 @@ const pgRules = () => `<h1>Rules</h1><div class="card" style="max-width:760px">
 <li>No insults of any kind and no comments about identity, about a specific person or any group of people.</li>
 </ul>
   <h2>Market of the Week</h2><p>One featured market sits at the top of the Markets page each week and resolves on Friday. If you win, or cash out at a profit, you earn <b>2 times your profit</b>. If you lose or cash out at a loss, it works as usual, with no extra loss.</p>
-  <h2>Rewards</h2><p>You earn <b>100 tokens</b> for every market you suggest that gets approved. You earn <b>300 tokens</b> for every friend who signs up with your referral link and confirms their email (they get 100 too).</p>
+  <h2>Rewards</h2><p>You earn <b>300 tokens</b> for every market you suggest that gets approved. You earn <b>300 tokens</b> for every friend who signs up with your referral link and confirms their email (they get 100 too).</p>
   <h2>Trading Frenzy</h2><p>During the Trading Frenzy event, every buy and cash-out counts. The player with the most trades wins bonus tokens, and the current leader wears a special banner. See the <a href="#/frenzy">Trading Frenzy</a> page.</p>
   <h2>Player profiles</h2><p>Click any player on a leaderboard to see their portfolio and trade history. You can hide yours from other players on your Account page.</p>
   <h2>Daily streaks</h2><p>Make at least 5 trades in a day to build a streak. Buys and cash-outs both count, and days run midnight to midnight Pacific Time. Each streak day adds 0.1% to the profit on your cash-outs, up to 10%. Missing a day resets the bonus to 0%.</p>
@@ -897,12 +915,12 @@ function render(){
   const body = !pages[pg] ? '<p>Page not found.</p>' : (pg in ok && !ok[pg]) ? '<p class="mut">You do not have access to this page.</p>' : waiting ? '<p class="mut">Loading...</p>' : pages[pg]();
 
   $('#app').innerHTML = `<div id="shell"><nav><h2>EagleEye Market</h2>
-    ${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('frenzy', 'Trading Frenzy')}${link('shop', 'Shop')}${link('ideas', 'Idea Box', ideaNew() || '')}${link('rules', 'Rules')}
+    ${link('frenzy', 'Trading Frenzy')}${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('shop', 'Shop')}${link('ideas', 'Idea Box', ideaNew() || '')}${link('rules', 'Rules')}
     ${staff ? link('create', 'Create market') + link('review', 'Review', pend || '') : link('suggest', 'Suggest a market')}
     ${owner ? link('admin', 'Admin tools') : ''}
     <div class="navref"><span class="mut">Your referral link</span><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your referral link"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div>
     <a href="#/account" class="me${pg === 'account' || pg === 'inventory' ? ' on' : ''}${meBn ? ' bn' : ''}"${meBn ? ` style="${esc(bannerStyle(meBn))}"` : ''}>${avatar(me.username, 30)}<span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis">${esc(me.username)}</b><span class="mut">${(+me.balance).toFixed(0)} tokens</span></span></a>
-    </nav><main><div class="card split"><span><span class="chip">SEASON</span> <b id="cd" style="font-weight:500">${cdText()}</b></span><a href="#/rules">Rules</a></div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
+    </nav><main><div class="card split"><span><span class="chip">SEASON</span> <b id="cd" style="font-weight:500">${cdText()}</b></span><a href="#/rules">Rules</a></div><div id="rb">${pg === 'frenzy' ? '' : frenzyBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
 
   for (const k in keep) { const el = document.getElementById(k); if (el) el.value = keep[k]; }
   if (pg === 'admin') { showShopPreview(); showSpecialPreview(); }
