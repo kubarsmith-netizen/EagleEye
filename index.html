@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+:root{--bw:1.5px}
 :root,[data-theme=light]{--bg:#f3f6fb;--fg:#0f172a;--card:#fff;--mut:#5b6678;--line:#dde3ee;--bd:#a9b6cc;--yes:#2a8a62;--no:#bb4d43;--acc:#2f6bd8;--side:#fff;--hov:#eaf1fd}
 [data-theme=dark]{--bg:#050506;--fg:#ececf0;--card:#0e0f12;--mut:#9aa1ae;--line:#1c1f26;--bd:#3a4458;--yes:#38b886;--no:#d96a63;--acc:#5b9bff;--side:#09090b;--hov:#161a24}
 [data-theme=slate]{--bg:#1e2228;--fg:#e8eaee;--card:#272c34;--mut:#9ba3b0;--line:#363c47;--bd:#566073;--yes:#38b886;--no:#d96a63;--acc:#6aa0f5;--side:#191c21;--hov:#303642}
@@ -25,7 +26,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 Inter,system-ui
 h1{margin:0 0 8px;font-size:25px;font-weight:600;letter-spacing:-.01em}
 h2{font-size:16px;font-weight:600;margin:26px 0 10px}
 #shell{display:flex;min-height:100vh}
-nav{width:196px;flex-shrink:0;background:var(--side);border-right:1.5px solid var(--bd);padding:16px 10px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:1px;font-size:14px}
+nav{width:196px;flex-shrink:0;background:var(--side);border-right:var(--bw) solid var(--bd);padding:16px 10px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:1px;font-size:14px}
 nav h2{margin:0 10px 14px;font-size:14px;letter-spacing:.02em}
 nav a{padding:7px 10px;border-radius:6px;color:var(--mut);text-decoration:none;display:flex;gap:10px;align-items:center;font-weight:500}
 nav a svg{flex-shrink:0}
@@ -33,22 +34,28 @@ nav a .chip{margin-left:auto}
 nav a:hover{background:var(--hov);color:var(--fg)}
 nav a.on{background:var(--hov);color:var(--fg);font-weight:600}
 nav a.on svg{color:var(--acc)}
-nav a.me{margin-top:auto;border:1.5px solid var(--bd);padding:8px;color:var(--fg);line-height:1.25}
+nav a.me{margin-top:10px;border:var(--bw) solid var(--bd);padding:8px;color:var(--fg);line-height:1.25}
 nav a.me:hover,nav a.me.on{border-color:var(--acc)}
+.navref{margin-top:auto;padding:10px;border:var(--bw) solid var(--bd);border-radius:12px}
+.navref input{margin:4px 0 0;padding:6px 8px;font-size:12px}
+.navref button{width:100%;margin-top:6px;padding:6px 8px;font-size:13px}
 nav a.me .av{width:30px;height:30px;font-size:16px;margin:0}
 nav a.me.bn .mut{color:inherit;opacity:.9}
 main{flex:1;padding:30px 38px;min-width:0}
-.card{background:var(--card);border:1.5px solid var(--bd);border-radius:8px;padding:16px;margin:0 0 16px}
+.card{background:var(--card);border:var(--bw) solid var(--bd);border-radius:8px;padding:16px;margin:0 0 16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
 .grid .card{margin:0}
 .two{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-top:16px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:16px 0}
-.stats .card{margin:0;border-top:3px solid var(--acc)}
-.mk{color:inherit;text-decoration:none;display:block;padding:22px;border-width:2px;transition:transform .12s,box-shadow .12s,border-color .12s}
+.stats .card{margin:0;border-top:var(--bw) solid var(--acc)}
+.mk{color:inherit;text-decoration:none;display:block;padding:22px;border-width:var(--bw);transition:transform .12s,box-shadow .12s,border-color .12s}
 .mk:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--acc) 15%,transparent)}
 .mk b{display:block;font-size:18px;line-height:1.35}
 .mk .bar{height:12px;margin:14px 0}
 .mk .split{font-size:19px;font-weight:600}
+.motw{border-color:var(--acc);background:var(--grad)}
+.motw b{font-size:24px}
+.motw .tags .chip{margin-left:6px;vertical-align:middle}
 .narrow{max-width:540px}
 .big{font-size:23px;font-weight:600}
 .bar{height:8px;border-radius:4px;background:var(--no);overflow:hidden;margin:10px 0}
@@ -57,32 +64,32 @@ main{flex:1;padding:30px 38px;min-width:0}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
 .mut{color:var(--mut);font-size:13.5px}
 a{color:var(--acc)}
-.chip{background:var(--hov);color:var(--acc);border:1px solid var(--bd);border-radius:6px;padding:0 7px;font-size:11px;font-weight:600}
+.chip{background:var(--hov);color:var(--acc);border:var(--bw) solid var(--bd);border-radius:6px;padding:0 7px;font-size:11px;font-weight:600}
 .tags{margin:0 0 10px}
 .tag{display:inline-block;padding:2px 10px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#5b9be8,#2f63c8);border-radius:4px}
-input,button,select,textarea{font:inherit;padding:9px 12px;border-radius:6px;border:1.5px solid var(--bd);background:var(--bg);color:var(--fg)}
+input,button,select,textarea{font:inherit;padding:9px 12px;border-radius:6px;border:var(--bw) solid var(--bd);background:var(--bg);color:var(--fg)}
 input,textarea{width:100%;margin-top:8px}
 textarea{resize:vertical}
 input:focus,textarea:focus,select:focus{outline:0;border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 25%,transparent)}
 label{display:block;flex:1;min-width:140px}
 label input{margin-top:4px}
-button{cursor:pointer;background:var(--acc);color:#fff;border:1.5px solid var(--acc);font-weight:500}
+button{cursor:pointer;background:var(--acc);color:#fff;border:var(--bw) solid var(--acc);font-weight:500}
 button:disabled{opacity:.4;cursor:default}
 button.y{background:var(--yes);border-color:var(--yes)}button.n{background:var(--no);border-color:var(--no)}
-button.g{background:none;color:var(--fg);border:1.5px solid var(--bd)}
+button.g{background:none;color:var(--fg);border:var(--bw) solid var(--bd)}
 button.g:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
 .btn{display:inline-block;padding:9px 14px;border-radius:6px;background:var(--acc);color:#fff;cursor:pointer;font-weight:500}
 label.up{flex:none;min-width:0}
 .clr input{padding:2px;height:38px;cursor:pointer}
-.sel{outline:2px solid var(--acc);outline-offset:1px}
+.sel{outline:var(--bw) solid var(--acc);outline-offset:1px}
 table{width:100%;border-collapse:collapse}
-th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
-th{color:var(--acc);font-weight:600;font-size:12px;border-bottom:2px solid var(--bd);text-transform:uppercase;letter-spacing:.04em}
+th,td{text-align:left;padding:9px 10px;border-bottom:var(--bw) solid var(--line)}
+th{color:var(--acc);font-weight:600;font-size:12px;border-bottom:var(--bw) solid var(--bd);text-transform:uppercase;letter-spacing:.04em}
 .mine td{font-weight:600;background:var(--hov)}
 .tabs{display:flex;gap:8px;margin:12px 0 18px;align-items:center}
 .tabs button,.tabs select{height:40px;padding:0 16px;margin:0}
 #t{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--acc);color:#fff;padding:10px 18px;border-radius:8px;display:none;max-width:90%;z-index:9}
-.av{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--hov);border:1px solid var(--bd);font-size:12px;font-weight:600;flex-shrink:0;margin-right:6px;vertical-align:middle;color:var(--fg);overflow:hidden}
+.av{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--hov);border:var(--bw) solid var(--bd);font-size:12px;font-weight:600;flex-shrink:0;margin-right:6px;vertical-align:middle;color:var(--fg);overflow:hidden}
 .av img{width:100%;height:100%;object-fit:cover}
 .nm{display:inline-flex;align-items:center;max-width:100%;border-radius:6px;padding:1px 8px 1px 2px;white-space:nowrap}
 .nm.bn{padding:2px 10px 2px 3px}
@@ -92,53 +99,47 @@ th{color:var(--acc);font-weight:600;font-size:12px;border-bottom:2px solid var(-
 .prevbn{min-width:230px;padding:8px 14px 8px 8px!important}
 .avs{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:10px}
 .avs button{padding:5px;font-size:18px}
-main>.card.split:first-child{background:var(--card);border-top:3px solid var(--acc)}
-.race-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 18px;margin:0 0 16px;border-radius:8px;border:1.5px solid #5b8fe0;background:linear-gradient(110deg,#1b3a9e,#2459b8 55%,#2f7fc9);color:#fff}
-.race-bar a{color:#fff;font-weight:600}
-.race-bar .rc{background:#ffffff22;border-color:#ffffff44;color:#fff}
-.race-bar .lk input{background:#ffffff1f;border-color:#ffffff55;color:#fff}
-.race-bar .lk button{background:#fff;color:#1b3a9e;border-color:#fff}
-.chip.ev{background:#fff;color:#1b3a9e;border-color:#fff}
-.race-bar .blurb{flex:2 1 280px}
+main>.card.split:first-child{background:var(--card);border-top:var(--bw) solid var(--acc)}
 .lk{display:flex;align-items:center;gap:8px;flex:1 1 300px;min-width:0}
 .lk b{white-space:nowrap}
 .lk input{flex:1 1 120px;max-width:260px;width:auto;min-width:0;margin:0;padding:6px 9px;font-size:13px}
 .lk button{padding:6px 11px;white-space:nowrap}
-.rc{display:inline-block;background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:3px 10px;white-space:nowrap}
-.race-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.rank{display:inline-block;min-width:26px;height:26px;line-height:24px;text-align:center;border-radius:6px;background:var(--hov);border:1px solid var(--bd);font-weight:600;font-size:12px;color:var(--fg)}
+.rc{display:inline-block;background:var(--card);border:var(--bw) solid var(--bd);border-radius:6px;padding:3px 10px;white-space:nowrap}
+.ev-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.rank{display:inline-block;min-width:26px;height:26px;line-height:24px;text-align:center;border-radius:6px;background:var(--hov);border:var(--bw) solid var(--bd);font-weight:600;font-size:12px;color:var(--fg)}
 .rank.r1{background:var(--acc);border-color:var(--acc);color:#fff}
 /* Leaderboard rows: the whole row wears the banner */
 .lb{display:flex;flex-direction:column;gap:6px}
 .lbh,.lbr{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;padding:6px 14px}
-.lbh{color:var(--acc);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid var(--bd);padding-bottom:8px;margin-bottom:2px}
+.lbh{color:var(--acc);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em;border-bottom:var(--bw) solid var(--bd);padding-bottom:8px;margin-bottom:2px}
 .lbh span:last-child,.lbr .val{text-align:right}
-.lbr{border:1px solid var(--line);border-radius:8px;min-height:58px}
+.lbr{color:inherit;text-decoration:none;cursor:pointer;border:var(--bw) solid var(--line);border-radius:8px;min-height:58px}
 .lbr .nm{font-size:16px;font-weight:600;padding:0}
 .lbr .av{margin-right:12px}
 .lbr .val{font-weight:600}
-.lbr.mine{outline:2px solid var(--acc);outline-offset:-1px;background-color:var(--hov)}
+.lbr:hover{border-color:var(--acc)}
+.lbr.mine{outline:var(--bw) solid var(--acc);outline-offset:-1px;background-color:var(--hov)}
 .sm .lbh,.sm .lbr{grid-template-columns:34px 1fr auto;padding:5px 10px}
 .sm .lbr{min-height:46px}
 .sm .lbr .nm{font-size:14px}
 #stk{position:fixed;top:26px;right:36px;z-index:8;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:10px}
-.stk-btn{display:flex;align-items:center;gap:8px;color:#fff;border:0;border-radius:999px;padding:10px 22px;font-size:22px;line-height:1;font-weight:700;background:linear-gradient(135deg,#7dd3fc,#3b82f6 55%,#1d4ed8);box-shadow:0 6px 22px #3b82f6bb,inset 0 0 0 2px #ffffff77;text-shadow:0 1px 3px #0b2a6a88}
+.stk-btn{display:flex;align-items:center;gap:8px;color:#fff;border:0;border-radius:999px;padding:10px 22px;font-size:22px;line-height:1;font-weight:700;background:linear-gradient(135deg,#7dd3fc,#3b82f6 55%,#1d4ed8);box-shadow:0 6px 22px #3b82f6bb,inset 0 0 0 var(--bw) #ffffff77;text-shadow:0 1px 3px #0b2a6a88}
 .stk-btn b{font-size:24px}
 .stk-btn:hover{filter:brightness(1.1)}
-.stk-btn.off{background:linear-gradient(135deg,#bae6fd,#60a5fa);box-shadow:0 4px 14px #60a5fa88,inset 0 0 0 2px #ffffff77}
+.stk-btn.off{background:linear-gradient(135deg,#bae6fd,#60a5fa);box-shadow:0 4px 14px #60a5fa88,inset 0 0 0 var(--bw) #ffffff77}
 @keyframes stkpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 .stk-btn:not(.off){animation:stkpulse 2.6s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){.stk-btn{animation:none!important}}
-.stk-panel{background:var(--card);border:2px solid var(--acc);border-radius:8px;padding:14px 16px;width:280px}
+.stk-panel{background:var(--card);border:var(--bw) solid var(--acc);border-radius:8px;padding:14px 16px;width:280px}
 .stk-panel p{margin:6px 0 0}
 @media(min-width:861px){main>.card.split:first-child{margin-right:120px}}
 .boardwrap{display:grid;grid-template-columns:7fr 4fr;gap:20px;align-items:start}
 .boardwrap>div{min-width:0}
 .sm h1{font-size:21px}
 @media(max-width:1000px){.boardwrap{grid-template-columns:1fr}}
-@media(max-width:860px){#shell{flex-direction:column}nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}nav h2{width:100%}nav a.me{margin-top:0}main{padding:16px}.two,.stats{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}#stk{top:auto;bottom:16px;right:12px}}
+@media(max-width:860px){#shell{flex-direction:column}nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}nav h2{width:100%}nav a.me{margin-top:0}.navref{margin-top:0;width:100%}main{padding:16px}.two,.stats{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}#stk{top:auto;bottom:16px;right:12px}}
 /* rounder corners */
-.card,.race-bar,.stk-panel{border-radius:18px}
+.card,.stk-panel{border-radius:18px}
 .lbr{border-radius:16px}
 input,button,select,textarea,.btn{border-radius:12px}
 nav a,.chip,.rc,.rank,.nm{border-radius:12px}
@@ -158,7 +159,7 @@ nav a,.chip,.rc,.rank,.nm{border-radius:12px}
 const SUPABASE_URL = 'https://qwkmyncxomibcpmlguxj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_mwgMhSwlsfRnOtu3h8-hUA_F7xjnxAV';
 const ALLOWED_DOMAINS = ['headroyce.org'];
-const REFERRAL_BONUS = 100; // keep equal to v_bonus in the award_referral SQL function
+const REFERRER_BONUS = 300, FRIEND_BONUS = 100; // keep equal to v_ref_bonus / v_new_bonus in the award_referral SQL function
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 try { const r = new URLSearchParams(location.search).get('ref'); if (r) localStorage.setItem('ref', r.trim().toLowerCase().slice(0, 16)); } catch (e) {}
@@ -168,6 +169,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>'
 const root = document.documentElement;
 let REV = null, me = null, markets = [], P = [], CD = [], T = [], LB = [], STAFF = [], INV = [], PR = [], FINAL = [], ACT = {}, MT = {}, MTok = {}, FILTER = 'open';
 let STK = null, SBD = [], STK_OPEN = false;
+let TE = null, UP = {}, UPtok = {};
 let SHOPERR = '', CO = {}, SHOP = [], OWN = [], STAT = null, HIST = [], IDEAS = [];
 let SHOPFILE = null, SHOPFILE_URL = '';
 // special (earned) banners and icons
@@ -180,8 +182,8 @@ const CK = {bg:'--bg', card:'--card', fg:'--fg', acc:'--acc'};
 const AVURL = SUPABASE_URL + '/storage/v1/object/public/avatars/';
 const SHOPURL = SUPABASE_URL + '/storage/v1/object/public/shop-art/';
 const PATS = {none:'None', dots:'Dots', grid:'Grid', lines:'Lines'};
-const CRIT = {top_streak:'Highest daily streak (ties share it)', top_referrals:'Most referrals (ties share it)'};
-const IC = {race:'M5 21V4M5 4h11l-2 4 2 4H5', markets:'M3 17l6-6 4 4 8-8M15 7h6v6', portfolio:'M3 8h18v12H3zM8 8V5h8v3', leaderboard:'M6 20V10M12 20V4M18 20v-7', shop:'M5 7h14l-1 13H6zM9 7a3 3 0 016 0', rules:'M6 3h12v18H6zM9 8h6M9 12h6', suggest:'M12 5v14M5 12h14', create:'M12 5v14M5 12h14', review:'M5 12l5 5 9-10', admin:'M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z', ideas:'M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z'};
+const CRIT = {top_streak:'Highest daily streak (ties share it)', top_referrals:'Most referrals (ties share it)', top_trades:'Most trades in the Trading Frenzy (ties share it)'};
+const IC = {markets:'M3 17l6-6 4 4 8-8M15 7h6v6', portfolio:'M3 8h18v12H3zM8 8V5h8v3', leaderboard:'M6 20V10M12 20V4M18 20v-7', shop:'M5 7h14l-1 13H6zM9 7a3 3 0 016 0', rules:'M6 3h12v18H6zM9 8h6M9 12h6', suggest:'M12 5v14M5 12h14', create:'M12 5v14M5 12h14', review:'M5 12l5 5 9-10', admin:'M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z', frenzy:'M13 2L4 14h7l-1 8 9-12h-7z', ideas:'M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z'};
 const svg = d => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
 
 // shop art: built-in items store CSS/emoji, uploaded items store "img:<path>"
@@ -212,7 +214,7 @@ const nm = (u, s, flat) => {
 // one leaderboard row; the banner covers the entire row
 const lbRow = (i, u, val, s) => {
   const c = CO[u] || {}, bn = itemById(c.banner);
-  return `<div class="lbr${me && u === me.username ? ' mine' : ''}"${bn ? ` style="${esc(bannerStyle(bn))}"` : ''}><span class="rank r${i < 3 ? i + 1 : 0}">${i + 1}</span><span>${nm(u, s, true)}</span><span class="val">${val}</span></div>`;
+  return `<a class="lbr${me && u === me.username ? ' mine' : ''}" href="#/user/${encodeURIComponent(u)}"${bn ? ` style="${esc(bannerStyle(bn))}"` : ''}><span class="rank r${i < 3 ? i + 1 : 0}">${i + 1}</span><span>${nm(u, s, true)}</span><span class="val">${val}</span></a>`;
 };
 
 const SEASON_END = new Date('2026-12-18T15:20:00-08:00');
@@ -272,6 +274,8 @@ const py = m => +m.money_yes / (+m.money_yes + +m.money_no);
 const sidePrice = (m, side) => side === 'yes' ? py(m) : 1 - py(m);
 const boughtAtPrice = (m, p) => +p.shares > 0 ? +p.invested / +p.shares : sidePrice(m, p.side);
 const positionValue = (m, p) => +p.shares * sidePrice(m, p.side);
+// what a cash-out actually pays: on the Market of the Week, profit is doubled (losses are not)
+const cashValue = (m, p) => { const v = positionValue(m, p), inv = +p.invested; return m.is_motw && v > inv ? inv + 2 * (v - inv) : v; };
 const mState = m => m.status !== 'open' ? (m.outcome === 'void' ? 'Cancelled' : 'Resolved: ' + m.outcome.toUpperCase()) : ((m.closes_at && new Date(m.closes_at) <= Date.now()) || Date.now() >= SEASON_END ? 'Trading closed' : 'Open');
 
 // CD holds {market_id, until} where "until" was worked out from the SERVER's clock, so a wrong
@@ -316,11 +320,12 @@ async function auth(login){
 
 // ---------- data ----------
 const AT = {}, LOADED = {};
-const TTL = {ev:60e3, act:60e3, pts:60e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3, streak:60e3, sboard:60e3, co:60e3, shop:60e3, special:60e3, stats:30e3, hist:30e3, ideas:30e3};
-const EXTRAS = {markets:['act'], market:['pts'], leaderboard:['lb','final','sboard'], race:['ev'], admin:['staff','inv','final','special'], suggest:['pr'], review:['pr'], shop:['shop'], account:['stats','hist','shop'], inventory:['shop','special'], ideas:['ideas']};
-const BLOCKING = {leaderboard:1, race:1, admin:1, suggest:1, review:1, shop:1, account:1, inventory:1, ideas:1};
+const TTL = {ev:60e3, act:60e3, pts:60e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3, streak:60e3, sboard:60e3, co:60e3, shop:60e3, special:60e3, te:30e3, stats:30e3, hist:30e3, ideas:30e3};
+const EXTRAS = {markets:['act'], market:['pts'], leaderboard:['lb','final','sboard'], admin:['staff','inv','final','special'], suggest:['pr'], review:['pr'], shop:['shop'], account:['stats','hist','shop'], inventory:['shop','special'], ideas:['ideas'], frenzy:['te']};
+const BLOCKING = {frenzy:1, leaderboard:1, admin:1, suggest:1, review:1, shop:1, account:1, inventory:1, ideas:1};
 
 const FETCH = {
+  te: async () => { const r = await sb.rpc('trade_event_info'); TE = r.data || null; return r; },
   ev: async () => { const r = await sb.rpc('referral_event_info'); REV = r.data || null; return r; },
   act: async () => { const r = await sb.rpc('market_activity'); ACT = {}; (r.data || []).forEach(x => { ACT[x.market_id] = x.recent; }); return r; },
   pts: async () => { const r = await sb.rpc('price_points'); T = r.data || []; return r; },
@@ -366,7 +371,7 @@ async function ensureExtras(){
   if (!me) return;
   const page = (location.hash.slice(2) || 'markets').split('/')[0];
   const keys = new Set(EXTRAS[page] || []);
-  ['ev', 'streak', 'co', 'shop', 'special'].forEach(k => keys.add(k));
+  ['ev', 'te', 'streak', 'co', 'shop', 'special'].forEach(k => keys.add(k));
   if (me.role !== 'user') keys.add('pr');
   if (me.role === 'owner') keys.add('ideas');
   const stale = [...keys].filter(k => !AT[k] || Date.now() - AT[k] > TTL[k]);
@@ -378,8 +383,7 @@ async function ensureExtras(){
     LOADED[k] = true;
   }));
   const cur = (location.hash.slice(2) || 'markets').split('/')[0];
-  if (stale.every(k => k === 'ev' || k === 'streak') && cur === page && page !== 'race') {
-    const rb = $('#rb'); if (rb) rb.innerHTML = refBanner();
+  if (stale.every(k => k === 'ev' || k === 'te' || k === 'streak') && cur === page && page !== 'frenzy') {
     const sw = $('#stkw'); if (sw) sw.innerHTML = streakBadge();
     return;
   }
@@ -389,7 +393,7 @@ async function ensureExtras(){
 function resetCaches(){
   for (const k in AT) delete AT[k];
   for (const k in LOADED) delete LOADED[k];
-  STK = null; SBD = []; STK_OPEN = false; CO = {}; SHOP = []; OWN = []; STAT = null; HIST = []; IDEAS = [];
+  STK = null; SBD = []; STK_OPEN = false; TE = null; UP = {}; UPtok = {}; CO = {}; SHOP = []; OWN = []; STAT = null; HIST = []; IDEAS = [];
   SPECIAL = []; SHELD = []; SHOLD = [];
 }
 
@@ -409,12 +413,12 @@ async function load(){
   P = c.data || [];
   const t0 = Date.now();
   CD = (d.data || []).map(x => ({market_id: x.market_id, until: t0 + Math.round(+x.secs_left * 1000)}));
-  MTok = {};
+  MTok = {}; UPtok = {};
   render();
   ensureExtras();
 }
 
-const marketSig = ms => JSON.stringify(ms.map(m => [m.id, m.status, m.outcome, m.money_yes, m.money_no, m.promoted_at, m.boosted_at, m.closes_at, m.cooldown_seconds]));
+const marketSig = ms => JSON.stringify(ms.map(m => [m.id, m.status, m.outcome, m.money_yes, m.money_no, m.promoted_at, m.boosted_at, m.closes_at, m.cooldown_seconds, m.is_motw]));
 setInterval(async () => {
   if (!me || document.hidden) return;
   const el = document.activeElement;
@@ -453,51 +457,81 @@ const sorters = {
   closing: (a, b) => (a.closes_at ? new Date(a.closes_at) : Infinity) - (b.closes_at ? new Date(b.closes_at) : Infinity) || 0
 };
 
-// ---------- Referral Race ----------
-const raceEnd = () => new Date(REV.ends_at).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
-function refBanner(){
-  if (!REV) return '';
-  const ended = Date.now() >= new Date(REV.ends_at);
-  const blurb = ended
-    ? 'The Referral Race is over!' + (REV.winner ? ' Congrats to <b>' + esc(REV.winner) + '</b>!' : '') + ' You and a friend still each get ' + REFERRAL_BONUS + ' tokens when they join with your link.'
-    : '<b>Referral Race!</b> Bring a friend and you both get ' + REFERRAL_BONUS + ' tokens. Most referrals by ' + raceEnd() + ' wins ' + REV.prize + ' bonus tokens.';
-  return `<div class="race-bar"><div class="blurb"><span class="chip ev">EVENT</span> ${blurb}</div>
-    <div class="lk"><b>Your link</b><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your link">
-    <button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy</button></div>
-    <span class="rc">Referrals: <b>${REV.mine}</b></span><a href="#/race">Leaderboard</a></div>`;
-}
+// ---------- Referral race payout ----------
+// The race page and banner are gone, but loading 'ev' (referral_event_info) is what pays the race winner
+// once the race's end time passes, so the fetch stays in FETCH.ev and ensureExtras().
 
-function pgRace(){
-  if (!REV) return '<h1>Referral Race</h1><p class="mut">No race is running right now. Check back soon.</p>';
-  const ended = Date.now() >= new Date(REV.ends_at);
-  const lead = REV.leaders || [];
+// full-width Market of the Week card shown at the top of the Markets page
+const motwCard = m => {
+  const y = py(m), mine = P.some(p => p.market_id === m.id && +p.shares > 0);
+  return `<a class="card mk motw" style="grid-column:1/-1" href="#/market/${m.id}">
+    <div class="tags"><span class="tag">Market of the Week</span><span class="chip">WINNERS EARN 2× PROFIT</span></div>
+    <b>${esc(m.question)}</b>${m.proposed_by ? `<div class="mut" style="margin-top:4px">Suggested by ${nm(m.proposed_by)}</div>` : ''}
+    <div class="bar"><i style="width:${y*100}%"></i></div>
+    <div class="split"><span style="color:var(--yes)">YES ${(y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-y)*100).toFixed(0)}%</span></div>
+    <div class="mut" style="margin-top:6px">${mState(m)}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}${mine ? ' · you have a position' : ''}</div></a>`;
+};
+
+// ---------- Trading Frenzy (event) ----------
+function pgFrenzy(){
+  if (!TE) return '<h1>Trading Frenzy</h1><p class="mut">No event is running right now. Check back soon.</p>';
+  const ended = Date.now() >= new Date(TE.ends_at);
+  const lead = TE.leaders || [];
   const at = lead.findIndex(r => r.username === me.username);
   const rows = lead.map((r, i) => lbRow(i, r.username, r.n, 40)).join('');
-  const status = ended ? (REV.winner ? 'Winner: <b>' + esc(REV.winner) + '</b> (+' + REV.prize + ' tokens)' : 'The race has ended') : 'Ends ' + raceEnd();
-  const standing = at >= 0 ? 'You are #' + (at + 1) : (REV.mine > 0 ? 'Not in the top 10 yet' : 'No referrals yet');
-  return `<h1>Referral Race</h1><div class="card"><p style="margin-top:0">Share your link. When a friend signs up through it and confirms their email, you each get ${REFERRAL_BONUS} tokens. The player with the most confirmed referrals wins a bonus ${REV.prize} tokens. Ties go to whoever reached the count first.</p>
-    <div class="lk" style="max-width:480px"><b>Your link</b><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your link">
-    <button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy</button></div>
-    <div class="race-stats"><span class="rc">${status}</span><span class="rc">Your referrals: <b>${REV.mine}</b></span><span class="rc">${standing}</span></div></div>
-  <div class="card"><b>Top 10</b>${rows ? `<div class="lb" style="margin-top:10px"><div class="lbh"><span>#</span><span>Player</span><span>Referrals</span></div>${rows}</div>` : '<p class="mut">No referrals yet. Be the first!</p>'}</div>`;
+  const end = new Date(TE.ends_at).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
+  const status = ended ? (TE.winner ? 'Winner: <b>' + esc(TE.winner) + '</b> (+' + TE.prize + ' tokens)' : 'The event has ended') : 'Ends ' + end;
+  const standing = at >= 0 ? 'You are #' + (at + 1) : (TE.mine > 0 ? 'Not in the top 10 yet' : 'No trades yet');
+  return `<h1>${esc(TE.title || 'Trading Frenzy')}</h1><div class="card"><p style="margin-top:0">Every buy and every cash-out counts as a trade. The player with the most trades during the event wins a bonus <b>${TE.prize} tokens</b>, and while they lead they wear the special banner. Ties go to whoever reached the count first.</p>
+    <div class="ev-stats"><span class="rc">${status}</span><span class="rc">Your trades: <b>${TE.mine}</b></span><span class="rc">${standing}</span></div></div>
+  <div class="card"><b>Top 10</b>${rows ? `<div class="lb" style="margin-top:10px"><div class="lbh"><span>#</span><span>Player</span><span>Trades</span></div>${rows}</div>` : '<p class="mut">No trades yet. Be the first!</p>'}</div>`;
+}
+
+// ---------- Player profile (opened from the leaderboards) ----------
+const setVisible = on => rpc('set_activity_visibility', {p_show:on}, on ? 'Your portfolio and trades are visible' : 'Your portfolio and trades are hidden');
+function pgUser(name){
+  const d = UP[name];
+  const back = '<a href="#/leaderboard" class="mut">← Leaderboard</a>';
+  if (!d) return back + '<p class="mut">Loading...</p>';
+  if (d.missing) return back + '<h1>Player not found</h1>';
+  const self = name === me.username, vis = me.show_activity !== false;
+  const head = `${back}<h1 style="margin-top:8px">${nm(name, 34)}</h1>`;
+  const toggle = self ? `<div class="card split"><span class="mut">${vis ? 'Everyone can see your portfolio and trade history.' : 'Your portfolio and trade history are hidden from everyone else.'}</span><button class="g" onclick="setVisible(${!vis})">${vis ? 'Hide from others' : 'Show to others'}</button></div>` : '';
+  if (d.hidden) return head + '<div class="card"><b>Private</b><p class="mut" style="margin-bottom:0">This player keeps their portfolio and trade history hidden.</p></div>';
+  const pos = (d.positions || []).map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m);
+  const ptab = pos.length ? `<table><tr><th>Market</th><th>Side</th><th>Invested</th><th>Bought at</th><th>Now</th><th>Value</th></tr>${pos.map(({p, m}) =>
+    `<tr><td><a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${(+p.invested).toFixed(1)}</td><td>${(boughtAtPrice(m, p) * 100).toFixed(0)}%</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${positionValue(m, p).toFixed(1)}</td></tr>`).join('')}</table>` : '<p class="mut">No open positions.</p>';
+  const trs = d.trades || [];
+  const ttab = trs.length ? `<table><tr><th>Time</th><th>Market</th><th>Action</th><th>Tokens</th><th>YES after</th></tr>${trs.map(r =>
+    `<tr><td>${new Date(r.ts).toLocaleString()}</td><td><a href="#/market/${r.market_id}">${esc(r.question)}</a></td><td>${r.kind === 'buy' ? 'Bought' : 'Cashed out'} ${r.side.toUpperCase()}</td><td>${(+r.tokens).toFixed(1)}</td><td>${(+r.price_yes * 100).toFixed(0)}%</td></tr>`).join('')}</table>` : '<p class="mut">No trades yet.</p>';
+  return `${head}${toggle}<div class="stats" style="grid-template-columns:repeat(2,1fr)"><div class="card"><div class="mut">Total trades</div><div class="big">${d.trade_count}</div></div><div class="card"><div class="mut">Open positions</div><div class="big">${pos.length}</div></div></div>
+  <div class="card"><b>Portfolio</b>${ptab}</div><div class="card"><b>Trade history</b> <span class="mut">(last 100)</span>${ttab}</div>`;
+}
+async function fetchUser(name){
+  UPtok[name] = true;
+  const {data, error} = await sb.rpc('user_profile', {p_username:name});
+  if (error) toast(error.message);
+  UP[name] = data || {missing:true};
+  render();
 }
 
 function pgMarkets(){
-  const list = markets.filter(m => FILTER === 'all' || (FILTER === 'open') === (m.status === 'open')).sort(sorters[SORT]);
+  const motw = FILTER === 'resolved' ? null : markets.find(m => m.is_motw && m.status === 'open');
+  const list = markets.filter(m => m !== motw && (FILTER === 'all' || (FILTER === 'open') === (m.status === 'open'))).sort(sorters[SORT]);
   return `<h1>Markets</h1><div class="tabs">${['open','resolved','all'].map(f => `<button class="${FILTER === f ? '' : 'g'}" onclick="setFilter('${f}')">${f[0].toUpperCase() + f.slice(1)}</button>`).join('')}<select style="margin-left:auto" onchange="setSort(this.value)">${Object.entries(SORTS).map(([k, v]) => `<option value="${k}"${SORT === k ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
-  <div class="grid">${list.map(m => {
+  <div class="grid">${motw ? motwCard(motw) : ''}${list.map(m => {
     const y = py(m), mine = P.some(p => p.market_id === m.id);
     return `<a class="card mk" href="#/market/${m.id}">${tags(m)}<b>${esc(m.question)}</b>${m.proposed_by ? `<div class="mut" style="margin-top:4px">Suggested by ${nm(m.proposed_by)}</div>` : ''}
     <div class="bar"><i style="width:${y*100}%"></i></div>
     <div class="split"><span style="color:var(--yes)">YES ${(y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-y)*100).toFixed(0)}%</span></div>
     <div class="mut" style="margin-top:6px">${mState(m)}${mine ? ' · you have a position' : ''}</div></a>`;
-  }).join('') || '<p class="mut">No markets here yet.</p>'}</div>`;
+  }).join('') || (motw ? '' : '<p class="mut">No markets here yet.</p>')}</div>`;
 }
 
-const stkLine = (m, p) => {
-  if (!STK) return '';
-  const b = Math.max(0, positionValue(m, p) - (+p.invested)) * (+STK.bonus_pct) / 100;
-  return b >= 0.005 ? `<br>Streak bonus: +${b.toFixed(2)}` : '';
+// total that lands in your account on cash-out: payout (2x profit on the Market of the Week) + streak bonus
+const cashTotal = (m, p) => {
+  const c = cashValue(m, p), b = STK ? Math.max(0, c - (+p.invested)) * (+STK.bonus_pct) / 100 : 0;
+  return c + b;
 };
 
 function pgMarket(id){
@@ -513,14 +547,14 @@ function pgMarket(id){
     <div class="row">${[10, 50, 100].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
     <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
   const pos = mine.map(p => {
-    const v = positionValue(m, p);
-    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>Cash out for: ${v.toFixed(1)}${stkLine(m, p)}</span>
+    const v = cashTotal(m, p);
+    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>You receive: ${v.toFixed(1)}</span>
     <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`;
   }).join('');
   const resolve = i.open && me.role !== 'user' ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
   return `<a href="#/markets" class="mut">← All markets</a><h1>${esc(m.question)}</h1>
-  <div class="mut">${mState(m)}${m.proposed_by ? ' · Suggested by ' + nm(m.proposed_by) : ''}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}</div>
+  <div class="mut">${mState(m)}${m.is_motw ? ' · <b>Market of the Week</b>: winners earn 2× their profit' : ''}${m.proposed_by ? ' · Suggested by ' + nm(m.proposed_by) : ''}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}</div>
   <div class="two"><div class="card"><div class="split big"><span style="color:var(--yes)">YES ${(i.y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-i.y)*100).toFixed(0)}%</span></div>
     <div class="bar"><i style="width:${i.y*100}%"></i></div>${chart(id)}</div>
   <div><div class="card"><b>Trade</b><div style="margin-top:8px">${trade}</div><p class="mut">Cooldown after each buy: ${+(m.cooldown_seconds / 3600).toFixed(1)} hours</p></div>
@@ -531,10 +565,10 @@ function pgPortfolio(){
   const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open' && +r.p.shares > 0);
   const tr = rows.map(({p, m}) => {
     const i = info(m);
-    return `<tr><td><a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${(+p.invested).toFixed(1)}</td><td>${(boughtAtPrice(m, p) * 100).toFixed(0)}%</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${positionValue(m, p).toFixed(1)}</td>
+    return `<tr><td><a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${(+p.invested).toFixed(1)}</td><td>${(boughtAtPrice(m, p) * 100).toFixed(0)}%</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${cashTotal(m, p).toFixed(1)}</td>
       <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td></tr>`;
   }).join('');
-  return `<h1>Portfolio</h1>${rows.length ? `<div class="card"><table><tr><th>Market</th><th>Side</th><th>Invested</th><th>Bought at</th><th>Now</th><th>Cash out for</th><th></th></tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
+  return `<h1>Portfolio</h1>${rows.length ? `<div class="card"><table><tr><th>Market</th><th>Side</th><th>Invested</th><th>Bought at</th><th>Now</th><th>You receive</th><th></th></tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
 }
 
 // Leaderboard + compact streak board, side by side
@@ -568,6 +602,10 @@ const pgRules = () => `<h1>Rules</h1><div class="card" style="max-width:760px">
 <li>No love life markets.</li>
 <li>No insults of any kind and no comments about identity, about a specific person or any group of people.</li>
 </ul>
+  <h2>Market of the Week</h2><p>One featured market sits at the top of the Markets page each week and resolves on Friday. If you win, or cash out at a profit, you earn <b>2 times your profit</b>. If you lose or cash out at a loss, it works as usual, with no extra loss.</p>
+  <h2>Rewards</h2><p>You earn <b>100 tokens</b> for every market you suggest that gets approved. You earn <b>300 tokens</b> for every friend who signs up with your referral link and confirms their email (they get 100 too).</p>
+  <h2>Trading Frenzy</h2><p>During the Trading Frenzy event, every buy and cash-out counts. The player with the most trades wins bonus tokens, and the current leader wears a special banner. See the <a href="#/frenzy">Trading Frenzy</a> page.</p>
+  <h2>Player profiles</h2><p>Click any player on a leaderboard to see their portfolio and trade history. You can hide yours from other players on your Account page.</p>
   <h2>Daily streaks</h2><p>Make at least 5 trades in a day to build a streak. Buys and cash-outs both count, and days run midnight to midnight Pacific Time. Each streak day adds 0.1% to the profit on your cash-outs, up to 10%. Missing a day resets the bonus to 0%.</p>
   <h2>Usernames and profiles</h2><p>Keep usernames and profile choices appropriate. Names that imitate staff are not allowed.</p>
   <h2>Fair play</h2><p>One account per person. Duplicate accounts or cheating can lead to disqualification. Collusion with other users is highly prohibited, though influencing the results of a market is encouraged. Automated trading programs will result in immediate disqualification.</p></div>`;
@@ -671,7 +709,7 @@ const specialAdminCard = () => `<div class="card" style="grid-column:1/-1"><b>Sp
   <p class="mut">These are earned, not bought. The player who qualifies gets the item equipped automatically (they can still unequip it), and it moves to the next player as soon as someone else takes the lead. Ties share it. Banners work best around 10:1 (like 1000 × 100); transparent PNGs work well for icons.</p>
   <div class="row"><label class="mut">Type<select id="spk" onchange="showSpecialPreview()"><option value="banner">Banner</option><option value="icon">Icon</option></select></label>
   <label class="mut">Name<input id="spn" maxlength="30" placeholder="e.g. Streak Champion"></label>
-  <label class="mut">Given to<select id="spc"><option value="top_streak">${CRIT.top_streak}</option><option value="top_referrals">${CRIT.top_referrals}</option></select></label></div>
+  <label class="mut">Given to<select id="spc"><option value="top_streak">${CRIT.top_streak}</option><option value="top_referrals">${CRIT.top_referrals}</option><option value="top_trades">${CRIT.top_trades}</option></select></label></div>
   <div class="row"><label class="up"><input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onchange="pickSpecialFile(this)" hidden><span class="btn">Choose image</span></label>
   <span class="mut">${SPFILE ? esc(SPFILE.name) : 'No image chosen'}</span>
   <button onclick="uploadSpecialItem()" ${SPFILE ? '' : 'disabled'}>Upload and create</button></div>
@@ -750,12 +788,14 @@ function pgAccount(){
     <div class="card"><b>Profile picture</b><div class="row">${avatar(me.username, 56)}<label class="up"><input type="file" accept="image/jpeg,image/png,image/webp" onchange="uploadAvatar(this)" hidden><span class="btn">Upload image</span></label>${me.avatar_path ? '<button class="g" onclick="rmAvatar()">Remove</button>' : ''}</div>
       <p class="mut">Or pick an emoji:</p><div class="avs">${AV.map((e, i) => `<button class="g${me.avatar === 'a' + i && !me.avatar_path ? ' sel' : ''}" onclick="look({avatar:'a${i}'})">${e}</button>`).join('')}</div></div>
     <div class="card"><b>Username</b><input id="nu" value="${esc(me.username)}" maxlength="20"><div class="row"><button onclick="rpc('change_username',{p_name:$('#nu').value},'Username updated')">Save username</button></div><p class="mut" style="margin-bottom:0">3-20 letters, numbers, . _ - · once every 24 hours.</p></div>
+    <div class="card"><b>Privacy</b><p class="mut">Other players can open your profile from the leaderboards. Choose whether they can see your portfolio and trade history.</p>
+      <div class="row"><button class="g${me.show_activity !== false ? ' sel' : ''}" onclick="setVisible(true)">Visible</button><button class="g${me.show_activity === false ? ' sel' : ''}" onclick="setVisible(false)">Hidden</button></div></div>
     <div class="card"><b>Color theme</b>${pick(THEMES, 'theme')}
       <div style="margin-top:14px"><b>Make your own</b><div class="row">${col('cbg', 'Background', 'bg', '#f3f6fb')}${col('ccard', 'Cards', 'card', '#ffffff')}${col('cfg', 'Text', 'fg', '#0f172a')}${col('cacc', 'Highlight', 'acc', '#2f6bd8')}</div>
       <div class="row"><button onclick="saveColors()">Save custom colors</button></div></div>
       <div style="margin-top:14px"><b>Background pattern</b></div>${pick(PATS, 'pattern')}</div>
     <div class="card"><b>Banner and icon</b><p class="mut">Buy them in the <a href="#/shop">Shop</a>, then equip them from your <a href="#/inventory">Inventory</a>.</p></div>
-    <div class="card"><b>Your referral link</b><p class="mut">Every friend who signs up and confirms their email earns you both a bonus.</p><input readonly value="${esc(refLink())}" onclick="this.select()"><div class="row"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div></div>
+    <div class="card"><b>Your referral link</b><p class="mut">Earn ${REFERRER_BONUS} tokens for every friend who signs up and confirms their email. They get ${FRIEND_BONUS} too.</p><input readonly value="${esc(refLink())}" onclick="this.select()"><div class="row"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div></div>
     ${me.role === 'user' ? `<div class="card"><b>Have an admin invite code?</b><input id="ic" placeholder="Code"><div class="row"><button onclick="redeem()">Redeem</button></div></div>` : ''}
   </div></div>`;
 }
@@ -850,25 +890,27 @@ function render(){
   const staff = me.role !== 'user', owner = me.role === 'owner';
   const pend = PR.filter(p => p.status === 'pending').length;
   const meBn = itemById(me.banner);
-  const link = (id, label, badge) => `<a href="#/${id}" class="${id === pg || (id === 'markets' && pg === 'market') ? 'on' : ''}">${svg(IC[id])}${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
-  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, race: pgRace, shop: pgShop, ideas: pgIdeas, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount, inventory: pgInventory};
+  const link = (id, label, badge) => `<a href="#/${id}" class="${id === pg || (id === 'markets' && pg === 'market') || (id === 'leaderboard' && pg === 'user') ? 'on' : ''}">${svg(IC[id])}${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
+  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, frenzy: pgFrenzy, user: () => pgUser(decodeURIComponent(arg || '')), shop: pgShop, ideas: pgIdeas, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount, inventory: pgInventory};
   const ok = {create: staff, review: staff, admin: owner, suggest: !staff};
   const waiting = BLOCKING[pg] && (EXTRAS[pg] || []).some(k => !LOADED[k]);
   const body = !pages[pg] ? '<p>Page not found.</p>' : (pg in ok && !ok[pg]) ? '<p class="mut">You do not have access to this page.</p>' : waiting ? '<p class="mut">Loading...</p>' : pages[pg]();
 
   $('#app').innerHTML = `<div id="shell"><nav><h2>EagleEye Market</h2>
-    ${link('race', 'Referral Race')}${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('shop', 'Shop')}${link('ideas', 'Idea Box', ideaNew() || '')}${link('rules', 'Rules')}
+    ${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('frenzy', 'Trading Frenzy')}${link('shop', 'Shop')}${link('ideas', 'Idea Box', ideaNew() || '')}${link('rules', 'Rules')}
     ${staff ? link('create', 'Create market') + link('review', 'Review', pend || '') : link('suggest', 'Suggest a market')}
     ${owner ? link('admin', 'Admin tools') : ''}
+    <div class="navref"><span class="mut">Your referral link</span><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your referral link"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div>
     <a href="#/account" class="me${pg === 'account' || pg === 'inventory' ? ' on' : ''}${meBn ? ' bn' : ''}"${meBn ? ` style="${esc(bannerStyle(meBn))}"` : ''}>${avatar(me.username, 30)}<span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis">${esc(me.username)}</b><span class="mut">${(+me.balance).toFixed(0)} tokens</span></span></a>
-    </nav><main><div class="card split"><span><span class="chip">SEASON</span> <b id="cd" style="font-weight:500">${cdText()}</b></span><a href="#/rules">Rules</a></div><div id="rb">${pg === 'race' ? '' : refBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
+    </nav><main><div class="card split"><span><span class="chip">SEASON</span> <b id="cd" style="font-weight:500">${cdText()}</b></span><a href="#/rules">Rules</a></div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
 
   for (const k in keep) { const el = document.getElementById(k); if (el) el.value = keep[k]; }
   if (pg === 'admin') { showShopPreview(); showSpecialPreview(); }
   if (pg === 'market' && staff && !MTok[+arg]) fetchTrades(+arg);
+  if (pg === 'user' && arg && !UPtok[decodeURIComponent(arg)]) fetchUser(decodeURIComponent(arg));
 }
 
-addEventListener('hashchange', () => { render(); scrollTo(0, 0); ensureExtras(); });
+addEventListener('hashchange', () => { UPtok = {}; render(); scrollTo(0, 0); ensureExtras(); });
 
 const tradesCard = id => {
   if (me.role === 'user') return '';
@@ -883,13 +925,15 @@ const toLocalInput = iso => { const d = new Date(iso); d.setMinutes(d.getMinutes
 
 const adminBox = m => me.role === 'user' ? '' : `<div class="card"><b>Admin controls</b>
   ${m.status === 'open' ? `<div class="row"><button class="g" onclick="promote(${m.id},${!m.promoted_at})">${m.promoted_at ? 'Remove promotion' : 'Promote to top of Markets page'}</button>
-  <button class="g" onclick="boost(${m.id},${!m.boosted_at})">${m.boosted_at ? 'Remove untagged promotion' : 'Promote without a tag'}</button></div>
+  <button class="g" onclick="boost(${m.id},${!m.boosted_at})">${m.boosted_at ? 'Remove untagged promotion' : 'Promote without a tag'}</button>
+  <button class="g" onclick="setMotw(${m.id},${!m.is_motw})">${m.is_motw ? 'Remove Market of the Week' : 'Make Market of the Week'}</button></div>
   <label class="mut" style="margin-top:12px">Close time<input id="cl${m.id}" type="datetime-local" value="${m.closes_at ? toLocalInput(m.closes_at) : ''}"></label>
   <div class="row"><button class="g" onclick="setClose(${m.id})">Save close time</button><button class="g" onclick="clearClose(${m.id})">No close time</button></div>
   <label class="mut" style="margin-top:12px">Cooldown (hours)<input id="ck${m.id}" type="number" min="0" step="0.5" value="${+(m.cooldown_seconds / 3600).toFixed(2)}"></label>
   <div class="row"><button class="g" onclick="setCooldown(${m.id})">Save cooldown</button></div>` : '<p class="mut">Controls are available while a market is open.</p>'}</div>`;
 
 const promote = (id, on) => rpc('promote_market', {p_market:id, p_on:on});
+const setMotw = (id, on) => rpc('set_motw', {p_market:id, p_on:on});
 const setCooldown = id => {
   const h = parseFloat($('#ck'+id).value);
   if (!(h >= 0)) return toast('Enter the cooldown in hours.');
