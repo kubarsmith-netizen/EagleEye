@@ -154,6 +154,19 @@ nav a,.chip,.rc,.rank,.nm{border-radius:12px}
 #t{border-radius:14px}
 /* inventory: earned items you do not hold yet */
 .dim{opacity:.6}
+/* markets: tabs + search + sort on one row */
+.tabs{flex-wrap:wrap}
+.tabs .search{flex:0 1 260px;width:auto;min-width:150px;max-width:none;height:40px;margin:0 0 0 auto}
+/* leaderboard: both columns share the same rows, so headings, controls and lists line up and match in height */
+.boardwrap{grid-template-rows:auto auto auto 1fr;column-gap:20px;row-gap:0;align-items:stretch}
+.boardwrap>div{display:grid;grid-template-rows:subgrid;grid-row:span 4}
+.boardwrap h1{font-size:25px;margin:0 0 8px}
+.boardwrap>div>p{margin:0 0 12px}
+.boardwrap .card{margin:0}
+.lbtools{display:flex;align-items:center;gap:8px;height:40px;margin:0 0 12px}
+.lbtools .search{flex:1 1 auto;width:auto;max-width:none;height:40px;margin:0}
+.lbtools select{height:40px;margin:0;padding:0 12px}
+@media(max-width:1000px){.boardwrap,.boardwrap>div{display:block}.boardwrap .card{margin:0 0 16px}}
 </style>
 <link rel="icon" href="/favicon.ico">
 </head>
@@ -181,6 +194,9 @@ let SHOPFILE = null, SHOPFILE_URL = '';
 // special (earned) banners and icons
 let SPECIAL = [], SHELD = [], SHOLD = [], SPFILE = null, SPFILE_URL = '';
 let lastRender = 0;
+let LBX = true, LBSORT = 'tokens_desc';
+const LBSORTS = {tokens_desc:'Most tokens', tokens_asc:'Fewest tokens', trades_desc:'Most trades', trades_asc:'Fewest trades', profit_desc:'Biggest profit', profit_asc:'Biggest loss'};
+const LBCOL = {tokens:'Tokens', trades:'Trades', profit:'Profit'};
 
 const AV = ['🦅','🐺','🦊','🐼','🐯','🦁','🐸','🐙','🦉','🐧','🦄','🐲','🚀','⚡','🌙','🔥','🎯','🎲','🎸','📈','🧠','👾','🎨','🏀'];
 const THEMES = {light:'Light', dark:'Dark', slate:'Slate', midnight:'Midnight', custom:'Custom'};
@@ -335,7 +351,11 @@ const FETCH = {
   ev: async () => { const r = await sb.rpc('referral_event_info'); REV = r.data || null; return r; },
   act: async () => { const r = await sb.rpc('market_activity'); ACT = {}; (r.data || []).forEach(x => { ACT[x.market_id] = x.recent; }); return r; },
   pts: async () => { const r = await sb.rpc('price_points'); T = r.data || []; return r; },
-  lb: async () => { const r = await sb.rpc('leaderboard'); LB = r.data || []; return r; },
+  lb: async () => {
+    let r = await sb.rpc('leaderboard_plus');
+    if (r.error) { r = await sb.rpc('leaderboard'); LBX = false; } else LBX = true;
+    LB = r.data || []; return r;
+  },
   final: async () => { const r = await sb.from('season_final').select('place,username,score').order('place'); FINAL = r.data || []; return r; },
   staff: async () => { const r = await sb.from('profiles').select('username,role').neq('role','user'); STAFF = r.data || []; return r; },
   inv: async () => { const r = await sb.from('invite_codes').select('code,used_by'); INV = r.data || []; return r; },
@@ -538,25 +558,25 @@ async function fetchUser(name){
 let QM = '', QU = '';
 const matchQ = (q, ...fields) => { q = q.trim().toLowerCase(); return !q || fields.some(f => String(f || '').toLowerCase().includes(q)); };
 
-// the grid of market cards; while searching, every market is searched (open and resolved)
+// the grid of market cards; while searching, only open (active) markets are searched
 function marketGrid(){
   const searching = QM.trim() !== '';
   const ok = m => matchQ(QM, m.question, m.proposed_by);
   const m0 = (searching || FILTER !== 'resolved') ? markets.find(m => m.is_motw && m.status === 'open') : null;
   const motw = m0 && ok(m0) ? m0 : null;
-  const list = markets.filter(m => m !== motw && ok(m) && (searching || FILTER === 'all' || (FILTER === 'open') === (m.status === 'open'))).sort(sorters[SORT]);
+  const list = markets.filter(m => m !== motw && ok(m) && (searching ? m.status === 'open' : (FILTER === 'all' || (FILTER === 'open') === (m.status === 'open')))).sort(sorters[SORT]);
   return (motw ? motwCard(motw) : '') + (list.map(m => {
     const y = py(m), mine = P.some(p => p.market_id === m.id);
     return `<a class="card mk" href="#/market/${m.id}">${tags(m)}<b>${esc(m.question)}</b>${m.proposed_by ? `<div class="mut" style="margin-top:4px">Suggested by ${nm(m.proposed_by)}</div>` : ''}
     <div class="bar"><i style="width:${y*100}%"></i></div>
     <div class="split"><span style="color:var(--yes)">YES ${(y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-y)*100).toFixed(0)}%</span></div>
     <div class="mut" style="margin-top:6px">${mState(m)}${mine ? ' · you have a position' : ''}</div></a>`;
-  }).join('') || (motw ? '' : `<p class="mut">${searching ? 'No markets match your search.' : 'No markets here yet.'}</p>`));
+  }).join('') || (motw ? '' : `<p class="mut">${searching ? 'No active markets match your search.' : 'No markets here yet.'}</p>`));
 }
 
 function pgMarkets(){
-  return `<h1>Markets</h1><input id="qm" class="search" type="search" placeholder="Search markets" value="${esc(QM)}" autocomplete="off" oninput="QM=this.value;$('#mg').innerHTML=marketGrid()">
-  <div class="tabs">${['open','resolved','all'].map(f => `<button class="${FILTER === f ? '' : 'g'}" onclick="setFilter('${f}')">${f[0].toUpperCase() + f.slice(1)}</button>`).join('')}<select style="margin-left:auto" onchange="setSort(this.value)">${Object.entries(SORTS).map(([k, v]) => `<option value="${k}"${SORT === k ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
+  return `<h1>Markets</h1>
+  <div class="tabs">${['open','resolved','all'].map(f => `<button class="${FILTER === f ? '' : 'g'}" onclick="setFilter('${f}')">${f[0].toUpperCase() + f.slice(1)}</button>`).join('')}<input id="qm" class="search" type="search" placeholder="Search active markets" value="${esc(QM)}" autocomplete="off" oninput="QM=this.value;$('#mg').innerHTML=marketGrid()"><select onchange="setSort(this.value)">${Object.entries(SORTS).map(([k, v]) => `<option value="${k}"${SORT === k ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
   <div class="grid" id="mg">${marketGrid()}</div>`;
 }
 
@@ -604,19 +624,28 @@ function pgPortfolio(){
 }
 
 // Leaderboard + compact streak board, side by side
-// leaderboard rows, filtered by the search box; each row keeps its real rank
+// leaderboard rows: sorted by the chosen option, then filtered by the search box (ranks follow the sort)
 function boardRows(){
-  const rows = (FINAL.length ? FINAL : LB).map((r, i) => ({r, i})).filter(x => matchQ(QU, x.r.username))
-    .map(x => lbRow(x.i, x.r.username, (+x.r.score).toFixed(1), 44)).join('');
-  return rows || '<p class="mut">No players match your search.</p>';
+  const mode = LBX ? LBSORT : 'tokens_desc', [key, dir] = mode.split('_'), by = {};
+  LB.forEach(r => { by[r.username] = r; });
+  const rows = (FINAL.length ? FINAL : LB).map(r => ({u: r.username, score: +r.score, trades: +(by[r.username] || {}).trades || 0, profit: +(by[r.username] || {}).profit || 0}));
+  const v = r => key === 'tokens' ? r.score : r[key];
+  rows.sort((a, b) => (dir === 'asc' ? v(a) - v(b) : v(b) - v(a)) || b.score - a.score || a.u.localeCompare(b.u));
+  const fmt = r => key === 'trades' ? r.trades : key === 'profit' ? (r.profit >= 0 ? '+' : '') + r.profit.toFixed(1) : r.score.toFixed(1);
+  const html = rows.map((r, i) => ({r, i})).filter(x => matchQ(QU, x.r.u)).map(x => lbRow(x.i, x.r.u, fmt(x.r), 44)).join('');
+  return html || '<p class="mut">No players match your search.</p>';
 }
 function pgBoard(){
+  const mode = LBX ? LBSORT : 'tokens_desc', key = mode.split('_')[0];
+  const opts = Object.entries(LBSORTS).filter(([k]) => LBX || k.startsWith('tokens')).map(([k, v]) => `<option value="${k}"${mode === k ? ' selected' : ''}>${v}</option>`).join('');
   const srows = SBD.slice(0, 8).map((r, i) => lbRow(i, r.username, '🔥 ' + r.streak, 34)).join('');
-  return `<div class="boardwrap"><div><h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Cash plus open stakes (at cost).'}</p>
-    <input id="qu" class="search" type="search" placeholder="Search players" value="${esc(QU)}" autocomplete="off" oninput="QU=this.value;$('#lres').innerHTML=boardRows()">
-    <div class="card"><div class="lb"><div class="lbh"><span>#</span><span>Player</span><span>Tokens</span></div><div class="lb" id="lres">${boardRows()}</div></div></div></div>
+  return `<div class="boardwrap">
+    <div><h1>${FINAL.length ? 'Final standings' : 'Leaderboard'}</h1><p class="mut">${FINAL.length ? 'Recorded when the season ended.' : 'Cash plus open stakes (at cost).'}</p>
+      <div class="lbtools"><input id="qu" class="search" type="search" placeholder="Search players" value="${esc(QU)}" autocomplete="off" oninput="QU=this.value;$('#lres').innerHTML=boardRows()"><select onchange="LBSORT=this.value;render()" aria-label="Sort leaderboard">${opts}</select></div>
+      <div class="card"><div class="lb"><div class="lbh"><span>#</span><span>Player</span><span>${LBCOL[key]}</span></div><div class="lb" id="lres">${boardRows()}</div></div></div></div>
     <div class="sm"><h1>Streaks</h1><p class="mut">5+ trades a day. +0.1% cash-out profit per day, max 10%.</p>
-    <div class="card">${SBD.length ? `<div class="lb"><div class="lbh"><span>#</span><span>Player</span><span>Streak</span></div>${srows}</div>` : '<p class="mut">No streaks yet.</p>'}</div></div></div>`;
+      <div class="lbtools"><span class="mut">Top 8 current streaks</span></div>
+      <div class="card">${SBD.length ? `<div class="lb"><div class="lbh"><span>#</span><span>Player</span><span>Streak</span></div>${srows}</div>` : '<p class="mut">No streaks yet.</p>'}</div></div></div>`;
 }
 
 const hrs = s => +((+s || 3600) / 3600).toFixed(2) + 'h';
