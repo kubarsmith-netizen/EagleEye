@@ -509,7 +509,7 @@ function frenzyBanner(){
   const lead = (TE.leaders || [])[0];
   const blurb = ended
     ? 'The Trading Frenzy is over!' + (TE.winner ? ' Congrats to <b>' + esc(TE.winner) + '</b>!' : '')
-    : '<b>Trading Frenzy!</b> Every buy and cash-out counts. Most trades by ' + end + ' wins ' + TE.prize + ' bonus tokens and a special banner.' + (lead ? ' Leading now: <b>' + esc(lead.username) + '</b> (' + lead.n + ').' : '');
+    : '<b>Trading Frenzy!</b> Every buy and cash-out above 200 tokens counts. Most trades by ' + end + ' wins ' + TE.prize + ' bonus tokens and a special banner.' + (lead ? ' Leading now: <b>' + esc(lead.username) + '</b> (' + lead.n + ').' : '');
   return `<div class="ev-bar"><div class="blurb"><span class="chip ev">EVENT</span> ${blurb}</div><span class="rc">Your trades: <b>${TE.mine}</b></span><a href="#/frenzy">Leaderboard</a></div>`;
 }
 
@@ -672,7 +672,7 @@ const pgRules = () => `<h1>Rules</h1><div class="card" style="max-width:760px">
 </ul>
   <h2>Market of the Week</h2><p>One featured market sits at the top of the Markets page each week and resolves on Friday. If you win, or cash out at a profit, you earn <b>2 times your profit</b>. If you lose or cash out at a loss, it works as usual, with no extra loss.</p>
   <h2>Rewards</h2><p>You earn <b>300 tokens</b> for every market you suggest that gets approved. You earn <b>300 tokens</b> for every friend who signs up with your referral link and confirms their email (they get 100 too).</p>
-  <h2>Trading Frenzy</h2><p>During the Trading Frenzy event, every buy and cash-out counts. The player with the most trades wins bonus tokens, and the current leader wears a special banner. See the <a href="#/frenzy">Trading Frenzy</a> page.</p>
+  <h2>Trading Frenzy</h2><p>During the Trading Frenzy event, every buy and cash-out above 200 tokens counts. The player with the most trades wins bonus tokens, and the current leader wears a special banner. See the <a href="#/frenzy">Trading Frenzy</a> page.</p>
   <h2>Player profiles</h2><p>Click any player on a leaderboard to see their portfolio and trade history. You can hide yours from other players on your Account page.</p>
   <h2>Daily streaks</h2><p>Make at least 5 trades in a day to build a streak. Buys and cash-outs both count, and days run midnight to midnight Pacific Time. Each streak day adds 0.1% to the profit on your cash-outs, up to 10%. Missing a day resets the bonus to 0%.</p>
   <h2>Usernames and profiles</h2><p>Keep usernames and profile choices appropriate. Names that imitate staff are not allowed.</p>
