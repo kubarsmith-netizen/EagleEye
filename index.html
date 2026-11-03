@@ -16,11 +16,13 @@
 [data-theme=midnight]{--bg:#081022;--fg:#e6ecf8;--card:#0f1a33;--mut:#8d9bb8;--line:#1b2a4a;--bd:#35508a;--yes:#38b886;--no:#d96a63;--acc:#4d9cff;--side:#0a1429;--hov:#15244a}
 [data-theme=custom]{--side:var(--card);--line:color-mix(in srgb,var(--fg) 16%,var(--bg));--bd:color-mix(in srgb,var(--fg) 34%,var(--bg));--hov:color-mix(in srgb,var(--acc) 12%,var(--card));--mut:color-mix(in srgb,var(--fg) 58%,var(--bg))}
 :root{--grad:linear-gradient(120deg,color-mix(in srgb,var(--acc) 22%,var(--card)),color-mix(in srgb,var(--acc) 5%,var(--card)))}
+/* Pattern look: its own color (--patc, defaults to the theme line color) and prominence (--patp, 0-100%) */
+:root{--patc:var(--line);--patp:100%;--pat:color-mix(in srgb,var(--patc) var(--patp),transparent)}
 /* Background pattern lives on a fixed layer, so it stays put while the page scrolls */
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none}
-[data-pat=dots] body::before{background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:16px 16px}
-[data-pat=grid] body::before{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:28px 28px}
-[data-pat=lines] body::before{background-image:repeating-linear-gradient(45deg,var(--line) 0 1px,transparent 1px 14px)}
+[data-pat=dots] body::before{background-image:radial-gradient(var(--pat) 1px,transparent 1px);background-size:16px 16px}
+[data-pat=grid] body::before{background-image:linear-gradient(var(--pat) 1px,transparent 1px),linear-gradient(90deg,var(--pat) 1px,transparent 1px);background-size:28px 28px}
+[data-pat=lines] body::before{background-image:repeating-linear-gradient(45deg,var(--pat) 0 1px,transparent 1px 14px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 h1{margin:0 0 8px;font-size:25px;font-weight:600;letter-spacing:-.01em}
@@ -81,6 +83,7 @@ button.g:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
 .btn{display:inline-block;padding:9px 14px;border-radius:6px;background:var(--acc);color:#fff;cursor:pointer;font-weight:500}
 label.up{flex:none;min-width:0}
 .clr input{padding:2px;height:38px;cursor:pointer}
+input[type=range]{padding:0;height:24px;border:0;background:none;accent-color:var(--acc);cursor:pointer}
 .sel{outline:var(--bw) solid var(--acc);outline-offset:1px}
 table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:9px 10px;border-bottom:var(--bw) solid var(--line)}
@@ -269,11 +272,18 @@ function setTheme(t){
   setTheme(THEMES[t] ? t : 'dark');
 })();
 const toggleTheme = () => { setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'); render(); };
+const applyPat = (c, s) => {
+  if (/^#[0-9a-f]{6}$/i.test(c || '')) root.style.setProperty('--patc', c); else root.style.removeProperty('--patc');
+  const n = s == null ? 100 : Math.min(100, Math.max(0, +s || 0));
+  root.style.setProperty('--patp', n + '%');
+};
+const patStr = () => me.pattern_strength == null ? 100 : +me.pattern_strength;
 const applyLook = () => {
   if (me.theme && THEMES[me.theme]) setTheme(me.theme);
   for (const k in CK) root.style.removeProperty(CK[k]);
   if (me.theme === 'custom' && me.colors) for (const k in CK) if (/^#[0-9a-f]{6}$/i.test(me.colors[k] || '')) root.style.setProperty(CK[k], me.colors[k]);
   root.dataset.pat = me.pattern || 'none';
+  applyPat(me.pattern_color, me.pattern_strength);
 };
 
 const go = h => { location.hash = '#/' + h; };
@@ -861,7 +871,10 @@ function pgAccount(){
     <div class="card"><b>Color theme</b>${pick(THEMES, 'theme')}
       <div style="margin-top:14px"><b>Make your own</b><div class="row">${col('cbg', 'Background', 'bg', '#f3f6fb')}${col('ccard', 'Cards', 'card', '#ffffff')}${col('cfg', 'Text', 'fg', '#0f172a')}${col('cacc', 'Highlight', 'acc', '#2f6bd8')}</div>
       <div class="row"><button onclick="saveColors()">Save custom colors</button></div></div>
-      <div style="margin-top:14px"><b>Background pattern</b></div>${pick(PATS, 'pattern')}</div>
+      <div style="margin-top:14px"><b>Background pattern</b></div>${pick(PATS, 'pattern')}
+      <div class="row"><label class="mut clr">Pattern color<input id="cpat" type="color" value="${esc(me.pattern_color || '#5b6678')}" oninput="this.dataset.t=1;prevPat()"></label>
+      <label class="mut">Prominence: <b id="patv">${patStr()}</b>%<input id="cpps" type="range" min="0" max="100" step="5" value="${patStr()}" oninput="prevPat()"></label></div>
+      <div class="row"><button onclick="savePat()">Save pattern look</button><button class="g" onclick="patReset()">Reset</button></div></div>
     <div class="card"><b>Banner and icon</b><p class="mut">Buy them in the <a href="#/shop">Shop</a>, then equip them from your <a href="#/inventory">Inventory</a>.</p></div>
     <div class="card"><b>Your referral link</b><p class="mut">Earn ${REFERRER_BONUS} tokens for every friend who signs up and confirms their email. They get ${FRIEND_BONUS} too.</p><input readonly value="${esc(refLink())}" onclick="this.select()"><div class="row"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div></div>
     ${me.role === 'user' ? `<div class="card"><b>Have an admin invite code?</b><input id="ic" placeholder="Code"><div class="row"><button onclick="redeem()">Redeem</button></div></div>` : ''}
@@ -894,6 +907,14 @@ function pgInventory(){
 const look = o => rpc('set_look', {p_avatar:o.avatar || null, p_theme:o.theme || null, p_pattern:o.pattern || null}, 'Saved');
 const prevC = () => { root.dataset.theme = 'custom'; [['bg','cbg'],['card','ccard'],['fg','cfg'],['acc','cacc']].forEach(([k, i]) => root.style.setProperty(CK[k], $('#' + i).value)); };
 const saveColors = () => rpc('set_colors', {p_bg:$('#cbg').value, p_card:$('#ccard').value, p_fg:$('#cfg').value, p_acc:$('#cacc').value}, 'Colors saved');
+const prevPat = () => {
+  const c = $('#cpat'), n = +$('#cpps').value;
+  if (c.dataset.t || me.pattern_color) root.style.setProperty('--patc', c.value);
+  root.style.setProperty('--patp', n + '%');
+  $('#patv').textContent = n;
+};
+const savePat = () => { const c = $('#cpat'); rpc('set_pattern_look', {p_color:(c.dataset.t || me.pattern_color) ? c.value : null, p_strength:+$('#cpps').value}, 'Pattern look saved'); };
+const patReset = () => rpc('set_pattern_look', {p_color:null, p_strength:100}, 'Pattern look reset');
 const rmAvatar = async () => { const old = me.avatar_path; await rpc('set_avatar_path', {p_path:null}, 'Picture removed'); if (old) sb.storage.from('avatars').remove([old]); };
 function uploadAvatar(inp){
   const f = inp.files[0]; inp.value = '';
