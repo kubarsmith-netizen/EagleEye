@@ -522,7 +522,7 @@ function pgFrenzy(){
   const end = new Date(TE.ends_at).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
   const status = ended ? (TE.winner ? 'Winner: <b>' + esc(TE.winner) + '</b> (+' + TE.prize + ' tokens)' : 'The event has ended') : 'Ends ' + end;
   const standing = at >= 0 ? 'You are #' + (at + 1) : (TE.mine > 0 ? 'Not in the top 10 yet' : 'No trades yet');
-  return `<h1>${esc(TE.title || 'Trading Frenzy')}</h1><div class="card"><p style="margin-top:0">Every buy and every cash-out counts as a trade. The player with the most trades during the event wins a bonus <b>${TE.prize} tokens</b>, and while they lead they wear the special banner. Ties go to whoever reached the count first.</p>
+  return `<h1>${esc(TE.title || 'Trading Frenzy')}</h1><div class="card"><p style="margin-top:0">Every buy and every cash-out above 200 tokens counts as a trade. The player with the most trades during the event wins a bonus <b>${TE.prize} tokens</b>, and while they lead they wear the special banner. Ties go to whoever reached the count first.</p>
     <div class="ev-stats"><span class="rc">${status}</span><span class="rc">Your trades: <b>${TE.mine}</b></span><span class="rc">${standing}</span></div></div>
   <div class="card"><b>Top 10</b>${rows ? `<div class="lb" style="margin-top:10px"><div class="lbh"><span>#</span><span>Player</span><span>Trades</span></div>${rows}</div>` : '<p class="mut">No trades yet. Be the first!</p>'}</div>`;
 }
