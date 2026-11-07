@@ -184,7 +184,10 @@ const SUPABASE_KEY = 'sb_publishable_mwgMhSwlsfRnOtu3h8-hUA_F7xjnxAV';
 const ALLOWED_DOMAINS = ['headroyce.org'];
 const REFERRER_BONUS = 300, FRIEND_BONUS = 100; // keep equal to v_ref_bonus / v_new_bonus in the award_referral SQL function
 
+let RECOVERY = /type=recovery/.test(location.hash); // true while a password-reset link is being used
+const LINK_EXPIRED = /error_code=otp_expired|error_description=.*(expired|invalid)/i.test(location.hash);
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+sb.auth.onAuthStateChange(ev => { if (ev === 'PASSWORD_RECOVERY') { RECOVERY = true; setTimeout(load, 0); } });
 try { const r = new URLSearchParams(location.search).get('ref'); if (r) localStorage.setItem('ref', r.trim().toLowerCase().slice(0, 16)); } catch (e) {}
 const savedRef = () => { try { return localStorage.getItem('ref') || ''; } catch (e) { return ''; } };
 const $ = s => document.querySelector(s);
@@ -336,7 +339,41 @@ function authView(){
   $('#app').innerHTML = `<div style="max-width:400px;margin:12vh auto;padding:16px"><div class="card"><h1>EagleEye Market</h1>
   <p class="mut">Please sign up with your Head-Royce email</p>
   <input id="u" placeholder="Username (sign up only, 3-20 letters/numbers)" maxlength="20"><input id="e" type="email" placeholder="Email"><input id="p" type="password" placeholder="Password" minlength="8">
-  <div class="row"><button onclick="auth(true)">Log in</button><button class="g" onclick="auth(false)">Sign up</button><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button></div></div></div>`;
+  <div class="row"><button onclick="auth(true)">Log in</button><button class="g" onclick="auth(false)">Sign up</button><button class="g" onclick="toggleTheme()">${root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode'}</button></div>
+  <div class="row" style="margin-top:8px"><button class="g" onclick="forgotPassword()">Forgot password?</button></div></div></div>`;
+}
+
+async function forgotPassword(){
+  const email = $('#e').value.trim();
+  if (!email) return toast('Type your email in the Email box first, then tap Forgot password.');
+  const r = await sb.auth.resetPasswordForEmail(email, {redirectTo: location.origin + location.pathname});
+  if (r.error) return toast(r.error.message);
+  toast('If that email has an account, a password reset link is on its way. Check your inbox.');
+}
+
+function resetView(){
+  $('#app').innerHTML = `<div style="max-width:400px;margin:12vh auto;padding:16px"><div class="card"><h1>Reset password</h1>
+  <p class="mut">Choose a new password for your account.</p>
+  <input id="np" type="password" placeholder="New password (8+ characters)" minlength="8"><input id="np2" type="password" placeholder="Confirm new password" minlength="8">
+  <div class="row"><button onclick="setNewPassword()">Update password</button><button class="g" onclick="cancelReset()">Cancel</button></div></div></div>`;
+}
+async function setNewPassword(){
+  const a = $('#np').value, b = $('#np2').value;
+  if (a.length < 8) return toast('Use a password of at least 8 characters.');
+  if (a !== b) return toast('The two passwords do not match.');
+  const r = await sb.auth.updateUser({password: a});
+  if (r.error) return toast(r.error.message);
+  await sb.auth.signOut();
+  RECOVERY = false; me = null; resetCaches();
+  history.replaceState(null, '', location.pathname + location.search);
+  authView();
+  toast('Password updated! Log in with your new password.');
+}
+async function cancelReset(){
+  await sb.auth.signOut();
+  RECOVERY = false; me = null; resetCaches();
+  history.replaceState(null, '', location.pathname + location.search);
+  authView();
 }
 async function auth(login){
   const email = $('#e').value.trim(), password = $('#p').value, username = $('#u').value.trim();
@@ -437,6 +474,8 @@ function resetCaches(){
 
 async function load(){
   const {data:{session}} = await sb.auth.getSession();
+  if (RECOVERY && !session) RECOVERY = false;
+  if (RECOVERY) { me = null; return render(); }
   if (!session) { me = null; resetCaches(); return render(); }
   const [a, b, c, d] = await Promise.all([
     sb.from('profiles').select().eq('id', session.user.id).single(),
@@ -972,6 +1011,7 @@ function streakBadge(){
 // ---------- shell + router ----------
 function render(){
   lastRender = Date.now();
+  if (RECOVERY) return resetView();
   if (!me) return authView();
   const keep = {};
   document.querySelectorAll('input[id],textarea[id],select[id]').forEach(i => keep[i.id] = i.value);
@@ -1083,6 +1123,7 @@ async function checkReferralAlerts(){
 setInterval(() => { if (!document.hidden) checkReferralAlerts(); }, 30000);
 
 load().then(checkReferralAlerts);
+if (LINK_EXPIRED) { history.replaceState(null, '', location.pathname + location.search); setTimeout(() => toast('That reset link has expired or was already used. Tap Forgot password to get a new one.'), 400); }
 </script>
 </body>
 </html>
