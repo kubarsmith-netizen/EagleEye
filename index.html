@@ -285,16 +285,16 @@ nav a{white-space:nowrap;gap:9px}
 .event-bar a.pill:hover{filter:brightness(1.08)}
 
 /* ---- banner: darker, wider, bouncy buttons ---- */
-.feast-bar{background:linear-gradient(110deg,#5c240c,#7a3510 55%,#964818);border-color:#7a3510;color:#f1dcc0}
+.feast-bar{background:linear-gradient(110deg,#74310e,#9a4513 55%,#b8591a);border-color:#9a4513;color:#f1dcc0}
 .feast-bar a,.feast-bar .fb-ev .ev-txt a{color:#f1dcc0}
 .feast-bar .fb-top a{display:inline-block}
 .feast-bar a.pill{background:#d8b88e;color:#4a1d0a;box-shadow:0 2px 0 #2e1206}
 .feast-bar .meter{background:#2e120655;border-color:#f1dcc066}
 .chip.ev{background:#d8b88e;color:#4a1d0a;border-color:#d8b88e}
-@keyframes btnbounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}55%{transform:translateY(0)}75%{transform:translateY(-3px)}}
-.feast-bar a.pill:hover,.feast-bar .fb-top a:hover,.feast-bar button:hover{animation:btnbounce .6s ease-in-out infinite;filter:none}
+.feast-bar a.pill,.feast-bar .fb-top a,.feast-bar button{transition:transform .4s cubic-bezier(.34,1.9,.64,1)}
+.feast-bar a.pill:hover,.feast-bar .fb-top a:hover,.feast-bar button:hover{transform:translateY(-7px);filter:none}
 @media(min-width:861px){#rb{margin-right:92px}}
-@media(prefers-reduced-motion:reduce){.feast-bar a.pill:hover,.feast-bar .fb-top a:hover,.feast-bar button:hover{animation:none}}
+@media(prefers-reduced-motion:reduce){.feast-bar a.pill,.feast-bar .fb-top a,.feast-bar button{transition:none}}
 </style>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%83%3C/text%3E%3C/svg%3E">
 <!-- Web Monetization (Interledger / Open Payments): invisible, no UI, no tracking.
