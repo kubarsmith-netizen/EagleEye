@@ -209,12 +209,20 @@ nav a,.chip,.rc,.rank,.nm{border-radius:12px}
 .meter .mk25,.meter .mk50,.meter .mk75{position:absolute;top:0;bottom:0;width:2px;background:#ffffff66}
 .meter .mk25{left:25%}.meter .mk50{left:50%}.meter .mk75{left:75%}
 .meter .tgm{position:absolute;top:50%;font-size:28px;transform:translate(-50%,-56%);filter:drop-shadow(0 2px 2px #0006)}
-.feast-bar{margin:0 0 16px;padding:14px 18px;border-radius:18px;border:var(--bw) solid #c2410c;background:linear-gradient(110deg,#d9480f,#ee6a14 55%,#f97f1a);color:#fff;position:relative;overflow:hidden}
+.feast-bar{margin:0 0 16px;padding:18px 22px;border-radius:18px;border:var(--bw) solid #c2410c;background:linear-gradient(110deg,#d9480f,#ee6a14 55%,#f97f1a);color:#fff;position:relative;overflow:hidden}
 .feast-bar a{color:#fff;font-weight:700;text-decoration:underline}
 .feast-bar .fb-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
 .feast-bar .fb-top .sp{flex:1}
-.feast-bar .meter{height:20px;margin:10px 0 0;background:#7c2d1255;border-color:#ffffff88}
-.feast-bar .meter .tgm{font-size:22px}
+.feast-bar .meter{height:24px;margin:12px 0 0;background:#7c2d1255;border-color:#ffffff88}
+.feast-bar .meter .tgm{font-size:26px}
+.feast-bar .fb-top b{font-size:17px}
+.feast-bar .fb-msg{margin-top:8px;font-size:14px}
+.feast-bar .fb-ev{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:12px;padding-top:12px;border-top:1px solid #ffffff55}
+.feast-bar .fb-ev .ev-txt{flex:1 1 260px;min-width:0;font-size:14.5px}
+.feast-bar .fb-ev .ev-txt a{color:#fff;font-weight:700;text-decoration:underline}
+.feast-bar .fb-ev .links{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.feast-bar a.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;background:#fff;color:#7c2d12;text-decoration:none;font-weight:700;font-size:13.5px;box-shadow:0 2px 0 #a3360a;white-space:nowrap}
+.feast-bar a.pill:hover{filter:brightness(.96)}
 .feast-hero{background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 26%,var(--card)),var(--card));border-color:var(--acc)}
 .feast-hero .pts{font-size:34px;font-weight:700;font-family:Fraunces,Georgia,serif}
   .feast-fab{display:flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:10px 18px;font-size:18px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#fbbf24,#ea580c 60%,#c2410c);box-shadow:0 6px 22px #ea580cbb,inset 0 0 0 var(--bw) #ffffff77;text-shadow:0 1px 3px #3b1204aa}
@@ -661,7 +669,7 @@ async function ensureExtras(){
   const quiet = ['ev', 'streak', 'fe'];
   const turkeyMoved = (FE ? FE.turkey_market_id : null) !== prevTurkey;
   if (stale.every(k => quiet.includes(k)) && !firstLoad.includes('fe') && !turkeyMoved && cur === page && page !== 'feast' && page !== 'raffle' && page !== 'favors') {
-    const rb = $('#rb'); if (rb) rb.innerHTML = eventBanner() + feastBanner();
+    const rb = $('#rb'); if (rb) rb.innerHTML = feastBanner();
     const sw = $('#stkw'); if (sw) sw.innerHTML = streakBadge();
     return;
   }
@@ -763,28 +771,25 @@ const meter = () => {
 const feastEnd = () => FE ? new Date(FE.ends_at).toLocaleString([], {dateStyle:'medium', timeStyle:'short'}) : '';
 const myTix = () => (FE && FE.mine) ? +FE.mine.tickets || 0 : 0;
 
-// Thanksgiving feast banner: the community meter, on every page for the whole feast (and 3 days after)
-function feastBanner(){
+// ONE Thanksgiving banner: the community meter plus today's Turkey Market and the Favors / Raffle links, on every page for the whole feast (and 3 days after)
+function feastBanner(compact){
   if (!FE) return '';
   const endMs = new Date(FE.ends_at).getTime();
   if (Date.now() > endMs + 3 * 864e5) return '';
-  const over = Date.now() >= endMs, p = feastPct();
+  const over = Date.now() >= endMs, p = feastPct(), tm = FE.turkey_market_id ? markets.find(m => m.id === FE.turkey_market_id) : null;
   const msg = over
     ? (FE.rolled ? (FE.goal_met ? 'The community filled the meter. Prizes were paid!' : `The meter fell short, so no community prizes were paid${pen() > 0 ? ` and every balance was cut by ${pen()}%` : ''}.`) : 'Dinner is served! Counting the results...')
     : (p >= 100 ? 'The meter is FULL! Keep contributing, prizes are paid at Thanksgiving.' : `Fill the meter together for prizes${pen() > 0 ? `. If we do not, <b>everybody's balance is cut by ${pen()}%</b>!` : '!'}`);
-  return `<div class="feast-bar"><div class="fb-top"><span class="chip ev">THANKSGIVING FEAST</span><b>${fnum(FE.total)} / ${fnum(FE.goal)} points (${Math.floor(p)}%)</b><span class="sp"></span><span class="rc" style="background:#ffffff33;border-color:#ffffff66;color:#fff">Your points: <b>${fnum(FE.mine.points)}</b></span><a href="#/feast">Open the feast →</a></div>${meter()}<div style="margin-top:6px;font-size:13px">${msg}</div></div>`;
-}
-// Thanksgiving event banner: replaces the old Trading Frenzy banner, with links to Favors, the raffle and the Turkey Market
-function eventBanner(){
-  if (!FE) return '';
-  const endMs = new Date(FE.ends_at).getTime();
-  if (Date.now() > endMs + 3 * 864e5) return '';
-  const over = Date.now() >= endMs, tm = FE.turkey_market_id ? markets.find(m => m.id === FE.turkey_market_id) : null;
   const txt = over ? 'The Thanksgiving event is over. Thank you for playing!'
-    : tm ? `🦃 <b>Today's Turkey Market:</b> <a href="#/market/${tm.id}">${esc(tm.question)}</a> <span class="mut">Cash out on it today for 2× profit!</span>`
-    : '🍂 <b>Thanksgiving Event!</b> Trade, send favors and earn turkey tickets for the 1,500-token raffle.';
-  return `<div class="event-bar"><span class="chip ev">🍁 THANKSGIVING EVENT</span><span class="ev-txt">${txt}</span>${over ? '' : `<span class="links"><a class="pill" href="#/favors">${svg(IC.favors)} Trade Favors</a><a class="pill" href="#/raffle">${svg(IC.raffle)} Turkey Raffle · ${myTix()}</a></span>`}</div>`;
+    : tm ? `🦃 <b>Today's Turkey Market:</b> <a href="#/market/${tm.id}">${esc(tm.question)}</a> Cash out on it today for 2× profit!`
+    : 'Trade, send favors and earn turkey tickets for the 1,500-token raffle.';
+  const ev = `<div class="fb-ev"><span class="ev-txt">${txt}</span>${over ? '' : `<span class="links"><a class="pill" href="#/favors">${svg(IC.favors)} Trade Favors</a><a class="pill" href="#/raffle">${svg(IC.raffle)} Turkey Raffle · ${myTix()}</a></span>`}</div>`;
+  const top = `<div class="fb-top"><span class="chip ev">THANKSGIVING FEAST</span><b>${fnum(FE.total)} / ${fnum(FE.goal)} points (${Math.floor(p)}%)</b><span class="sp"></span><span class="rc" style="background:#ffffff33;border-color:#ffffff66;color:#fff">Your points: <b>${fnum(FE.mine.points)}</b></span>${compact ? '' : '<a href="#/feast">Open the feast →</a>'}</div>`;
+  // on the feast page itself the big meter is right below, so only the top line and the event row show
+  return `<div class="feast-bar">${top}${compact ? '' : `${meter()}<div class="fb-msg">${msg}</div>`}${ev}</div>`;
 }
+// (the separate event banner is gone, it is part of the feast banner now)
+function eventBanner(){ return ''; }
 
 // full-width Market of the Week card shown at the top of the Markets page
 const motwCard = m => {
@@ -1511,7 +1516,7 @@ function render(){
     ${owner ? link('admin', 'Admin tools') : ''}
     <div class="navref"><span class="mut">Your referral link</span><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your referral link"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div>
     <a href="#/account" class="me${pg === 'account' || pg === 'inventory' ? ' on' : ''}${meBn ? ' bn' : ''}"${meBn ? ` style="${esc(bannerStyle(meBn))}"` : ''}>${avatar(me.username, 30)}<span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis">${esc(me.username)}</b><span class="mut">${(+me.balance).toFixed(0)} tokens · 🎟️ ${myTix()}</span></span></a>
-    </nav><main>${PAGE_STICKERS}<div id="rb">${eventBanner()}${pg === 'feast' ? '' : feastBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
+    </nav><main>${PAGE_STICKERS}<div id="rb">${feastBanner(pg === 'feast')}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
 
   for (const k in keep) { const el = document.getElementById(k); if (el) el.value = keep[k]; }
   if (pg === 'admin') { showShopPreview(); showSpecialPreview(); }
