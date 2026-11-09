@@ -480,6 +480,7 @@ const applyLook = () => {
 };
 
 const go = h => { location.hash = '#/' + h; };
+let FAV_SHOWN = null;   // id of the last Trade Favor we announced
 const toast = m => {
   const t = $('#t');
   t.textContent = m;
@@ -660,7 +661,7 @@ async function ensureExtras(){
   const quiet = ['ev', 'streak', 'fe'];
   const turkeyMoved = (FE ? FE.turkey_market_id : null) !== prevTurkey;
   if (stale.every(k => quiet.includes(k)) && !firstLoad.includes('fe') && !turkeyMoved && cur === page && page !== 'feast' && page !== 'raffle' && page !== 'favors') {
-    const rb = $('#rb'); if (rb) rb.innerHTML = favorBanner() + eventBanner() + feastBanner();
+    const rb = $('#rb'); if (rb) rb.innerHTML = eventBanner() + feastBanner();
     const sw = $('#stkw'); if (sw) sw.innerHTML = streakBadge();
     return;
   }
@@ -1510,7 +1511,7 @@ function render(){
     ${owner ? link('admin', 'Admin tools') : ''}
     <div class="navref"><span class="mut">Your referral link</span><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your referral link"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div>
     <a href="#/account" class="me${pg === 'account' || pg === 'inventory' ? ' on' : ''}${meBn ? ' bn' : ''}"${meBn ? ` style="${esc(bannerStyle(meBn))}"` : ''}>${avatar(me.username, 30)}<span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis">${esc(me.username)}</b><span class="mut">${(+me.balance).toFixed(0)} tokens · 🎟️ ${myTix()}</span></span></a>
-    </nav><main>${PAGE_STICKERS}<div id="rb">${favorBanner()}${eventBanner()}${pg === 'feast' ? '' : feastBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
+    </nav><main>${PAGE_STICKERS}<div id="rb">${eventBanner()}${pg === 'feast' ? '' : feastBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
 
   for (const k in keep) { const el = document.getElementById(k); if (el) el.value = keep[k]; }
   if (pg === 'admin') { showShopPreview(); showSpecialPreview(); }
@@ -1518,6 +1519,15 @@ function render(){
   if (pg === 'user' && arg && !UPtok[decodeURIComponent(arg)]) fetchUser(decodeURIComponent(arg));
   // the raffle has rolled: show the drawing once, the next time this player loads the site
   if (RAFFLE_PENDING && FE && FE.raffle) { RAFFLE_PENDING = false; showRaffle(FE.raffle, false); }
+  // a Trade Favor someone sent you: one short pop-up the next time you open the site (once per favor), not a permanent banner
+  if (FE && FE.active && FE.favor_in && String(FE.favor_in.id) !== FAV_SHOWN) {
+    let seen = null; try { seen = localStorage.getItem('favSeen'); } catch (e) {}
+    FAV_SHOWN = String(FE.favor_in.id);
+    if (FAV_SHOWN !== seen) {
+      try { localStorage.setItem('favSeen', FAV_SHOWN); } catch (e) {}
+      toast('🧡 ' + FE.favor_in.from + ' sent you a favor! +' + (+FE.favor_in.pct).toFixed(1) + '% on your next profitable cash-out over 200 tokens.');
+    }
+  }
 }
 
 addEventListener('hashchange', () => { UPtok = {}; render(); scrollTo(0, 0); ensureExtras(); });
