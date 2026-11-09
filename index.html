@@ -18,9 +18,9 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none}
 [data-pat=dots] body::before{background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:16px 16px}
 [data-pat=grid] body::before{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:28px 28px}
 [data-pat=lines] body::before{background-image:repeating-linear-gradient(45deg,var(--line) 0 1px,transparent 1px 14px)}
-[data-pat=leaves] body::before{background:none}
+[data-pat=leaves] body::before,[data-pat=heavy] body::before{background:none}
 #leafbg{display:none;position:fixed;left:0;top:0;z-index:-1;pointer-events:none}
-[data-pat=leaves] #leafbg{display:block}
+[data-pat=leaves] #leafbg,[data-pat=heavy] #leafbg{display:block}
 [data-pat=plaid] body::before{background-image:repeating-linear-gradient(0deg,color-mix(in srgb,var(--acc) 14%,transparent) 0 14px,transparent 14px 40px),repeating-linear-gradient(90deg,color-mix(in srgb,var(--acc) 14%,transparent) 0 14px,transparent 14px 40px),repeating-linear-gradient(0deg,var(--line) 0 2px,transparent 2px 10px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 Fraunces,Georgia,serif;-webkit-font-smoothing:antialiased}
@@ -283,6 +283,18 @@ nav a{white-space:nowrap;gap:9px}
 .event-bar .links{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
 .event-bar a.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;background:linear-gradient(135deg,#ffa62e,#e8590c);color:#fff;text-decoration:none;font-weight:700;font-size:13.5px;box-shadow:0 2px 0 #a3360a;white-space:nowrap}
 .event-bar a.pill:hover{filter:brightness(1.08)}
+
+/* ---- banner: darker, wider, bouncy buttons ---- */
+.feast-bar{background:linear-gradient(110deg,#5c240c,#7a3510 55%,#964818);border-color:#7a3510;color:#f1dcc0}
+.feast-bar a,.feast-bar .fb-ev .ev-txt a{color:#f1dcc0}
+.feast-bar .fb-top a{display:inline-block}
+.feast-bar a.pill{background:#d8b88e;color:#4a1d0a;box-shadow:0 2px 0 #2e1206}
+.feast-bar .meter{background:#2e120655;border-color:#f1dcc066}
+.chip.ev{background:#d8b88e;color:#4a1d0a;border-color:#d8b88e}
+@keyframes btnbounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}55%{transform:translateY(0)}75%{transform:translateY(-3px)}}
+.feast-bar a.pill:hover,.feast-bar .fb-top a:hover,.feast-bar button:hover{animation:btnbounce .6s ease-in-out infinite;filter:none}
+@media(min-width:861px){#rb{margin-right:92px}}
+@media(prefers-reduced-motion:reduce){.feast-bar a.pill:hover,.feast-bar .fb-top a:hover,.feast-bar button:hover{animation:none}}
 </style>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%83%3C/text%3E%3C/svg%3E">
 <!-- Web Monetization (Interledger / Open Payments): invisible, no UI, no tracking.
@@ -341,7 +353,7 @@ const AV = ['🦅','🐺','🦊','🐼','🐯','🦁','🐸','🐙','🦉','🐧
 const CK = {bg:'--bg', card:'--card', fg:'--fg', acc:'--acc'};
 const AVURL = SUPABASE_URL + '/storage/v1/object/public/avatars/';
 const SHOPURL = SUPABASE_URL + '/storage/v1/object/public/shop-art/';
-const PATS = {none:'None', dots:'Dots', grid:'Grid', lines:'Lines', leaves:'Leaves', plaid:'Plaid'};
+const PATS = {none:'None', dots:'Dots', grid:'Grid', lines:'Lines', leaves:'Leaves', heavy:'Heavy Leaves', plaid:'Plaid'};
 const CRIT = {top_streak:'Highest daily streak (ties share it)', top_referrals:'Most referrals (ties share it)', top_trades:'Most trades in the Trading Frenzy (ties share it)'};
 const IC = {markets:'M3 17l6-6 4 4 8-8M15 7h6v6', portfolio:'M3 8h18v12H3zM8 8V5h8v3', leaderboard:'M6 20V10M12 20V4M18 20v-7', shop:'M5 7h14l-1 13H6zM9 7a3 3 0 016 0', rules:'M6 3h12v18H6zM9 8h6M9 12h6', suggest:'M12 5v14M5 12h14', create:'M12 5v14M5 12h14', review:'M5 12l5 5 9-10', admin:'M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z', ideas:'M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z', feast:'M5 19C5 10 10 5 20 4c0 10-5 15-14 15zM5 19l8-8', raffle:'M4 7h16a1 1 0 011 1v2a2 2 0 000 4v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2a2 2 0 000-4V8a1 1 0 011-1zM14 7v10', favors:'M4 11h16v9H4zM3 7h18v4H3zM12 7v13M12 7C9 7 8 3 10.5 3 12 3 12 7 12 7zM12 7c3 0 4-4 1.5-4C12 3 12 7 12 7z'};
 const svg = d => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
@@ -352,37 +364,37 @@ const rnd = (a, b) => a + Math.random() * (b - a);
 
 // Leaves background: drawn fresh at random on a canvas every visit (random spots, sizes, angles, colors and leaf shapes), so no two spots look alike
 let LEAFBG = null;
-function drawLeafBg(){
+function drawLeafBg(heavy){
   const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
   const W = Math.max(innerWidth, LEAFBG ? LEAFBG.cssW : 0), H = Math.max(innerHeight, LEAFBG ? LEAFBG.cssH : 0);
-  if (LEAFBG && W <= LEAFBG.cssW && H <= LEAFBG.cssH) return;      // already covers the screen, keep it so it does not change while you use the site
+  if (LEAFBG && !!LEAFBG.heavy === !!heavy && W <= LEAFBG.cssW && H <= LEAFBG.cssH) return;      // already covers the screen, keep it so it does not change while you use the site
   let cv = document.getElementById('leafbg');
   if (!cv) { cv = document.createElement('canvas'); cv.id = 'leafbg'; cv.setAttribute('aria-hidden', 'true'); document.body.prepend(cv); }
   cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.style.width = W + 'px'; cv.style.height = H + 'px';
   const g = cv.getContext('2d'); g.scale(dpr, dpr);
-  g.fillStyle = '#5a2a14'; g.fillRect(0, 0, W, H);
+  g.fillStyle = heavy ? '#2e160b' : '#5a2a14'; g.fillRect(0, 0, W, H);
   const SHAPES = [
     [new Path2D('M50 2L56 18L64 12L63 30L80 22L75 42L96 42L86 56L92 70L70 68L60 80L53 78L53 98L47 98L47 78L40 80L30 68L8 70L14 56L4 42L25 42L20 22L37 30L36 12L44 18Z'), new Path2D('M50 28V90M50 56L70 40M50 56L30 40')],
     [new Path2D('M50 3C82 22 86 64 50 97C14 64 18 22 50 3Z'), new Path2D('M50 10V98M50 38L67 26M50 56L69 43M50 38L33 26M50 56L31 43')],
     [new Path2D('M50 2C68 14 94 38 74 62C66 72 58 78 53 80L53 98L47 98L47 80C42 78 34 72 26 62C6 38 32 14 50 2Z'), new Path2D('M50 14V92M50 44L66 32M50 60L68 48M50 44L34 32M50 60L32 48')]
   ];
-  const n = Math.round(W * H / 3300);
+  const n = Math.round(W * H / (heavy ? 1000 : 3300));
   for (let k = 0; k < n; k++) {
     const [body, vein] = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-    const s = rnd(.3, .95), sx = s * rnd(.75, 1.25), sy = s * rnd(.75, 1.25);
+    const s = heavy ? rnd(.45, 1.1) : rnd(.3, .95), sx = s * rnd(.75, 1.25), sy = s * rnd(.75, 1.25);
     g.save();
-    g.globalAlpha = rnd(.5, 1);
+    g.globalAlpha = heavy ? 1 : rnd(.5, 1);
     g.translate(rnd(-20, W + 20), rnd(-20, H + 20)); g.rotate(rnd(0, Math.PI * 2)); g.scale(sx, sy); g.translate(-50, -50);
-    g.fillStyle = `hsl(${rnd(6, 40).toFixed(0)},${rnd(40, 72).toFixed(0)}%,${rnd(20, 40).toFixed(0)}%)`;
+    g.fillStyle = heavy ? `hsl(${rnd(8, 38).toFixed(0)},${rnd(32, 52).toFixed(0)}%,${rnd(15, 29).toFixed(0)}%)` : `hsl(${rnd(6, 40).toFixed(0)},${rnd(40, 72).toFixed(0)}%,${rnd(20, 40).toFixed(0)}%)`;
     g.strokeStyle = 'rgba(74,29,12,.5)'; g.lineWidth = 2.5; g.lineJoin = 'round';
     g.fill(body); g.stroke(body);
     g.strokeStyle = 'rgba(74,29,12,.35)'; g.stroke(vein);
     g.restore();
   }
-  LEAFBG = {cssW: W, cssH: H};
+  LEAFBG = {cssW: W, cssH: H, heavy: !!heavy};
 }
 let leafT;
-addEventListener('resize', () => { clearTimeout(leafT); leafT = setTimeout(() => { if (document.documentElement.dataset.pat === 'leaves') drawLeafBg(); }, 250); });
+addEventListener('resize', () => { clearTimeout(leafT); leafT = setTimeout(() => { { const pt = document.documentElement.dataset.pat; if (pt === 'leaves' || pt === 'heavy') drawLeafBg(pt === 'heavy'); } }, 250); });
 (() => {
   const L = ['🍁','🍂','🍁','🍃','🍁','🍂'], wide = innerWidth > 860, d = document.createElement('div');
   d.id = 'leaves'; d.setAttribute('aria-hidden', 'true');
@@ -484,7 +496,7 @@ const applyLook = () => {
   for (const k in CK) root.style.removeProperty(CK[k]);   // drop any custom colors saved before the lock
   root.dataset.theme = 'dark';
   root.dataset.pat = me.pattern || 'plaid';                // the background pattern is the only look setting left
-  if (root.dataset.pat === 'leaves') drawLeafBg();
+  if (root.dataset.pat === 'leaves' || root.dataset.pat === 'heavy') drawLeafBg(root.dataset.pat === 'heavy');
 };
 
 const go = h => { location.hash = '#/' + h; };
