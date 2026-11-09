@@ -3,61 +3,81 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://qwkmyncxomibcpmlguxj.supabase.co wss://qwkmyncxomibcpmlguxj.supabase.co; img-src 'self' data: blob: https://qwkmyncxomibcpmlguxj.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://qwkmyncxomibcpmlguxj.supabase.co wss://lumsbvchmibxmvrzqtpt.supabase.co; img-src 'self' data: blob: https://qwkmyncxomibcpmlguxj.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <title>EagleEye Market</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bw:1.5px}
-:root,[data-theme=light]{--bg:#f3f6fb;--fg:#0f172a;--card:#fff;--mut:#5b6678;--line:#dde3ee;--bd:#a9b6cc;--yes:#2a8a62;--no:#bb4d43;--acc:#2f6bd8;--side:#fff;--hov:#eaf1fd}
-[data-theme=dark]{--bg:#050506;--fg:#ececf0;--card:#0e0f12;--mut:#9aa1ae;--line:#1c1f26;--bd:#3a4458;--yes:#38b886;--no:#d96a63;--acc:#5b9bff;--side:#09090b;--hov:#161a24}
-[data-theme=slate]{--bg:#1e2228;--fg:#e8eaee;--card:#272c34;--mut:#9ba3b0;--line:#363c47;--bd:#566073;--yes:#38b886;--no:#d96a63;--acc:#6aa0f5;--side:#191c21;--hov:#303642}
-[data-theme=midnight]{--bg:#081022;--fg:#e6ecf8;--card:#0f1a33;--mut:#8d9bb8;--line:#1b2a4a;--bd:#35508a;--yes:#38b886;--no:#d96a63;--acc:#4d9cff;--side:#0a1429;--hov:#15244a}
-[data-theme=custom]{--side:var(--card);--line:color-mix(in srgb,var(--fg) 16%,var(--bg));--bd:color-mix(in srgb,var(--fg) 34%,var(--bg));--hov:color-mix(in srgb,var(--acc) 12%,var(--card));--mut:color-mix(in srgb,var(--fg) 58%,var(--bg))}
+:root{--bw:1.5px;--onacc:#fff;--onyn:#fff}
+/* ---------- Fall palette (LOCKED, Espresso). Nobody can switch color themes. ---------- */
+:root{--bg:#2a1c14;--fg:#f8ebd8;--card:#38281e;--mut:#c4ab92;--line:#4e3724;--bd:#80603f;--yes:#9bc04e;--no:#e8705b;--acc:#f28c28;--side:#2b1e15;--hov:#45341f;--onacc:#2a1204;--onyn:#1a0e05;--stk:drop-shadow(1.5px 0 0 #fffaf0) drop-shadow(-1.5px 0 0 #fffaf0) drop-shadow(0 1.5px 0 #fffaf0) drop-shadow(0 -1.5px 0 #fffaf0) drop-shadow(0 3px 4px #5a2a0a88)}
 :root{--grad:linear-gradient(120deg,color-mix(in srgb,var(--acc) 22%,var(--card)),color-mix(in srgb,var(--acc) 5%,var(--card)))}
-/* Pattern look: its own color (--patc, defaults to the theme line color) and prominence (--patp, 0-100%) */
-:root{--patc:var(--line);--patp:100%;--pat:color-mix(in srgb,var(--patc) var(--patp),transparent)}
 /* Background pattern lives on a fixed layer, so it stays put while the page scrolls */
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none}
-[data-pat=dots] body::before{background-image:radial-gradient(var(--pat) 1px,transparent 1px);background-size:16px 16px}
-[data-pat=grid] body::before{background-image:linear-gradient(var(--pat) 1px,transparent 1px),linear-gradient(90deg,var(--pat) 1px,transparent 1px);background-size:28px 28px}
-[data-pat=lines] body::before{background-image:repeating-linear-gradient(45deg,var(--pat) 0 1px,transparent 1px 14px)}
+[data-pat=dots] body::before{background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:16px 16px}
+[data-pat=grid] body::before{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:28px 28px}
+[data-pat=lines] body::before{background-image:repeating-linear-gradient(45deg,var(--line) 0 1px,transparent 1px 14px)}
+[data-pat=leaves] body::before{background:none}
+#leafbg{display:none;position:fixed;left:0;top:0;z-index:-1;pointer-events:none}
+[data-pat=leaves] #leafbg{display:block}
+[data-pat=plaid] body::before{background-image:repeating-linear-gradient(0deg,color-mix(in srgb,var(--acc) 14%,transparent) 0 14px,transparent 14px 40px),repeating-linear-gradient(90deg,color-mix(in srgb,var(--acc) 14%,transparent) 0 14px,transparent 14px 40px),repeating-linear-gradient(0deg,var(--line) 0 2px,transparent 2px 10px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
-h1{margin:0 0 8px;font-size:25px;font-weight:600;letter-spacing:-.01em}
-h2{font-size:16px;font-weight:600;margin:26px 0 10px}
-#shell{display:flex;min-height:100vh}
-nav{width:196px;flex-shrink:0;background:var(--side);border-right:var(--bw) solid var(--bd);padding:16px 10px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:1px;font-size:14px}
-nav h2{margin:0 10px 14px;font-size:14px;letter-spacing:.02em}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 Fraunces,Georgia,serif;-webkit-font-smoothing:antialiased}
+h1{margin:0 0 8px;font-size:25px;font-weight:700;letter-spacing:-.01em}
+h2{font-size:16px;font-weight:700;margin:26px 0 10px}
+h1,h2{font-family:Fraunces,Georgia,serif}
+#shell{display:flex;min-height:100vh;position:relative;z-index:1}
+nav{width:204px;flex-shrink:0;background:var(--side);border-right:var(--bw) solid var(--bd);padding:16px 10px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:1px;font-size:14px;overflow-y:auto}
+nav h2{margin:0 10px 14px;font-size:15px;letter-spacing:.02em}
+nav h2::before{content:'🦃 ';font-size:1em}
 nav a{padding:7px 10px;border-radius:6px;color:var(--mut);text-decoration:none;display:flex;gap:10px;align-items:center;font-weight:500}
 nav a svg{flex-shrink:0}
+nav a .ni{width:16px;text-align:center;font-size:15px;line-height:1;flex-shrink:0}
 nav a .chip{margin-left:auto}
 nav a:hover{background:var(--hov);color:var(--fg)}
 nav a.on{background:var(--hov);color:var(--fg);font-weight:600}
 nav a.on svg{color:var(--acc)}
 nav a.me{margin-top:10px;border:var(--bw) solid var(--bd);padding:8px;color:var(--fg);line-height:1.25}
+nav a.me::after{content:none!important}
 nav a.me:hover,nav a.me.on{border-color:var(--acc)}
 .navref{margin-top:auto;padding:10px;border:var(--bw) solid var(--bd);border-radius:12px}
 .navref input{margin:4px 0 0;padding:6px 8px;font-size:12px}
 .navref button{width:100%;margin-top:6px;padding:6px 8px;font-size:13px}
+.navmeter{margin:8px 4px 4px;padding:8px 10px;border:var(--bw) solid var(--bd);border-radius:12px;color:var(--fg);text-decoration:none;display:block;font-size:12px;background:var(--grad)}
+.navmeter b{font-size:13px}
+.navmeter .meter{height:10px;margin:6px 0 2px}
+.navmeter .meter .tgm{font-size:15px}
 nav a.me .av{width:30px;height:30px;font-size:16px;margin:0}
 nav a.me.bn .mut{color:inherit;opacity:.9}
 main{flex:1;padding:30px 38px;min-width:0}
-.card{background:var(--card);border:var(--bw) solid var(--bd);border-radius:8px;padding:16px;margin:0 0 16px}
+.card{background:var(--card);border:var(--bw) solid var(--bd);border-radius:8px;padding:16px;margin:0 0 16px;position:relative}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
 .grid .card{margin:0}
 .two{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-top:16px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:16px 0}
 .stats .card{margin:0;border-top:var(--bw) solid var(--acc)}
 .mk{color:inherit;text-decoration:none;display:block;padding:22px;border-width:var(--bw);transition:transform .12s,box-shadow .12s,border-color .12s}
-.mk:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--acc) 15%,transparent)}
+.mk:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--acc) 22%,transparent)}
 .mk b{display:block;font-size:18px;line-height:1.35}
 .mk .bar{height:12px;margin:14px 0}
 .mk .split{font-size:19px;font-weight:600}
 .motw{border-color:var(--acc);background:var(--grad)}
-.motw b{font-size:24px}
+.motw{padding:15px 18px}
+.motw b{font-size:19px}
+.motw .bar{height:9px;margin:10px 0}
+.motw .split{font-size:16px}
 .motw .tags .chip{margin-left:6px;vertical-align:middle}
+.motw{cursor:pointer}.motw b a{color:inherit;text-decoration:none}
+.qt{display:flex;gap:10px;margin-top:14px}.qt button{flex:1;padding:12px;font-size:17px;font-weight:700;letter-spacing:.04em}
+.motw .qt{gap:8px;margin-top:10px}.motw .qt button{padding:8px;font-size:15px}
+.qt button.y,#qbok.y{background:color-mix(in srgb,var(--yes) 14%,transparent);border:2px solid var(--yes);color:var(--yes)}
+.qt button.n,#qbok.n{background:color-mix(in srgb,var(--no) 14%,transparent);border:2px solid var(--no);color:var(--no)}
+.qt button.y:hover,#qbok.y:hover{background:color-mix(in srgb,var(--yes) 30%,transparent)}
+.qt button.n:hover,#qbok.n:hover{background:color-mix(in srgb,var(--no) 30%,transparent)}
+.qb-back{position:fixed;inset:0;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.qb{width:min(380px,100%);background:var(--card);border:var(--bw) solid var(--acc);border-radius:12px;padding:20px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.qb>b{display:block;font-size:19px}.qb p{margin:12px 0 0}
 .narrow{max-width:540px}
 .big{font-size:23px;font-weight:600}
 .bar{height:8px;border-radius:4px;background:var(--no);overflow:hidden;margin:10px 0}
@@ -68,22 +88,27 @@ main{flex:1;padding:30px 38px;min-width:0}
 a{color:var(--acc)}
 .chip{background:var(--hov);color:var(--acc);border:var(--bw) solid var(--bd);border-radius:6px;padding:0 7px;font-size:11px;font-weight:600}
 .tags{margin:0 0 10px}
-.tag{display:inline-block;padding:2px 10px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#5b9be8,#2f63c8);border-radius:4px}
+.tag{display:inline-block;padding:2px 10px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#ea580c,#9a3412);border-radius:4px}
 input,button,select,textarea{font:inherit;padding:9px 12px;border-radius:6px;border:var(--bw) solid var(--bd);background:var(--bg);color:var(--fg)}
 input,textarea{width:100%;margin-top:8px}
 textarea{resize:vertical}
+input[type=range]{padding:0;accent-color:var(--acc);border:0;background:none}
 input:focus,textarea:focus,select:focus{outline:0;border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 25%,transparent)}
 label{display:block;flex:1;min-width:140px}
 label input{margin-top:4px}
-button{cursor:pointer;background:var(--acc);color:#fff;border:var(--bw) solid var(--acc);font-weight:500}
+button{cursor:pointer;background:var(--acc);color:var(--onacc);border:var(--bw) solid var(--acc);font-weight:600}
 button:disabled{opacity:.4;cursor:default}
-button.y{background:var(--yes);border-color:var(--yes)}button.n{background:var(--no);border-color:var(--no)}
+button.y{background:var(--yes);border-color:var(--yes);color:var(--onyn)}button.n{background:var(--no);border-color:var(--no);color:var(--onyn)}
 button.g{background:none;color:var(--fg);border:var(--bw) solid var(--bd)}
 button.g:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
-.btn{display:inline-block;padding:9px 14px;border-radius:6px;background:var(--acc);color:#fff;cursor:pointer;font-weight:500}
+/* turkey button: the special Thanksgiving call-to-action */
+button.tk,.btn.tk{background:linear-gradient(135deg,#ffa62e,#e8590c);border-color:#c2410c;color:#fff;text-shadow:0 1px 2px #7c2d1266;box-shadow:0 3px 0 #a3360a}
+button.tk:hover:not(:disabled){filter:brightness(1.1);animation:wiggle .5s}
+button.tk:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #a3360a}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-2.5deg)}75%{transform:rotate(2.5deg)}}
+.btn{display:inline-block;padding:9px 14px;border-radius:6px;background:var(--acc);color:var(--onacc);cursor:pointer;font-weight:600}
 label.up{flex:none;min-width:0}
 .clr input{padding:2px;height:38px;cursor:pointer}
-input[type=range]{padding:0;height:24px;border:0;background:none;accent-color:var(--acc);cursor:pointer}
 .sel{outline:var(--bw) solid var(--acc);outline-offset:1px}
 table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:9px 10px;border-bottom:var(--bw) solid var(--line)}
@@ -92,7 +117,7 @@ th{color:var(--acc);font-weight:600;font-size:12px;border-bottom:var(--bw) solid
 .search{max-width:420px;margin:6px 0 4px}
 .tabs{display:flex;gap:8px;margin:12px 0 18px;align-items:center}
 .tabs button,.tabs select{height:40px;padding:0 16px;margin:0}
-#t{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--acc);color:#fff;padding:10px 18px;border-radius:8px;display:none;max-width:90%;z-index:9}
+#t{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--acc);color:var(--onacc);padding:10px 18px;border-radius:8px;display:none;max-width:90%;z-index:60}
 .av{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--hov);border:var(--bw) solid var(--bd);font-size:12px;font-weight:600;flex-shrink:0;margin-right:6px;vertical-align:middle;color:var(--fg);overflow:hidden}
 .av img{width:100%;height:100%;object-fit:cover}
 .nm{display:inline-flex;align-items:center;max-width:100%;border-radius:6px;padding:1px 8px 1px 2px;white-space:nowrap}
@@ -103,20 +128,19 @@ th{color:var(--acc);font-weight:600;font-size:12px;border-bottom:var(--bw) solid
 .prevbn{min-width:230px;padding:8px 14px 8px 8px!important}
 .avs{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:10px}
 .avs button{padding:5px;font-size:18px}
-main>.card.split:first-child{background:var(--card);border-top:var(--bw) solid var(--acc)}
 .lk{display:flex;align-items:center;gap:8px;flex:1 1 300px;min-width:0}
 .lk b{white-space:nowrap}
 .lk input{flex:1 1 120px;max-width:260px;width:auto;min-width:0;margin:0;padding:6px 9px;font-size:13px}
 .lk button{padding:6px 11px;white-space:nowrap}
 .rc{display:inline-block;background:var(--card);border:var(--bw) solid var(--bd);border-radius:6px;padding:3px 10px;white-space:nowrap}
-.ev-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 18px;margin:0 0 16px;border-radius:18px;border:var(--bw) solid #5b8fe0;background:linear-gradient(110deg,#1b3a9e,#2459b8 55%,#2f7fc9);color:#fff}
+.ev-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 18px;margin:0 0 16px;border-radius:18px;border:var(--bw) solid #d97706;background:linear-gradient(110deg,#7c2d12,#b45309 55%,#d97706);color:#fff}
 .ev-bar a{color:#fff;font-weight:600}
 .ev-bar .rc{background:#ffffff22;border-color:#ffffff44;color:#fff}
 .ev-bar .blurb{flex:2 1 280px}
-.chip.ev{background:#fff;color:#1b3a9e;border-color:#fff}
+.chip.ev{background:#fff;color:#7c2d12;border-color:#fff}
 .ev-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .rank{display:inline-block;min-width:26px;height:26px;line-height:24px;text-align:center;border-radius:6px;background:var(--hov);border:var(--bw) solid var(--bd);font-weight:600;font-size:12px;color:var(--fg)}
-.rank.r1{background:var(--acc);border-color:var(--acc);color:#fff}
+.rank.r1{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
 /* Leaderboard rows: the whole row wears the banner */
 .lb{display:flex;flex-direction:column;gap:6px}
 .lbh,.lbr{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;padding:6px 14px}
@@ -132,21 +156,20 @@ main>.card.split:first-child{background:var(--card);border-top:var(--bw) solid v
 .sm .lbr{min-height:46px}
 .sm .lbr .nm{font-size:14px}
 #stk{position:fixed;top:26px;right:36px;z-index:8;display:flex;flex-direction:column-reverse;align-items:flex-end;gap:10px}
-.stk-btn{display:flex;align-items:center;gap:8px;color:#fff;border:0;border-radius:999px;padding:10px 22px;font-size:22px;line-height:1;font-weight:700;background:linear-gradient(135deg,#7dd3fc,#3b82f6 55%,#1d4ed8);box-shadow:0 6px 22px #3b82f6bb,inset 0 0 0 var(--bw) #ffffff77;text-shadow:0 1px 3px #0b2a6a88}
+.stk-btn{display:flex;align-items:center;gap:8px;color:#fff;border:0;border-radius:999px;padding:10px 22px;font-size:22px;line-height:1;font-weight:700;background:linear-gradient(135deg,#fbbf24,#ea580c 55%,#9a3412);box-shadow:0 6px 22px #ea580cbb,inset 0 0 0 var(--bw) #ffffff77;text-shadow:0 1px 3px #4a1d0488}
 .stk-btn b{font-size:24px}
 .stk-btn:hover{filter:brightness(1.1)}
-.stk-btn.off{background:linear-gradient(135deg,#bae6fd,#60a5fa);box-shadow:0 4px 14px #60a5fa88,inset 0 0 0 var(--bw) #ffffff77}
+.stk-btn.off{background:linear-gradient(135deg,#fde68a,#fb923c);box-shadow:0 4px 14px #fb923c88,inset 0 0 0 var(--bw) #ffffff77}
 @keyframes stkpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 .stk-btn:not(.off){animation:stkpulse 2.6s ease-in-out infinite}
-@media(prefers-reduced-motion:reduce){.stk-btn{animation:none!important}}
 .stk-panel{background:var(--card);border:var(--bw) solid var(--acc);border-radius:8px;padding:14px 16px;width:280px}
 .stk-panel p{margin:6px 0 0}
-@media(min-width:861px){main>.card.split:first-child{margin-right:120px}}
+@media(min-width:861px){#rb{margin-right:112px}}
 .boardwrap{display:grid;grid-template-columns:7fr 4fr;gap:20px;align-items:start}
 .boardwrap>div{min-width:0}
 .sm h1{font-size:21px}
 @media(max-width:1000px){.boardwrap{grid-template-columns:1fr}}
-@media(max-width:860px){#shell{flex-direction:column}nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}nav h2{width:100%}nav a.me{margin-top:0}.navref{margin-top:0;width:100%}main{padding:16px}.two,.stats{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}#stk{top:auto;bottom:16px;right:12px}}
+@media(max-width:860px){#shell{flex-direction:column}nav{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}nav h2{width:100%}nav a.me{margin-top:0}.navref{margin-top:0;width:100%}.navmeter{width:100%}main{padding:16px}.two,.stats{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}#stk{top:auto;bottom:16px;right:12px}}
 /* rounder corners */
 .card,.stk-panel{border-radius:18px}
 .lbr{border-radius:16px}
@@ -171,11 +194,108 @@ nav a,.chip,.rc,.rank,.nm{border-radius:12px}
 .lbtools .search{flex:1 1 auto;width:auto;max-width:none;height:40px;margin:0}
 .lbtools select{height:40px;margin:0;padding:0 12px}
 @media(max-width:1000px){.boardwrap,.boardwrap>div{display:block}.boardwrap .card{margin:0 0 16px}}
+
+/* =============== THANKSGIVING EXTRAS =============== */
+/* falling leaves + walking turkeys (decorations only) */
+#leaves{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+#leaves span{position:absolute;top:-8vh;font-size:var(--s,22px);opacity:.6;animation:fall var(--d,18s) linear var(--dl,0s) infinite}
+@keyframes fall{0%{transform:translate3d(0,-8vh,0) rotate(0)}50%{transform:translate3d(var(--x,40px),52vh,0) rotate(200deg)}100%{transform:translate3d(calc(var(--x,40px) * -1),112vh,0) rotate(380deg)}}
+@keyframes bob{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-5px) rotate(4deg)}}
+.tk{display:inline-block;animation:bob .7s ease-in-out infinite alternate;filter:drop-shadow(0 1px 2px #0005)}
+.tkbadge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#ffa62e,#e8590c);border-radius:8px;padding:2px 9px;margin-left:6px;vertical-align:middle}
+/* the community meter */
+.meter{position:relative;height:28px;border-radius:999px;background:color-mix(in srgb,var(--fg) 14%,var(--card));border:var(--bw) solid var(--bd);margin:14px 0}
+.meter i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#ffe066,#ffc233 45%,#ff9a1f);transition:width .8s}
+.meter .mk25,.meter .mk50,.meter .mk75{position:absolute;top:0;bottom:0;width:2px;background:#ffffff66}
+.meter .mk25{left:25%}.meter .mk50{left:50%}.meter .mk75{left:75%}
+.meter .tgm{position:absolute;top:50%;font-size:28px;transform:translate(-50%,-56%);filter:drop-shadow(0 2px 2px #0006)}
+.feast-bar{margin:0 0 16px;padding:14px 18px;border-radius:18px;border:var(--bw) solid #c2410c;background:linear-gradient(110deg,#d9480f,#ee6a14 55%,#f97f1a);color:#fff;position:relative;overflow:hidden}
+.feast-bar a{color:#fff;font-weight:700;text-decoration:underline}
+.feast-bar .fb-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
+.feast-bar .fb-top .sp{flex:1}
+.feast-bar .meter{height:20px;margin:10px 0 0;background:#7c2d1255;border-color:#ffffff88}
+.feast-bar .meter .tgm{font-size:22px}
+.feast-hero{background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 26%,var(--card)),var(--card));border-color:var(--acc)}
+.feast-hero .pts{font-size:34px;font-weight:700;font-family:Fraunces,Georgia,serif}
+  .feast-fab{display:flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:10px 18px;font-size:18px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#fbbf24,#ea580c 60%,#c2410c);box-shadow:0 6px 22px #ea580cbb,inset 0 0 0 var(--bw) #ffffff77;text-shadow:0 1px 3px #3b1204aa}
+.feast-fab:hover{filter:brightness(1.1)}
+.feast-fab .tk{font-size:22px}
+.turkey-note{border-color:#d97706;background:linear-gradient(120deg,color-mix(in srgb,#d97706 28%,var(--card)),var(--card))}
+.penalty-note{border-color:var(--no);background:linear-gradient(120deg,color-mix(in srgb,var(--no) 24%,var(--card)),var(--card))}
+.favor-in{border-color:var(--yes);background:linear-gradient(120deg,color-mix(in srgb,var(--yes) 20%,var(--card)),var(--card))}
+.pct-pill{display:inline-block;font-size:30px;font-weight:700;font-family:Fraunces,Georgia,serif;color:var(--acc)}
+.tix{display:inline-flex;gap:3px;flex-wrap:wrap}
+.minibar{height:10px;border-radius:999px;background:color-mix(in srgb,var(--fg) 14%,var(--card));overflow:hidden;margin:8px 0}
+.minibar i{display:block;height:100%;background:linear-gradient(90deg,#ffd166,#ff6b00)}
+/* the raffle overlay */
+.rf-back{position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 25%,#ff9a3c,#e8590c 50%,#9a3412);display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden}
+.rf-card{width:min(580px,100%);text-align:center;color:#fff3e0;position:relative;z-index:2}
+.rf-title{font-family:Fraunces,Georgia,serif;font-size:30px;font-weight:700;margin:0 0 4px}
+.rf-sub{min-height:26px;font-size:16px;color:#fcd9a8}
+.rf-stage{position:relative;height:340px;margin:8px auto 0;max-width:340px}
+.rf-bowl{position:absolute;left:50%;bottom:6px;width:270px;height:190px;transform:translateX(-50%);border:4px solid #ffffff99;border-top:0;border-radius:0 0 135px 135px;background:linear-gradient(#ffffff10,#ffffff3a);overflow:hidden;box-shadow:inset 0 -14px 30px #ffffff22}
+.rf-rim{position:absolute;left:50%;bottom:188px;width:278px;height:16px;transform:translateX(-50%);border:4px solid #ffffffbb;border-radius:50%;z-index:1}
+.slip{position:absolute;min-width:58px;max-width:78px;height:20px;padding:0 4px;background:#fff7e0;color:#4a2208;font-size:9.5px;font-weight:700;line-height:20px;border-radius:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;box-shadow:0 1px 3px #0007;transform:rotate(var(--r,0deg))}
+.stir .slip{animation:stir .9s ease-in-out infinite alternate;animation-delay:var(--dl,0s)}
+@keyframes stir{from{transform:translate(0,0) rotate(var(--r,0deg))}to{transform:translate(var(--dx,20px),var(--dy,-16px)) rotate(var(--r2,40deg))}}
+.rf-hand{position:absolute;left:50%;top:-34px;font-size:58px;transform:translateX(-50%) rotate(-12deg);transition:top 1.3s ease;z-index:3}
+.rf-hand.dip{top:130px}
+.rf-hand.out{top:-110px}
+.rf-pull{position:absolute;left:50%;bottom:150px;width:min(260px,80vw);padding:16px 12px;background:#fff7e0;color:#4a2208;border-radius:6px;font-weight:700;font-size:24px;box-shadow:0 8px 28px #000a;transform:translate(-50%,60px) scale(.25);opacity:0;transition:transform 1.2s cubic-bezier(.2,.9,.3,1.15),opacity .5s;z-index:4;font-family:Fraunces,Georgia,serif;word-break:break-word}
+.rf-pull.up{transform:translate(-50%,-70px) scale(1);opacity:1}
+.rf-pull.win{box-shadow:0 0 0 4px #fbbf24,0 0 40px #fbbf24aa;animation:pop .6s ease-out}
+@keyframes pop{0%{transform:translate(-50%,-70px) scale(.8)}60%{transform:translate(-50%,-70px) scale(1.12)}100%{transform:translate(-50%,-70px) scale(1)}}
+.rf-res{min-height:60px;font-size:19px;margin-top:10px}
+.rf-res b{color:#fde68a}
+.rf-actions{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.rf-actions button.g{color:#fff3e0;border-color:#ffffff66}
+.rf-confetti span{position:absolute;top:-10vh;font-size:26px;animation:fall 5s linear forwards;z-index:1;pointer-events:none}
+@media(prefers-reduced-motion:reduce){#leaves{display:none}.stk-btn,.tk,button.tk:hover{animation:none!important}.stir .slip{animation:none}.rf-hand,.rf-pull{transition:none}.rf-confetti{display:none}}
+
+/* =============== extras =============== */
+main{padding-bottom:90px}
+
+/* =============== rim, event banner, layout =============== */
+main{position:relative}
+nav a{white-space:nowrap;gap:9px}
+@media(min-width:861px){#shell{padding:22px}nav{top:22px;height:calc(100vh - 44px);border:var(--bw) solid var(--bd);border-radius:18px}main{padding-top:8px;padding-bottom:70px}}
+@media(max-width:860px){#shell{padding:14px}.pgstk{display:none}}
+/* rim of maple leaves around the whole screen */
+#rim{position:fixed;inset:0;pointer-events:none;z-index:5;overflow:hidden}
+#rim span{position:absolute;line-height:1;font-size:var(--s,30px);transform:rotate(var(--r,0deg));filter:drop-shadow(0 2px 2px #7c2d1266)}
+/* stickers stuck to the PAGE: they scroll away with it instead of following you */
+.pgstk{position:absolute;z-index:3;pointer-events:none;font-size:var(--s,34px);line-height:1;transform:rotate(var(--r,0deg));filter:var(--stk)}
+/* the Turkey Market: highlighted in place, with the only turkey sticker on the page */
+.tkstk{position:absolute;right:-12px;top:-20px;font-size:46px;line-height:1;transform:rotate(14deg);filter:var(--stk);z-index:3;pointer-events:none}
+.turkey-hl{border-color:#e8590c!important;box-shadow:0 0 0 3px #ffb347,0 8px 26px #e8590c66;background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 28%,var(--card)),var(--card))}
+/* Thanksgiving event banner (links to Favors and the Turkey Raffle) */
+.event-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:12px 18px;margin:0 0 16px;border-radius:18px;border:var(--bw) solid var(--acc);background:linear-gradient(110deg,color-mix(in srgb,var(--acc) 30%,var(--card)),var(--card));color:var(--fg);position:relative}
+.event-bar .ev-txt{flex:1 1 260px;min-width:0}
+.event-bar .ev-txt a{color:var(--acc);font-weight:700}
+.event-bar .links{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.event-bar a.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;background:linear-gradient(135deg,#ffa62e,#e8590c);color:#fff;text-decoration:none;font-weight:700;font-size:13.5px;box-shadow:0 2px 0 #a3360a;white-space:nowrap}
+.event-bar a.pill:hover{filter:brightness(1.08)}
 </style>
-<link rel="icon" href="/favicon.ico">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%83%3C/text%3E%3C/svg%3E">
+<!-- Web Monetization (Interledger / Open Payments): invisible, no UI, no tracking.
+     Paste your wallet address(es) (aka payment pointers) into WALLETS, e.g. "https://wallet.example.com/yourname".
+     Empty list = does nothing. Visitors without a Web Monetization extension are unaffected. -->
+<script>
+(function(){
+  var WALLETS = [];
+  try{
+    WALLETS.forEach(function(w){
+      if(typeof w!=="string"||!/^https:\/\/[^\s"'<>]+$/.test(w)) return;
+      var l=document.createElement("link"); l.rel="monetization"; l.href=w;
+      document.head.appendChild(l);
+    });
+  }catch(e){}
+})();
+</script>
 </head>
 <body>
 <div id="app"></div>
+<div id="rf"></div>
 <div id="t"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
@@ -184,6 +304,7 @@ const SUPABASE_KEY = 'sb_publishable_mwgMhSwlsfRnOtu3h8-hUA_F7xjnxAV';
 const ALLOWED_DOMAINS = ['headroyce.org'];
 const REFERRER_BONUS = 300, FRIEND_BONUS = 100; // keep equal to v_ref_bonus / v_new_bonus in the award_referral SQL function
 
+// ---- password reset: flags + auth listener ----
 let RECOVERY = /type=recovery/.test(location.hash); // true while a password-reset link is being used
 const LINK_EXPIRED = /error_code=otp_expired|error_description=.*(expired|invalid)/i.test(location.hash);
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -195,25 +316,100 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>'
 const root = document.documentElement;
 let REV = null, me = null, markets = [], P = [], CD = [], T = [], LB = [], STAFF = [], INV = [], PR = [], FINAL = [], ACT = {}, MT = {}, MTok = {}, FILTER = 'open';
 let STK = null, SBD = [], STK_OPEN = false;
-let TE = null, UP = {}, UPtok = {};
+let UP = {}, UPtok = {};
 let SHOPERR = '', CO = {}, SHOP = [], OWN = [], STAT = null, HIST = [], IDEAS = [];
 let SHOPFILE = null, SHOPFILE_URL = '';
 // special (earned) banners and icons
 let SPECIAL = [], SHELD = [], SHOLD = [], SPFILE = null, SPFILE_URL = '';
+// Thanksgiving Feast
+let FE = null, FEERR = '', FAV = [], RAFFLE_CHECKED = false, RAFFLE_PENDING = false;
 let lastRender = 0;
 let LBX = true, LBSORT = 'tokens_desc';
 const LBSORTS = {tokens_desc:'Most tokens', tokens_asc:'Fewest tokens', trades_desc:'Most trades', trades_asc:'Fewest trades', profit_desc:'Biggest profit', profit_asc:'Biggest loss'};
 const LBCOL = {tokens:'Tokens', trades:'Trades', profit:'Profit'};
 
 const AV = ['🦅','🐺','🦊','🐼','🐯','🦁','🐸','🐙','🦉','🐧','🦄','🐲','🚀','⚡','🌙','🔥','🎯','🎲','🎸','📈','🧠','👾','🎨','🏀'];
-const THEMES = {light:'Light', dark:'Dark', slate:'Slate', midnight:'Midnight', custom:'Custom'};
+// the color theme is LOCKED to the autumn "Espresso" palette that lives in :root (no theme switching, no custom colors)
 const CK = {bg:'--bg', card:'--card', fg:'--fg', acc:'--acc'};
 const AVURL = SUPABASE_URL + '/storage/v1/object/public/avatars/';
 const SHOPURL = SUPABASE_URL + '/storage/v1/object/public/shop-art/';
-const PATS = {none:'None', dots:'Dots', grid:'Grid', lines:'Lines'};
+const PATS = {none:'None', dots:'Dots', grid:'Grid', lines:'Lines', leaves:'Leaves', plaid:'Plaid'};
 const CRIT = {top_streak:'Highest daily streak (ties share it)', top_referrals:'Most referrals (ties share it)', top_trades:'Most trades in the Trading Frenzy (ties share it)'};
-const IC = {markets:'M3 17l6-6 4 4 8-8M15 7h6v6', portfolio:'M3 8h18v12H3zM8 8V5h8v3', leaderboard:'M6 20V10M12 20V4M18 20v-7', shop:'M5 7h14l-1 13H6zM9 7a3 3 0 016 0', rules:'M6 3h12v18H6zM9 8h6M9 12h6', suggest:'M12 5v14M5 12h14', create:'M12 5v14M5 12h14', review:'M5 12l5 5 9-10', admin:'M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z', frenzy:'M13 2L4 14h7l-1 8 9-12h-7z', ideas:'M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z'};
+const IC = {markets:'M3 17l6-6 4 4 8-8M15 7h6v6', portfolio:'M3 8h18v12H3zM8 8V5h8v3', leaderboard:'M6 20V10M12 20V4M18 20v-7', shop:'M5 7h14l-1 13H6zM9 7a3 3 0 016 0', rules:'M6 3h12v18H6zM9 8h6M9 12h6', suggest:'M12 5v14M5 12h14', create:'M12 5v14M5 12h14', review:'M5 12l5 5 9-10', admin:'M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z', ideas:'M9 18h6M10 21h4M12 3a6 6 0 00-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0012 3z', feast:'M5 19C5 10 10 5 20 4c0 10-5 15-14 15zM5 19l8-8', raffle:'M4 7h16a1 1 0 011 1v2a2 2 0 000 4v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2a2 2 0 000-4V8a1 1 0 011-1zM14 7v10', favors:'M4 11h16v9H4zM3 7h18v4H3zM12 7v13M12 7C9 7 8 3 10.5 3 12 3 12 7 12 7zM12 7c3 0 4-4 1.5-4C12 3 12 7 12 7z'};
 const svg = d => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+const ico = d => d[0] === '@' ? `<span class="ni">${d.slice(1)}</span>` : svg(d);
+
+// falling leaves, a rim of maple leaves around the whole screen, and stickers stuck to the page (decoration only)
+const rnd = (a, b) => a + Math.random() * (b - a);
+
+// Leaves background: drawn fresh at random on a canvas every visit (random spots, sizes, angles, colors and leaf shapes), so no two spots look alike
+let LEAFBG = null;
+function drawLeafBg(){
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  const W = Math.max(innerWidth, LEAFBG ? LEAFBG.cssW : 0), H = Math.max(innerHeight, LEAFBG ? LEAFBG.cssH : 0);
+  if (LEAFBG && W <= LEAFBG.cssW && H <= LEAFBG.cssH) return;      // already covers the screen, keep it so it does not change while you use the site
+  let cv = document.getElementById('leafbg');
+  if (!cv) { cv = document.createElement('canvas'); cv.id = 'leafbg'; cv.setAttribute('aria-hidden', 'true'); document.body.prepend(cv); }
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  const g = cv.getContext('2d'); g.scale(dpr, dpr);
+  g.fillStyle = '#5a2a14'; g.fillRect(0, 0, W, H);
+  const SHAPES = [
+    [new Path2D('M50 2L56 18L64 12L63 30L80 22L75 42L96 42L86 56L92 70L70 68L60 80L53 78L53 98L47 98L47 78L40 80L30 68L8 70L14 56L4 42L25 42L20 22L37 30L36 12L44 18Z'), new Path2D('M50 28V90M50 56L70 40M50 56L30 40')],
+    [new Path2D('M50 3C82 22 86 64 50 97C14 64 18 22 50 3Z'), new Path2D('M50 10V98M50 38L67 26M50 56L69 43M50 38L33 26M50 56L31 43')],
+    [new Path2D('M50 2C68 14 94 38 74 62C66 72 58 78 53 80L53 98L47 98L47 80C42 78 34 72 26 62C6 38 32 14 50 2Z'), new Path2D('M50 14V92M50 44L66 32M50 60L68 48M50 44L34 32M50 60L32 48')]
+  ];
+  const n = Math.round(W * H / 3300);
+  for (let k = 0; k < n; k++) {
+    const [body, vein] = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+    const s = rnd(.3, .95), sx = s * rnd(.75, 1.25), sy = s * rnd(.75, 1.25);
+    g.save();
+    g.globalAlpha = rnd(.5, 1);
+    g.translate(rnd(-20, W + 20), rnd(-20, H + 20)); g.rotate(rnd(0, Math.PI * 2)); g.scale(sx, sy); g.translate(-50, -50);
+    g.fillStyle = `hsl(${rnd(6, 40).toFixed(0)},${rnd(40, 72).toFixed(0)}%,${rnd(20, 40).toFixed(0)}%)`;
+    g.strokeStyle = 'rgba(74,29,12,.5)'; g.lineWidth = 2.5; g.lineJoin = 'round';
+    g.fill(body); g.stroke(body);
+    g.strokeStyle = 'rgba(74,29,12,.35)'; g.stroke(vein);
+    g.restore();
+  }
+  LEAFBG = {cssW: W, cssH: H};
+}
+let leafT;
+addEventListener('resize', () => { clearTimeout(leafT); leafT = setTimeout(() => { if (document.documentElement.dataset.pat === 'leaves') drawLeafBg(); }, 250); });
+(() => {
+  const L = ['🍁','🍂','🍁','🍃','🍁','🍂'], wide = innerWidth > 860, d = document.createElement('div');
+  d.id = 'leaves'; d.setAttribute('aria-hidden', 'true');
+  for (let i = 0; i < (wide ? 60 : 30); i++) {
+    const s = document.createElement('span');
+    s.textContent = L[i % L.length];
+    s.style.cssText = `left:${Math.round(rnd(0, 100))}%;--s:${Math.round(rnd(14, 40))}px;--d:${Math.round(rnd(12, 30))}s;--dl:-${Math.round(rnd(0, 30))}s;--x:${Math.round(rnd(20, 90))}px`;
+    d.appendChild(s);
+  }
+  document.body.prepend(d);
+})();
+// the rim: leaves piled along all four edges of the screen, like the pile that used to sit at the bottom
+let rimT;
+function buildRim(){
+  let r = $('#rim');
+  if (!r) { r = document.createElement('div'); r.id = 'rim'; r.setAttribute('aria-hidden', 'true'); document.body.appendChild(r); }
+  const W = innerWidth, H = innerHeight, wide = W > 860, step = wide ? 19 : 22, G = ['🍁','🍂','🍁','🍃','🍁','🍂','🍁'], out = [];
+  let n = 0;
+  const leaf = (x, y, s) => out.push(`<span style="left:${Math.round(x)}px;top:${Math.round(y)}px;--s:${Math.round(s)}px;--r:${Math.round(rnd(-70, 70))}deg">${G[n++ % G.length]}</span>`);
+  const sz = () => wide ? rnd(26, 38) : rnd(20, 28), off = () => wide ? rnd(10, 16) : rnd(7, 11);
+  for (let x = -12; x < W + 12; x += step) { let s = sz(); leaf(x + rnd(-4, 4), -off(), s); s = sz(); leaf(x + rnd(-4, 4), H - s + off(), s); }
+  for (let y = 6; y < H - 6; y += step) { let s = sz(); leaf(-off(), y + rnd(-4, 4), s); s = sz(); leaf(W - s + off(), y + rnd(-4, 4), s); }
+  r.innerHTML = out.join('');
+}
+buildRim();
+addEventListener('resize', () => { clearTimeout(rimT); rimT = setTimeout(buildRim, 250); });
+// a few stickers stuck to the page itself (inside <main>), so you scroll past them. They are made once, so each stays in its spot.
+const PAGE_STICKERS = (() => {
+  const S = ['🍁','🦃','🎃','🍂','🎃','🦃','🍁','🍂'], n = S.length, out = [];
+  for (let i = 0; i < n; i++) {
+    const side = i % 2 === 0 ? 'left:-6px' : 'right:-6px', top = Math.round(7 + (i + rnd(0, .6)) * (86 / n));
+    out.push(`<span class="pgstk" aria-hidden="true" style="${side};top:${top}%;--s:${Math.round(rnd(30, 42))}px;--r:${Math.round(rnd(-24, 24))}deg">${S[i]}</span>`);
+  }
+  return out.join('');
+})();
 
 // shop art: built-in items store CSS/emoji, uploaded items store "img:<path>"
 const isImg = x => String(x.art).startsWith('img:');
@@ -253,10 +449,20 @@ function cdText(){
   const s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
   return `Season ends ${SEASON_END.toLocaleString([], {dateStyle:'medium', timeStyle:'short'})} · ${d}d ${h}h ${m}m ${s % 60}s left`;
 }
+// countdown to Thanksgiving dinner (the feast's end time comes from the server)
+function feastCd(){
+  if (!FE) return '';
+  const ms = new Date(FE.ends_at) - Date.now();
+  if (ms <= 0) return 'Dinner is served! The feast has ended.';
+  const s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+  return `${d}d ${h}h ${m}m ${s % 60}s until Thanksgiving dinner`;
+}
 let seasonOver = Date.now() >= SEASON_END;
 setInterval(() => {
   const e = $('#cd');
   if (e) e.textContent = cdText();
+  const f = $('#fcd');
+  if (f) f.textContent = feastCd();
   if (!seasonOver && Date.now() >= SEASON_END) { seasonOver = true; render(); }
   // a cooldown just ran out: redraw so the Cash out / Buy buttons unlock
   if (me && CD.some(c => c.until > lastRender && c.until <= Date.now())) {
@@ -265,28 +471,12 @@ setInterval(() => {
   }
 }, 1000);
 
-function setTheme(t){
-  root.dataset.theme = t;
-  try { localStorage.setItem('theme', t); } catch (e) {}
-}
-(() => {
-  let t;
-  try { t = localStorage.getItem('theme'); } catch (e) {}
-  setTheme(THEMES[t] ? t : 'dark');
-})();
-const toggleTheme = () => { setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'); render(); };
-const applyPat = (c, s) => {
-  if (/^#[0-9a-f]{6}$/i.test(c || '')) root.style.setProperty('--patc', c); else root.style.removeProperty('--patc');
-  const n = s == null ? 100 : Math.min(100, Math.max(0, +s || 0));
-  root.style.setProperty('--patp', n + '%');
-};
-const patStr = () => me.pattern_strength == null ? 100 : +me.pattern_strength;
+root.dataset.theme = 'dark';
 const applyLook = () => {
-  if (me.theme && THEMES[me.theme]) setTheme(me.theme);
-  for (const k in CK) root.style.removeProperty(CK[k]);
-  if (me.theme === 'custom' && me.colors) for (const k in CK) if (/^#[0-9a-f]{6}$/i.test(me.colors[k] || '')) root.style.setProperty(CK[k], me.colors[k]);
-  root.dataset.pat = me.pattern || 'none';
-  applyPat(me.pattern_color, me.pattern_strength);
+  for (const k in CK) root.style.removeProperty(CK[k]);   // drop any custom colors saved before the lock
+  root.dataset.theme = 'dark';
+  root.dataset.pat = me.pattern || 'plaid';                // the background pattern is the only look setting left
+  if (root.dataset.pat === 'leaves') drawLeafBg();
 };
 
 const go = h => { location.hash = '#/' + h; };
@@ -299,7 +489,7 @@ const toast = m => {
 
 async function rpc(fn, args, ok){
   const {data, error} = await sb.rpc(fn, args);
-  if (error) toast(/schema cache/i.test(error.message) ? 'The latest SQL update has not been applied to this Supabase project yet. Run update.sql in the SQL Editor of the project your site uses.' : error.message); else if (ok) toast(ok);
+  if (error) toast(/schema cache/i.test(error.message) ? 'The latest SQL update has not been applied to this Supabase project yet. Run thanksgiving.sql in the SQL Editor of the project your site uses.' : error.message); else if (ok) toast(ok);
   for (const k in AT) AT[k] = 0;
   await load();
   return data;
@@ -336,12 +526,13 @@ function chart(id){
 
 // ---------- auth ----------
 function authView(){
-  $('#app').innerHTML = `<div style="max-width:400px;margin:12vh auto;padding:16px"><div class="card"><h1>EagleEye Market</h1>
-  <p class="mut">Please sign up with your Head-Royce email</p>
+  $('#app').innerHTML = `<div style="max-width:400px;margin:12vh auto;padding:16px;position:relative;z-index:1"><div class="card"><h1>EagleEye Market</h1>
+  <p class="mut">🦃 Happy Thanksgiving! Please sign up with your Head-Royce email</p>
   <input id="u" placeholder="Username (sign up only, 3-20 letters/numbers)" maxlength="20"><input id="e" type="email" placeholder="Email"><input id="p" type="password" placeholder="Password" minlength="8">
-  <div class="row" style="align-items:center"><button onclick="auth(true)">Log in</button><button class="g" onclick="auth(false)">Sign up</button><a href="#" onclick="forgotPassword();return false" style="margin-left:auto;font-size:13px;color:#2f7de1;text-decoration:underline;cursor:pointer;white-space:nowrap">Forgot Password?</a></div></div></div>`;
+  <div class="row" style="align-items:center"><button class="tk" onclick="auth(true)">🍁 Log in</button><button class="g" onclick="auth(false)">Sign up</button><a href="#" onclick="forgotPassword();return false" style="margin-left:auto;font-size:13px;text-decoration:underline;cursor:pointer;white-space:nowrap">Forgot Password?</a></div></div></div>`;
 }
 
+// ---------- password reset ----------
 async function forgotPassword(){
   const email = $('#e').value.trim();
   if (!email) return toast('Type your email in the Email box first, then tap Forgot password.');
@@ -351,10 +542,10 @@ async function forgotPassword(){
 }
 
 function resetView(){
-  $('#app').innerHTML = `<div style="max-width:400px;margin:12vh auto;padding:16px"><div class="card"><h1>Reset password</h1>
+  $('#app').innerHTML = `<div style="max-width:400px;margin:12vh auto;padding:16px;position:relative;z-index:1"><div class="card"><h1>Reset password</h1>
   <p class="mut">Choose a new password for your account.</p>
   <input id="np" type="password" placeholder="New password (8+ characters)" minlength="8"><input id="np2" type="password" placeholder="Confirm new password" minlength="8">
-  <div class="row"><button onclick="setNewPassword()">Update password</button><button class="g" onclick="cancelReset()">Cancel</button></div></div></div>`;
+  <div class="row"><button class="tk" onclick="setNewPassword()">Update password</button><button class="g" onclick="cancelReset()">Cancel</button></div></div></div>`;
 }
 async function setNewPassword(){
   const a = $('#np').value, b = $('#np2').value;
@@ -374,6 +565,7 @@ async function cancelReset(){
   history.replaceState(null, '', location.pathname + location.search);
   authView();
 }
+
 async function auth(login){
   const email = $('#e').value.trim(), password = $('#p').value, username = $('#u').value.trim();
   if (!login) {
@@ -389,12 +581,11 @@ async function auth(login){
 
 // ---------- data ----------
 const AT = {}, LOADED = {};
-const TTL = {ev:60e3, act:60e3, pts:60e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3, streak:60e3, sboard:60e3, co:60e3, shop:60e3, special:60e3, te:30e3, stats:30e3, hist:30e3, ideas:30e3};
-const EXTRAS = {markets:['act'], market:['pts'], leaderboard:['lb','final','sboard'], admin:['staff','inv','final','special'], suggest:['pr'], review:['pr'], shop:['shop'], account:['stats','hist','shop'], inventory:['shop','special'], ideas:['ideas'], frenzy:['te']};
-const BLOCKING = {frenzy:1, leaderboard:1, admin:1, suggest:1, review:1, shop:1, account:1, inventory:1, ideas:1};
+const TTL = {ev:60e3, act:60e3, pts:60e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3, streak:60e3, sboard:60e3, co:60e3, shop:60e3, special:60e3, te:30e3, stats:30e3, hist:30e3, ideas:30e3, fe:30e3, fa:30e3};
+const EXTRAS = {markets:['act'], market:['pts'], leaderboard:['lb','final','sboard'], admin:['staff','inv','final','special'], suggest:['pr'], review:['pr'], shop:['shop'], account:['stats','hist','shop'], inventory:['shop','special'], ideas:['ideas'], feast:['fe'], raffle:['fe'], favors:['fe','fa']};
+const BLOCKING = {leaderboard:1, admin:1, suggest:1, review:1, shop:1, account:1, inventory:1, ideas:1, feast:1, raffle:1, favors:1};
 
 const FETCH = {
-  te: async () => { const r = await sb.rpc('trade_event_info'); TE = r.data || null; return r; },
   ev: async () => { const r = await sb.rpc('referral_event_info'); REV = r.data || null; return r; },
   act: async () => { const r = await sb.rpc('market_activity'); ACT = {}; (r.data || []).forEach(x => { ACT[x.market_id] = x.recent; }); return r; },
   pts: async () => { const r = await sb.rpc('price_points'); T = r.data || []; return r; },
@@ -434,7 +625,16 @@ const FETCH = {
   },
   stats: async () => { const r = await sb.rpc('my_stats'); STAT = (r.data && r.data[0]) || null; return r; },
   hist: async () => { const r = await sb.rpc('my_trades'); HIST = r.data || []; return r; },
-  ideas: async () => { const r = await sb.from('site_ideas').select('id,body,status,created_at,profiles(username)').order('created_at', {ascending:false}).limit(200); IDEAS = r.data || []; return r; }
+  ideas: async () => { const r = await sb.from('site_ideas').select('id,body,status,created_at,profiles(username)').order('created_at', {ascending:false}).limit(200); IDEAS = r.data || []; return r; },
+  // Thanksgiving Feast: meter, my points, today's Turkey Market, waiting favor, raffle results
+  fe: async () => {
+    const r = await sb.rpc('feast_info');
+    FEERR = (r.error && r.error.message) || '';
+    FE = r.data || null;
+    if (!RAFFLE_CHECKED && !r.error) { RAFFLE_CHECKED = true; RAFFLE_PENDING = !!(FE && FE.show_raffle); }
+    return r;
+  },
+  fa: async () => { const r = await sb.rpc('feast_my_favors'); FAV = r.data || []; return r; }
 };
 
 // number of unread ideas (only the owner can see everyone's ideas)
@@ -444,11 +644,12 @@ async function ensureExtras(){
   if (!me) return;
   const page = (location.hash.slice(2) || 'markets').split('/')[0];
   const keys = new Set(EXTRAS[page] || []);
-  ['ev', 'te', 'streak', 'co', 'shop', 'special'].forEach(k => keys.add(k));
+  ['ev', 'streak', 'co', 'shop', 'special', 'fe'].forEach(k => keys.add(k));
   if (me.role !== 'user') keys.add('pr');
   if (me.role === 'owner') keys.add('ideas');
   const stale = [...keys].filter(k => !AT[k] || Date.now() - AT[k] > TTL[k]);
   if (!stale.length) return;
+  const firstLoad = stale.filter(k => !LOADED[k]), prevTurkey = FE ? FE.turkey_market_id : null;
   stale.forEach(k => { AT[k] = Date.now(); });
   await Promise.all(stale.map(async k => {
     const r = await FETCH[k]();
@@ -456,8 +657,10 @@ async function ensureExtras(){
     LOADED[k] = true;
   }));
   const cur = (location.hash.slice(2) || 'markets').split('/')[0];
-  if (stale.every(k => k === 'ev' || k === 'te' || k === 'streak') && cur === page && page !== 'frenzy') {
-    const rb = $('#rb'); if (rb) rb.innerHTML = frenzyBanner();
+  const quiet = ['ev', 'streak', 'fe'];
+  const turkeyMoved = (FE ? FE.turkey_market_id : null) !== prevTurkey;
+  if (stale.every(k => quiet.includes(k)) && !firstLoad.includes('fe') && !turkeyMoved && cur === page && page !== 'feast' && page !== 'raffle' && page !== 'favors') {
+    const rb = $('#rb'); if (rb) rb.innerHTML = favorBanner() + eventBanner() + feastBanner();
     const sw = $('#stkw'); if (sw) sw.innerHTML = streakBadge();
     return;
   }
@@ -467,8 +670,9 @@ async function ensureExtras(){
 function resetCaches(){
   for (const k in AT) delete AT[k];
   for (const k in LOADED) delete LOADED[k];
-  STK = null; SBD = []; STK_OPEN = false; TE = null; UP = {}; UPtok = {}; CO = {}; SHOP = []; OWN = []; STAT = null; HIST = []; IDEAS = [];
+  STK = null; SBD = []; STK_OPEN = false; UP = {}; UPtok = {}; CO = {}; SHOP = []; OWN = []; STAT = null; HIST = []; IDEAS = [];
   SPECIAL = []; SHELD = []; SHOLD = [];
+  FE = null; FAV = []; RAFFLE_CHECKED = false; RAFFLE_PENDING = false;
 }
 
 async function load(){
@@ -507,6 +711,8 @@ setInterval(async () => {
     const q = await FETCH.ideas();
     if (!q.error) { LOADED.ideas = true; AT.ideas = Date.now(); if (ideaNew() !== before) render(); }
   }
+  // keep the feast meter fresh (it moves as everyone trades)
+  if (Date.now() - (AT.fe || 0) > 25e3) { AT.fe = 0; ensureExtras(); }
   // keep earned banners/icons current (streak leaders change during the day)
   if (SPECIAL.length && Date.now() - (AT.special || 0) > 55e3) { AT.special = 0; AT.co = 0; ensureExtras(); }
 }, 30000);
@@ -537,42 +743,259 @@ const sorters = {
 // The race page and banner are gone, but loading 'ev' (referral_event_info) is what pays the race winner
 // once the race's end time passes, so the fetch stays in FETCH.ev and ensureExtras().
 
-// full-width Market of the Week card shown at the top of the Markets page
-const motwCard = m => {
-  const y = py(m), mine = P.some(p => p.market_id === m.id && +p.shares > 0);
-  return `<a class="card mk motw" style="grid-column:1/-1" href="#/market/${m.id}">
-    <div class="tags"><span class="tag">Market of the Week</span><span class="chip">WINNERS EARN 2× PROFIT</span></div>
-    <b>${esc(m.question)}</b>${m.proposed_by ? `<div class="mut" style="margin-top:4px">Suggested by ${nm(m.proposed_by)}</div>` : ''}
-    <div class="bar"><i style="width:${y*100}%"></i></div>
-    <div class="split"><span style="color:var(--yes)">YES ${(y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-y)*100).toFixed(0)}%</span></div>
-    <div class="mut" style="margin-top:6px">${mState(m)}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}${mine ? ' · you have a position' : ''}</div></a>`;
+// ---------- Thanksgiving Feast helpers ----------
+const pen = () => FE ? +(FE.penalty_pct == null ? 30 : FE.penalty_pct) : 0;   // % of every balance lost if the meter is not full
+const fnum = n => Math.round(+n || 0).toLocaleString();
+const isFeastReward = x => /^(bn|ic)_feast_/.test(x.id);
+const isTurkey = m => !!(FE && FE.active && FE.turkey_market_id === m.id && !m.is_motw);
+const turkeyIcon = () => '';   // the only turkey sticker is on the Turkey Market card itself
+const favIn = () => (FE && FE.active && FE.favor_in) ? +FE.favor_in.pct : 0;
+const favOwe = () => (FE && FE.active) ? +(FE.favor_owed_pct || 0) : 0;
+// a favor waiting for you shows at the top of every page: who sent it and what it is worth
+const favorBanner = () => (FE && FE.active && FE.favor_in)
+  ? `<div class="card favor-in"><span class="pct-pill">+${(+FE.favor_in.pct).toFixed(1)}%</span> <b>🧡 ${nm(FE.favor_in.from)} sent you a favor!</b> <span class="mut">It adds ${(+FE.favor_in.pct).toFixed(1)}% of your profit to your next profitable cash-out worth over 200 tokens.</span></div>` : '';
+const feastPct = () => FE ? Math.max(0, Math.min(100, (+FE.total / +FE.goal) * 100)) : 0;
+const meter = () => {
+  const p = feastPct(), fill = p > 0 ? Math.max(1, p) : 0;
+  return `<div class="meter" role="progressbar" aria-valuenow="${Math.round(p)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${fill}%"></i><span class="mk25"></span><span class="mk50"></span><span class="mk75"></span></div>`;
 };
+const feastEnd = () => FE ? new Date(FE.ends_at).toLocaleString([], {dateStyle:'medium', timeStyle:'short'}) : '';
+const myTix = () => (FE && FE.mine) ? +FE.mine.tickets || 0 : 0;
 
-// ---------- Trading Frenzy (event) ----------
-// banner shown at the top of every page (hidden on the Frenzy page itself, and 2 days after the event ends)
-function frenzyBanner(){
-  if (!TE || Date.now() > new Date(TE.ends_at).getTime() + 2 * 864e5) return '';
-  const ended = Date.now() >= new Date(TE.ends_at);
-  const end = new Date(TE.ends_at).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
-  const lead = (TE.leaders || [])[0];
-  const blurb = ended
-    ? 'The Trading Frenzy is over!' + (TE.winner ? ' Congrats to <b>' + esc(TE.winner) + '</b>!' : '')
-    : '<b>Trading Frenzy!</b> Every buy and cash-out counts. Most trades by ' + end + ' wins ' + TE.prize + ' bonus tokens and a special banner.' + (lead ? ' Leading now: <b>' + esc(lead.username) + '</b> (' + lead.n + ').' : '');
-  return `<div class="ev-bar"><div class="blurb"><span class="chip ev">EVENT</span> ${blurb}</div><span class="rc">Your trades: <b>${TE.mine}</b></span><a href="#/frenzy">Leaderboard</a></div>`;
+// Thanksgiving feast banner: the community meter, on every page for the whole feast (and 3 days after)
+function feastBanner(){
+  if (!FE) return '';
+  const endMs = new Date(FE.ends_at).getTime();
+  if (Date.now() > endMs + 3 * 864e5) return '';
+  const over = Date.now() >= endMs, p = feastPct();
+  const msg = over
+    ? (FE.rolled ? (FE.goal_met ? 'The community filled the meter. Prizes were paid!' : `The meter fell short, so no community prizes were paid${pen() > 0 ? ` and every balance was cut by ${pen()}%` : ''}.`) : 'Dinner is served! Counting the results...')
+    : (p >= 100 ? 'The meter is FULL! Keep contributing, prizes are paid at Thanksgiving.' : `Fill the meter together for prizes${pen() > 0 ? `. If we do not, <b>everybody's balance is cut by ${pen()}%</b>!` : '!'}`);
+  return `<div class="feast-bar"><div class="fb-top"><span class="chip ev">THANKSGIVING FEAST</span><b>${fnum(FE.total)} / ${fnum(FE.goal)} points (${Math.floor(p)}%)</b><span class="sp"></span><span class="rc" style="background:#ffffff33;border-color:#ffffff66;color:#fff">Your points: <b>${fnum(FE.mine.points)}</b></span><a href="#/feast">Open the feast →</a></div>${meter()}<div style="margin-top:6px;font-size:13px">${msg}</div></div>`;
+}
+// Thanksgiving event banner: replaces the old Trading Frenzy banner, with links to Favors, the raffle and the Turkey Market
+function eventBanner(){
+  if (!FE) return '';
+  const endMs = new Date(FE.ends_at).getTime();
+  if (Date.now() > endMs + 3 * 864e5) return '';
+  const over = Date.now() >= endMs, tm = FE.turkey_market_id ? markets.find(m => m.id === FE.turkey_market_id) : null;
+  const txt = over ? 'The Thanksgiving event is over. Thank you for playing!'
+    : tm ? `🦃 <b>Today's Turkey Market:</b> <a href="#/market/${tm.id}">${esc(tm.question)}</a> <span class="mut">Cash out on it today for 2× profit!</span>`
+    : '🍂 <b>Thanksgiving Event!</b> Trade, send favors and earn turkey tickets for the 1,500-token raffle.';
+  return `<div class="event-bar"><span class="chip ev">🍁 THANKSGIVING EVENT</span><span class="ev-txt">${txt}</span>${over ? '' : `<span class="links"><a class="pill" href="#/favors">${svg(IC.favors)} Trade Favors</a><a class="pill" href="#/raffle">${svg(IC.raffle)} Turkey Raffle · ${myTix()}</a></span>`}</div>`;
 }
 
-function pgFrenzy(){
-  if (!TE) return '<h1>Trading Frenzy</h1><p class="mut">No event is running right now. Check back soon.</p>';
-  const ended = Date.now() >= new Date(TE.ends_at);
-  const lead = TE.leaders || [];
-  const at = lead.findIndex(r => r.username === me.username);
-  const rows = lead.map((r, i) => lbRow(i, r.username, r.n, 40)).join('');
-  const end = new Date(TE.ends_at).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
-  const status = ended ? (TE.winner ? 'Winner: <b>' + esc(TE.winner) + '</b> (+' + TE.prize + ' tokens)' : 'The event has ended') : 'Ends ' + end;
-  const standing = at >= 0 ? 'You are #' + (at + 1) : (TE.mine > 0 ? 'Not in the top 10 yet' : 'No trades yet');
-  return `<h1>${esc(TE.title || 'Trading Frenzy')}</h1><div class="card"><p style="margin-top:0">Every buy and every cash-out counts as a trade. The player with the most trades during the event wins a bonus <b>${TE.prize} tokens</b>, and while they lead they wear the special banner. Ties go to whoever reached the count first.</p>
-    <div class="ev-stats"><span class="rc">${status}</span><span class="rc">Your trades: <b>${TE.mine}</b></span><span class="rc">${standing}</span></div></div>
-  <div class="card"><b>Top 10</b>${rows ? `<div class="lb" style="margin-top:10px"><div class="lbh"><span>#</span><span>Player</span><span>Trades</span></div>${rows}</div>` : '<p class="mut">No trades yet. Be the first!</p>'}</div>`;
+// full-width Market of the Week card shown at the top of the Markets page
+const motwCard = m => {
+  const y = py(m), mine = P.some(p => p.market_id === m.id && +p.shares > 0), i = info(m);
+  // quick trade: Yes / No buttons that open a bet pop-up without leaving the Markets page
+  const quick = !i.open ? '' : i.closed ? '<div class="mut" style="margin-top:12px">Trading closed</div>'
+    : i.locked ? `<div class="mut" style="margin-top:12px">Locked until ${new Date(i.until).toLocaleString()}</div>`
+    : mine ? '<div class="mut" style="margin-top:12px">You already have a position here. Open the market to cash out.</div>'
+    : `<div class="qt"><button class="y" onclick="quickBet(event,${m.id},'yes')">YES</button><button class="n" onclick="quickBet(event,${m.id},'no')">NO</button></div>`;
+  return `<div class="card mk motw" style="grid-column:1/-1" onclick="go('market/${m.id}')">
+    <div class="tags"><span class="tag">Market of the Week</span><span class="chip">WINNERS EARN 2× PROFIT</span></div>
+    <b><a href="#/market/${m.id}">${esc(m.question)}</a></b>${m.proposed_by ? `<div class="mut" style="margin-top:4px">Suggested by ${nm(m.proposed_by)}</div>` : ''}
+    <div class="bar"><i style="width:${y*100}%"></i></div>
+    <div class="split"><span style="color:var(--yes)">YES ${(y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-y)*100).toFixed(0)}%</span></div>
+    <div class="mut" style="margin-top:6px">${mState(m)}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}${mine ? ' · you have a position' : ''}</div>${quick}</div>`;
+};
+
+// ---------- Thanksgiving Feast page ----------
+const SRC = [
+  ['newbie',  '🌟 Your very first trade ever', '+50', ''],
+  ['daily',   '🌅 Your first trade of each day', '+7', 'once per player per day'],
+  ['suggest', '📜 Every approved market suggestion', '+15', ''],
+  ['favor',   '🧡 Every Trade Favor you send', '+3', 'up to 3 a day'],
+  ['referral','🍁 Every friend who joins with your link', '+20', '']
+];
+const tierText = () => {
+  const t = FE.tiers || {}, a = +t.t1_n, b = a + +t.t2_n;
+  return [[`#1 to #${a}`, t.t1], [`#${a + 1} to #${b}`, t.t2], [`#${b + 1} and below`, t.t3]];
+};
+// turkey tickets from daily ROI
+const TIX = [[0, 1, 0], [1, 3, 1], [3, 6, 2], [6, 15, 3], [15, 25, 5], [25, 50, 10], [50, Infinity, 20]];
+const tixFor = r => r >= 50 ? 20 : r >= 25 ? 10 : r >= 15 ? 5 : r >= 6 ? 3 : r >= 3 ? 2 : r >= 1 ? 1 : 0;
+const tixRange = (a, b) => a === 0 ? 'Below 1%' : b === Infinity ? `${a}% and up` : `${a}% to ${b}%`;
+const notSetUp = (t) => `<h1>${t}</h1><div class="card"><b>This is not set up yet.</b><p class="mut">${esc(FEERR || 'No feast data was found.')} If this mentions the schema cache or a missing function, run thanksgiving.sql in the Supabase SQL Editor of the project your site uses.</p></div>`;
+
+function pgFeast(){
+  if (!FE) return notSetUp('Thanksgiving Feast');
+  const over = Date.now() >= new Date(FE.ends_at), p = feastPct(), mine = FE.mine || {};
+  const t = FE.totals || {}, lead = FE.leaders || [], roi = FE.roi || {};
+  const turkey = FE.turkey_market_id ? markets.find(m => m.id === FE.turkey_market_id) : null;
+  const rewards = SHOP.filter(isFeastReward);
+  const head = rewards.filter(x => x.id.includes('_head') || x.id.includes('_golden')), champ = rewards.filter(x => !head.includes(x));
+  const rows = lead.map((r, i) => lbRow(i, r.username, fnum(r.points) + ' pts · 🎟️ ' + r.tickets, 40)).join('');
+  const srcRows = SRC.map(([k, l, pts, note]) => `<tr><td>${l}${note ? ` <span class="mut">(${note})</span>` : ''}</td><td><b>${pts}</b></td><td>${fnum(t[k])}</td></tr>`).join('');
+  const tiers = tierText();
+  let results = '';
+  if (FE.rolled) {
+    const R = FE.raffle || {}, fin = FE.final || [];
+    results = `<div class="card feast-hero"><b style="font-size:18px">🍽️ The feast results</b>
+      <p style="margin-bottom:6px">${FE.goal_met ? `🎉 The community filled the meter with <b>${fnum(FE.total)}</b> points! <b>${FE.guests_paid || 0}</b> players received a reward by rank.${+mine.reward > 0 ? ` You received <b>${fnum(mine.reward)}</b> tokens.` : ''}` : `The meter finished at <b>${fnum(FE.total)}</b> of ${fnum(FE.goal)} points, so <b>no community prizes</b> were paid${pen() > 0 ? ` and <b>every balance was cut by ${pen()}%</b>${FE.penalized ? ` (${FE.penalized} players)` : ''}` : ''}. Thank you for playing!`}</p>
+      <p style="margin:6px 0">🎟️ Raffle winner: <b>${R.winner ? esc(R.winner) : 'nobody (no one earned a ticket)'}</b>${R.winner ? ` won <b>${fnum(R.prize)}</b> tokens (ticket #${R.ticket} of ${R.tickets_total})</p>` : ''}
+      <p style="margin:6px 0 0">🏆 Top contributors: ${fin.length ? fin.map(f => `#${f.place} ${nm(f.username)} (${fnum(f.points)})`).join(' · ') : 'none'}</p>
+      ${R.winner ? '<div class="row"><button class="tk" onclick="replayRaffle()">🎟️ Watch the raffle again</button></div>' : ''}</div>`;
+  }
+  return `<h1>Thanksgiving Feast</h1>
+  <div class="card feast-hero"><div class="split" style="flex-wrap:wrap"><div><div class="mut">Community meter</div><div class="pts">${fnum(FE.total)} <span class="mut" style="font-size:18px">/ ${fnum(FE.goal)} points</span></div></div>
+    <div style="text-align:right"><div id="fcd" style="font-weight:600">${feastCd()}</div><div class="mut">Ends ${feastEnd()}</div></div></div>
+    ${meter()}
+    <p style="margin:0">${over ? '' : (p >= 100 ? '🎉 The meter is full! Keep going, every point still counts toward the leaderboard. ' : 'Everybody works together. ')}<b>Community prizes are paid only if the meter is full when dinner is served.</b> The Turkey Raffle is paid either way. Contributors so far: <b>${FE.players}</b>.</p></div>
+  ${!over && !FE.rolled && pen() > 0 && p < 100 ? `<div class="card penalty-note"><b>Fill the meter, or everybody loses ${pen()}% of their balance!</b><p class="mut" style="margin:6px 0 0">If the meter is not full when dinner is served, every player's token balance is cut by ${pen()}%. We still need <b>${fnum(Math.max(0, FE.goal - FE.total))}</b> points, about <b>${fnum(Math.max(0, FE.goal - FE.total) / Math.max(1, Math.ceil((new Date(FE.ends_at) - Date.now()) / 864e5)))}</b> per day. Every trade, cash-out, favor and friend you bring in helps.</p></div>` : ''}
+  ${results}
+  <div class="stats">
+    <div class="card"><div class="mut">Your points</div><div class="big">${fnum(mine.points)}</div><div class="mut">${mine.rank ? 'Rank #' + mine.rank : 'Not on the board yet'}</div></div>
+    <div class="card"><div class="mut">Your turkey tickets 🎟️</div><div class="big">${mine.tickets || 0}</div><div class="mut">Today so far: ${(+roi.pct || 0).toFixed(2)}% ROI · <a href="#/raffle">how tickets work</a></div></div>
+    <div class="card"><div class="mut">All tickets in the bowl</div><div class="big">${fnum(t.tickets)}</div><div class="mut">Raffle prize ${fnum(FE.raffle_prize)} tokens</div></div>
+    <div class="card"><div class="mut">Turkey Market today 🦃</div>${turkey ? `<div style="margin-top:4px"><a href="#/market/${turkey.id}"><b>${esc(turkey.question)}</b></a></div><div class="mut">Cash out on it today for 2× profit</div>` : `<div class="mut" style="margin-top:6px">${over ? 'The feast is over.' : 'No open market is available to be picked right now.'}</div>`}</div>
+  </div>
+  <div class="two"><div>
+    <div class="card"><b>🍂 Where the points come from</b>
+      <table style="margin-top:8px"><tr><th>Action</th><th>Points</th><th>Community total</th></tr>${srcRows}</table>
+      <p class="mut" style="margin-bottom:0">Points count from every player at once.</p></div>
+    <div class="card"><b>🏆 Top contributors</b>${rows ? `<div class="lb" style="margin-top:10px"><div class="lbh"><span>#</span><span>Player</span><span>Points</span></div>${rows}</div>` : '<p class="mut">Nobody has contributed yet. Be the first!</p>'}</div>
+  </div><div>
+    <div class="card"><b>🎁 Prizes</b>
+      <p style="margin:8px 0 4px"><b>🌽 Everyone with ${FE.min_points}+ points,</b> paid by rank (only if the meter is full):</p>
+      <table>${tiers.map(([r, v]) => `<tr><td>${r}</td><td><b>${fnum(v)} tokens</b></td></tr>`).join('')}</table>
+      <p style="margin:10px 0 4px"><b>🥇 Top contributor:</b> ${fnum(FE.top_prize)} bonus tokens (only if the meter is full).</p>
+      <p style="margin:4px 0"><b>🎟️ Turkey raffle:</b> one random ticket wins ${fnum(FE.raffle_prize)} tokens, whether or not the meter is full.</p>
+      <p style="margin:4px 0 8px"><b>🏅 Top 5:</b> a Thanksgiving banner and icon, yours to keep (only if the meter is full). #1 also gets the extra-special pair.</p>
+      ${champ.map(x => `<div style="margin:6px 0">${itemPrev(x)}<div class="mut">${esc(x.name)} · top 5</div></div>`).join('')}
+      ${head.map(x => `<div style="margin:6px 0">${itemPrev(x)}<div class="mut">${esc(x.name)} · #1 only</div></div>`).join('')}</div>
+    <div class="card feast-hero"><b>🎟️ Win ${fnum(FE.raffle_prize)} tokens in the Turkey Raffle!</b><p class="mut">Earn tickets every day from your return on investment. The better your day, the more tickets you get, up to 20 a day.</p><a class="btn tk" href="#/raffle">See how tickets work</a></div>
+    <div class="card turkey-note"><b>🦃 The Turkey Market</b><p class="mut" style="margin-bottom:0">At 12:00 AM Pacific every day, one open market is picked at random. It is the same market for everybody, and nobody knows which until the day begins. It gets highlighted on the Markets page, and all day long your profit when you <b>cash out</b> on it is <b>doubled</b>.</p></div>
+    <div class="card"><b>🧡 Trade Favors</b><p class="mut">Send a friend a favor worth 0.1% to 10%. They get that bonus on their next profitable cash-out worth over ${FE.favor_min_cashout || 200} tokens, and you give up the same percentage on yours.</p><a class="btn tk" href="#/favors">Send or check favors</a></div>
+  </div></div>`;
+}
+
+// ---------- Turkey Raffle page ----------
+function pgRaffle(){
+  if (!FE) return notSetUp('Turkey Raffle');
+  const over = Date.now() >= new Date(FE.ends_at), mine = FE.mine || {}, t = FE.totals || {}, roi = FE.roi || {};
+  const pct = +roi.pct || 0, tix = +mine.tickets || 0, all = +t.tickets || 0, chance = all > 0 ? tix / all * 100 : 0;
+  const cur = TIX.findIndex(([a, b]) => pct >= a && pct < b), curRow = cur < 0 ? 0 : cur;
+  const log = FE.tix_log || [];
+  const tierRows = TIX.map(([a, b, n], i) => `<tr${i === curRow && !over ? ' class="mine"' : ''}><td>${tixRange(a, b)}</td><td><b>${n}</b></td><td>${i === curRow && !over ? '← you are here today' : ''}</td></tr>`).join('');
+  const histRows = log.length ? `<table><tr><th>Day</th><th>ROI</th><th>Tickets</th></tr>${log.map(r => `<tr><td>${new Date(r.day + 'T12:00:00').toLocaleDateString([], {month:'short', day:'numeric'})}</td><td>${(+r.roi).toFixed(2)}%</td><td><b>${r.tickets}</b></td></tr>`).join('')}</table>` : '<p class="mut" style="margin-bottom:0">No finished days yet. Your first tickets arrive at midnight Pacific.</p>';
+  let result = '';
+  if (FE.rolled) {
+    const R = FE.raffle || {};
+    result = `<div class="card feast-hero"><b style="font-size:18px">🎟️ The raffle has been drawn</b><p style="margin-bottom:0">${R.winner ? `Winner: <b>${esc(R.winner)}</b> won <b>${fnum(R.prize)}</b> tokens (ticket #${R.ticket} of ${R.tickets_total}).` : 'Nobody earned a ticket, so there was no winner.'}</p>${R.winner ? '<div class="row"><button class="tk" onclick="replayRaffle()">🎟️ Watch the drawing again</button></div>' : ''}</div>`;
+  }
+  return `<h1>Turkey Raffle</h1>
+  <div class="card feast-hero"><div class="split" style="flex-wrap:wrap"><div><div class="mut">Grand prize</div><div class="pts">${fnum(FE.raffle_prize)} tokens</div></div>
+    <div style="text-align:right"><div id="fcd" style="font-weight:600">${feastCd()}</div><div class="mut">Drawn automatically when the feast ends</div></div></div>
+    <p style="margin:10px 0 0">One ticket is drawn at random, and the winner is the same for everybody. <b>The prize is paid whether or not the community meter is full.</b> <a href="#/feast">Open the feast</a></p></div>
+  ${result}
+  <div class="stats">
+    <div class="card"><div class="mut">Your tickets 🎟️</div><div class="big">${tix}</div><div class="mut">Earned from daily ROI</div></div>
+    <div class="card"><div class="mut">All tickets in the bowl</div><div class="big">${fnum(all)}</div></div>
+    <div class="card"><div class="mut">Your chance so far</div><div class="big">${chance.toFixed(1)}%</div></div>
+    <div class="card"><div class="mut">Your ROI today</div><div class="big">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%</div><div class="mut">${over ? '' : `Worth ${tixFor(pct)} ticket${tixFor(pct) === 1 ? '' : 's'} if the day ended now`}</div></div>
+  </div>
+  <div class="two"><div>
+    <div class="card"><b>🍂 How tickets work</b>
+      <p>Every day, from midnight to 11:59 PM Pacific, we compare your <b>leaderboard number</b> (cash plus open stakes at cost) at the end of the day with the number at the start of the day.</p>
+      <p style="margin:0"><b>ROI = (end − start) ÷ start × 100.</b> Your ROI decides how many tickets you earn that day. Tickets are handed out when the day ends.</p>
+      ${roi.start != null ? `<p class="mut" style="margin:10px 0 0">Today: started at <b>${(+roi.start).toFixed(1)}</b>, now at <b>${(+roi.now).toFixed(1)}</b>.</p>` : ''}</div>
+    <div class="card"><b>📅 Your ticket history</b><div style="margin-top:8px">${histRows}</div></div>
+  </div><div>
+    <div class="card"><b>🎟️ Tickets per day</b><table style="margin-top:8px"><tr><th>Daily ROI</th><th>Tickets</th><th></th></tr>${tierRows}</table></div>
+  </div></div>`;
+}
+
+// ---------- Trade Favors page ----------
+function pgFavors(){
+  if (!FE) return notSetUp('Trade Favors');
+  const inn = FE.favor_in, max = +FE.favor_max || 10, left = Math.max(0, (FE.favor_limit || 3) - (FE.favors_sent_today || 0)), minC = +FE.favor_min_cashout || 200;
+  const owe = favOwe(), room = Math.floor((max - owe) * 10 + 1e-6) / 10, can = left > 0 && room >= 0.1 && FE.active;
+  const names = Object.keys(CO).filter(u => u !== me.username).sort((a, b) => a.localeCompare(b));
+  const hist = FAV.length ? `<table><tr><th>When</th><th></th><th>Player</th><th>Size</th><th>Their bonus</th><th>Your cost</th></tr>${FAV.map(f => {
+    const out = f.dir === 'out';
+    const bonus = f.used_at ? `Used${+f.used_amount > 0 ? ' (+' + (+f.used_amount).toFixed(1) + ' tokens)' : ''}` : 'Waiting';
+    const cost = !out ? '<span class="mut">-</span>' : f.cost_paid_at ? `Paid (−${(+f.cost_amount).toFixed(1)} tokens)` : `Owed: ${(+f.pct).toFixed(1)}% on your next qualifying cash-out`;
+    return `<tr><td>${new Date(f.created_at).toLocaleString()}</td><td>${out ? '📤 Sent to' : '📥 Received from'}</td><td>${nm(f.other)}</td><td>${(+f.pct).toFixed(1)}%</td><td>${out ? bonus : (f.used_at ? bonus : 'Waiting for your next qualifying cash-out')}</td><td>${cost}</td></tr>`;
+  }).join('')}</table>` : '<p class="mut">No favors yet.</p>';
+  return `<h1>Trade Favors</h1><p class="mut" style="max-width:760px">Giving season! Send another player a favor worth <b>0.1% to 10%</b>. On their next <b>profitable cash-out worth over ${minC} tokens</b>, they get that percentage of their profit as a bonus. It costs you the same: <b>the same percentage comes off the profit of your own next profitable cash-out worth over ${minC} tokens</b>. Smaller cash-outs are not affected. Each favor you send adds 3 points to the feast meter. You can send up to ${FE.favor_limit} a day, a player can only have one favor waiting at a time, and you can never owe more than ${max}% at once. Favors end with the feast.</p>
+  ${inn ? `<div class="card favor-in"><span class="pct-pill">+${(+inn.pct).toFixed(1)}%</span> <b>🎁 ${nm(inn.from)} sent you a favor!</b><p class="mut" style="margin-bottom:0">It will be added to your next profitable cash-out worth over ${minC} tokens.</p></div>` : '<div class="card"><b>📥 No favor waiting for you</b><p class="mut" style="margin-bottom:0">When a friend sends you one, it shows at the top of every page.</p></div>'}
+  ${owe > 0 ? `<div class="card"><b>📤 You owe ${owe.toFixed(1)}%</b><p class="mut" style="margin-bottom:0">${owe.toFixed(1)}% of the profit on your next profitable cash-out worth over ${minC} tokens will be given up to pay for the favors you sent. The cash-out totals on the site already include it.</p></div>` : ''}
+  <div class="card narrow"><b>📤 Send a favor</b> <span class="mut">(${left} left today${owe > 0 ? ', you can still add up to ' + Math.max(0, room).toFixed(1) + '%' : ''})</span>
+    <input id="fu" list="fl" placeholder="Player username" autocomplete="off"><datalist id="fl">${names.map(n => `<option value="${esc(n)}">`).join('')}</datalist>
+    <div class="split" style="margin-top:12px"><span class="mut">Favor size</span><span class="pct-pill" id="fpv">1.0%</span></div>
+    <input id="fp" type="range" min="0.1" max="${can ? Math.min(max, room) : max}" step="0.1" value="${Math.min(1, can ? room : 1)}" oninput="$('#fpv').textContent=(+this.value).toFixed(1)+'%'" style="margin-top:0">
+    <div class="split mut"><span>0.1%</span><span>${can ? Math.min(max, room).toFixed(1) : max}%</span></div>
+    <p class="mut" style="margin:8px 0 0">They gain this much on their next qualifying cash-out, and you give up this much on yours.</p>
+    <div class="row"><button class="tk" ${can ? '' : 'disabled'} onclick="sendFavor()">🧡 Send favor</button></div></div>
+  <h2>Favor history</h2><div class="card">${hist}</div>`;
+}
+const sendFavor = async () => {
+  const to = $('#fu').value.trim(), pct = +$('#fp').value;
+  if (!to) return toast('Type the username of the player.');
+  if (!confirm(`Send ${to} a ${pct.toFixed(1)}% favor?\n\nThey get +${pct.toFixed(1)}% on their next profitable cash-out worth over 200 tokens, and you get ${pct.toFixed(1)}% less on yours.`)) return;
+  await rpc('feast_send_favor', {p_to:to, p_pct:pct}, '🧡 Favor sent! +3 feast points');
+};
+
+// ---------- the raffle drawing animation ----------
+function showRaffle(R, preview){
+  const el = $('#rf'), reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pool = (R.pool || []).map(x => x.username), has = pool.length > 0;
+  const names = has ? pool : [];
+  const slips = names.length ? Array.from({length: 20}, (_, i) => names[Math.floor(Math.random() * names.length)]) : [];
+  const winnerName = R.winner || '';
+  const isMe = !preview && R.winner_is_me;
+  el.innerHTML = `<div class="rf-back"><div class="rf-confetti" id="rfc"></div><div class="rf-card">
+    <div class="rf-title">🦃 The Thanksgiving Raffle 🍁</div>
+    <div class="rf-sub" id="rfsub">${has ? 'Stirring the tickets...' : 'Counting the tickets...'}</div>
+    <div class="rf-stage" id="rfst"><div class="rf-hand" id="rfh">✋</div><div class="rf-pull" id="rfp">🍁</div>
+      <div class="rf-bowl stir" id="rfb">${slips.map((n, i) => `<span class="slip" style="left:${Math.round(Math.random() * 190)}px;top:${Math.round(60 + Math.random() * 100)}px;--r:${Math.round(Math.random() * 90 - 45)}deg;--r2:${Math.round(Math.random() * 180 - 90)}deg;--dx:${Math.round(Math.random() * 60 - 30)}px;--dy:${Math.round(Math.random() * -50)}px;--dl:-${(Math.random() * 1.2).toFixed(2)}s">${esc(n)}</span>`).join('')}</div><div class="rf-rim"></div></div>
+    <div class="rf-res" id="rfr"></div>
+    <div class="rf-actions"><button class="g" id="rfs">Skip</button><button class="tk" id="rfx" style="display:none">🍂 Close</button></div></div></div>`;
+  const q = s => el.querySelector(s), timers = [];
+  let done = false;
+  const confetti = () => {
+    const c = q('#rfc'); if (!c) return;
+    const L = ['🍁','🍂','🍃','🦃','🍁','🍂'];
+    for (let i = 0; i < 46; i++) {
+      const s = document.createElement('span');
+      s.textContent = L[i % L.length];
+      s.style.cssText = `left:${Math.random() * 100}%;animation-delay:${(Math.random() * 1.6).toFixed(2)}s;animation-duration:${(3 + Math.random() * 3).toFixed(1)}s;font-size:${18 + Math.round(Math.random() * 22)}px;--x:${Math.round(Math.random() * 120 - 60)}px`;
+      c.appendChild(s);
+    }
+  };
+  const reveal = () => {
+    if (done) return; done = true;
+    timers.forEach(clearTimeout);
+    const b = q('#rfb'), h = q('#rfh'), pl = q('#rfp'), sub = q('#rfsub'), res = q('#rfr');
+    if (!b) return;
+    b.classList.remove('stir'); h.classList.remove('dip'); h.classList.add('out');
+    if (has && winnerName) {
+      pl.textContent = winnerName; pl.classList.add('up', 'win');
+      sub.textContent = 'And the winner is...';
+      res.innerHTML = isMe ? `🎉 <b>That's YOU, ${esc(winnerName)}!</b> You won <b>${fnum(R.prize)}</b> tokens!` : `🎉 <b>${esc(winnerName)}</b> wins <b>${fnum(R.prize)}</b> tokens!<div class="mut" style="color:#fcd9a8;margin-top:4px">Ticket #${R.ticket} of ${fnum(R.tickets_total)} was drawn.</div>`;
+      confetti();
+    } else {
+      pl.style.display = 'none';
+      sub.textContent = 'The bowl is empty...';
+      res.innerHTML = 'Nobody earned a turkey ticket this year. Make 10 trades next time to get one!';
+    }
+    q('#rfs').style.display = 'none'; q('#rfx').style.display = '';
+  };
+  q('#rfs').onclick = reveal;
+  q('#rfx').onclick = () => { el.innerHTML = ''; if (!preview) { rpc('feast_ack_raffle', {}, null); if (FE) FE.show_raffle = false; } };
+  if (reduce || !has) { reveal(); return; }
+  timers.push(setTimeout(() => { if (done) return; q('#rfsub').textContent = 'Reaching in...'; q('#rfh').classList.add('dip'); }, 2800));
+  timers.push(setTimeout(() => { if (done) return; q('#rfb').classList.remove('stir'); q('#rfsub').textContent = 'Pulling out a ticket...'; q('#rfh').classList.remove('dip'); q('#rfh').classList.add('out'); q('#rfp').classList.add('up'); }, 4400));
+  timers.push(setTimeout(reveal, 6200));
+}
+// "watch again" after the draw (never re-ack, so it is only a replay)
+const replayRaffle = () => { if (FE && FE.raffle && FE.raffle.winner) showRaffle(FE.raffle, true); };
+// owner-only preview with made-up winners
+function previewRaffle(){
+  const names = Object.keys(CO).slice(0, 40), pool = (names.length ? names : [me.username]).map(u => ({username:u, tickets:1 + Math.floor(Math.random() * 5)}));
+  showRaffle({winner: pool[Math.floor(Math.random() * pool.length)].username, ticket: 42, tickets_total: 137, prize: FE ? FE.raffle_prize : 1500, pool, winner_is_me: false}, true);
 }
 
 // ---------- Player profile (opened from the leaderboards) ----------
@@ -616,7 +1039,7 @@ function marketGrid(){
   const list = markets.filter(m => m !== motw && ok(m) && (searching ? m.status === 'open' : (FILTER === 'all' || (FILTER === 'open') === (m.status === 'open')))).sort(sorters[SORT]);
   return (motw ? motwCard(motw) : '') + (list.map(m => {
     const y = py(m), mine = P.some(p => p.market_id === m.id);
-    return `<a class="card mk" href="#/market/${m.id}">${tags(m)}<b>${esc(m.question)}</b>${m.proposed_by ? `<div class="mut" style="margin-top:4px">Suggested by ${nm(m.proposed_by)}</div>` : ''}
+    return `<a class="card mk${isTurkey(m) ? ' turkey-hl' : ''}" href="#/market/${m.id}">${isTurkey(m) ? '<span class="tkstk" title="Turkey Market: 2× profit when you cash out today">🦃</span>' : ''}${tags(m)}${isTurkey(m) ? '<div class="tags"><span class="tkbadge">Turkey Market · 2× profit today</span></div>' : ''}<b>${esc(m.question)}</b>${m.proposed_by ? `<div class="mut" style="margin-top:4px">Suggested by ${nm(m.proposed_by)}</div>` : ''}
     <div class="bar"><i style="width:${y*100}%"></i></div>
     <div class="split"><span style="color:var(--yes)">YES ${(y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-y)*100).toFixed(0)}%</span></div>
     <div class="mut" style="margin-top:6px">${mState(m)}${mine ? ' · you have a position' : ''}</div></a>`;
@@ -629,10 +1052,22 @@ function pgMarkets(){
   <div class="grid" id="mg">${marketGrid()}</div>`;
 }
 
-// total that lands in your account on cash-out: payout (2x profit on the Market of the Week) + streak bonus
+// total that lands in your account on cash-out: payout (2x profit on the Market of the Week)
+// + streak bonus + Turkey Market double profit + a waiting Trade Favor - favors you sent (all on the profit only;
+// favors only apply to cash-outs worth over 200 tokens)
 const cashTotal = (m, p) => {
-  const c = cashValue(m, p), b = STK ? Math.max(0, c - (+p.invested)) * (+STK.bonus_pct) / 100 : 0;
-  return c + b;
+  const c = cashValue(m, p), prof = Math.max(0, c - (+p.invested)), b = STK ? prof * (+STK.bonus_pct) / 100 : 0;
+  const fav = c > 200 ? (favIn() - favOwe()) : 0;
+  return c + b + (isTurkey(m) ? prof : 0) + prof * fav / 100;
+};
+const bonusNote = (m, p) => {
+  const bits = [];
+  if (isTurkey(m)) bits.push('🦃 Turkey Market 2× profit');
+  if (cashValue(m, p) > 200) {
+    if (favIn()) bits.push(`🧡 +${favIn().toFixed(1)}% favor you received`);
+    if (favOwe()) bits.push(`🧡 −${favOwe().toFixed(1)}% favor you sent`);
+  }
+  return bits.length ? `<br><span class="mut">Includes ${bits.join(' · ')} (on profit)</span>` : '';
 };
 
 function pgMarket(id){
@@ -646,16 +1081,18 @@ function pgMarket(id){
   else if (mine.length) trade = `<p class="mut">You already have a position here. Cash out first to trade again.</p>`;
   else trade = `<input id="a${id}" type="number" min="1" placeholder="Tokens to invest">
     <div class="row">${[10, 50, 100].map(n => `<button class="g" onclick="$('#a${id}').value=${n}">${n}</button>`).join('')}</div>
-    <div class="row"><button class="y" onclick="buy(${id},'yes')">Buy YES</button><button class="n" onclick="buy(${id},'no')">Buy NO</button></div>`;
+    <div class="row"><button class="y" onclick="buy(${id},'yes')">🦃 Buy YES</button><button class="n" onclick="buy(${id},'no')">🦃 Buy NO</button></div>`;
   const pos = mine.map(p => {
     const v = cashTotal(m, p);
-    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>You receive: ${v.toFixed(1)}</span>
-    <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">Cash out</button></div>`;
+    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>You receive: ${v.toFixed(1)}${cashValue(m, p) > +p.invested ? bonusNote(m, p) : ''}</span>
+    <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">🥧 Cash out</button></div>`;
   }).join('');
   const resolve = i.open && me.role !== 'user' ? `<div class="card"><b>Resolve this market</b><div class="row">
     <button class="g" onclick="res(${id},'yes')">YES won</button><button class="g" onclick="res(${id},'no')">NO won</button><button class="g" onclick="res(${id},'void')">Cancel and refund</button></div></div>` : '';
-  return `<a href="#/markets" class="mut">← All markets</a><h1>${esc(m.question)}</h1>
+  const turkeyNote = isTurkey(m) && i.open ? `<div class="card turkey-note"><b>🦃 TURKEY MARKET!</b> Today only, your profit when you <b>cash out</b> on this market is <b>doubled</b>. It was picked at random at the start of the day, and it is the same market for everyone.</div>` : '';
+  return `<a href="#/markets" class="mut">← All markets</a><h1>${turkeyIcon(m)}${esc(m.question)}</h1>
   <div class="mut">${mState(m)}${m.is_motw ? ' · <b>Market of the Week</b>: winners earn 2× their profit' : ''}${m.proposed_by ? ' · Suggested by ' + nm(m.proposed_by) : ''}${m.closes_at ? ' · Closes ' + new Date(m.closes_at).toLocaleString() : ''}</div>
+  ${turkeyNote ? `<div style="margin-top:12px">${turkeyNote}</div>` : ''}
   <div class="two"><div class="card"><div class="split big"><span style="color:var(--yes)">YES ${(i.y*100).toFixed(0)}%</span><span style="color:var(--no)">NO ${((1-i.y)*100).toFixed(0)}%</span></div>
     <div class="bar"><i style="width:${i.y*100}%"></i></div>${chart(id)}</div>
   <div><div class="card"><b>Trade</b><div style="margin-top:8px">${trade}</div><p class="mut">Cooldown after each buy: ${+(m.cooldown_seconds / 3600).toFixed(1)} hours</p></div>
@@ -666,8 +1103,8 @@ function pgPortfolio(){
   const rows = P.map(p => ({p, m: markets.find(x => x.id === p.market_id)})).filter(r => r.m && r.m.status === 'open' && +r.p.shares > 0);
   const tr = rows.map(({p, m}) => {
     const i = info(m);
-    return `<tr><td><a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${(+p.invested).toFixed(1)}</td><td>${(boughtAtPrice(m, p) * 100).toFixed(0)}%</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${cashTotal(m, p).toFixed(1)}</td>
-      <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">Cash out</button></td></tr>`;
+    return `<tr><td>${turkeyIcon(m)}<a href="#/market/${m.id}">${esc(m.question)}</a></td><td>${p.side.toUpperCase()}</td><td>${(+p.invested).toFixed(1)}</td><td>${(boughtAtPrice(m, p) * 100).toFixed(0)}%</td><td>${(sidePrice(m, p.side) * 100).toFixed(0)}%</td><td>${cashTotal(m, p).toFixed(1)}</td>
+      <td><button class="g" ${i.locked || i.closed ? 'disabled' : ''} onclick="sell(${m.id},'${p.side}')">🥧 Cash out</button></td></tr>`;
   }).join('');
   return `<h1>Portfolio</h1>${rows.length ? `<div class="card"><table><tr><th>Market</th><th>Side</th><th>Invested</th><th>Bought at</th><th>Now</th><th>You receive</th><th></th></tr>${tr}</table></div>` : '<p class="mut">No open positions yet. Pick a market to start.</p>'}`;
 }
@@ -720,21 +1157,24 @@ const pgRules = () => `<h1>Rules</h1><div class="card" style="max-width:760px">
 </ul>
   <h2>Market of the Week</h2><p>One featured market sits at the top of the Markets page each week and resolves on Friday. If you win, or cash out at a profit, you earn <b>2 times your profit</b>. If you lose or cash out at a loss, it works as usual, with no extra loss.</p>
   <h2>Rewards</h2><p>You earn <b>300 tokens</b> for every market you suggest that gets approved. You earn <b>300 tokens</b> for every friend who signs up with your referral link and confirms their email (they get 100 too).</p>
-  <h2>Trading Frenzy</h2><p>During the Trading Frenzy event, every buy and cash-out counts. The player with the most trades wins bonus tokens, and the current leader wears a special banner. See the <a href="#/frenzy">Trading Frenzy</a> page.</p>
+  <h2>Thanksgiving Feast</h2><p>From now until <b>Thanksgiving</b>, everybody fills one big community meter together on the <a href="#/feast">Thanksgiving Feast</a> page. Your <b>very first trade ever</b> adds 50 points, and your first trade of any other day adds 7. Every <b>approved market suggestion</b> adds 15, every <b>Trade Favor</b> you send adds 3, and every friend who joins with your link adds 20. <b>Prizes are paid only if the meter is full when dinner is served, and if it is not full, everybody's balance is cut by 30%.</b> If it is full, every player with 25 or more points gets tokens by rank: <b>500</b> for the top 10, <b>300</b> for the next 20, and <b>150</b> for everybody below that. The top contributor also wins <b>750 bonus tokens</b>, and the top 5 win Thanksgiving banners and icons.</p>
+  <h2>Turkey Market</h2><p>At 12:00 AM Pacific every day, one open market becomes the <b>Turkey Market</b>. It is the same market for everyone, and nobody knows which one until the day begins, when it is highlighted on the Markets page. For that day, your profit when you <b>cash out</b> on it is <b>doubled</b>. It never stacks with the Market of the Week.</p>
+  <h2>Trade Favors</h2><p>Send another player a favor worth 0.1% to 10%. On their next <b>profitable cash-out worth over 200 tokens</b>, they get that percentage of their profit as a bonus. It costs you the same: that percentage comes off the profit of <b>your</b> next profitable cash-out worth over 200 tokens. You can send 3 a day, each player can have one favor waiting at a time, and you can never owe more than 10% at once. A favor waiting for you shows at the top of every page. Favors end with the feast.</p>
+  <h2>Turkey Tickets</h2><p>Every day (midnight to 11:59 PM Pacific) your <b>ROI</b> is your leaderboard number at the end of the day minus the number at the start of the day, divided by the start-of-day number, times 100. Under 1% earns 0 tickets, 1% to 3% earns 1, 3% to 6% earns 2, 6% to 15% earns 3, 15% to 25% earns 5, 25% to 50% earns 10, and 50% or more earns 20. When the feast ends, one ticket is drawn at random and its owner wins <b>1,500 tokens</b> (whether or not the meter is full). The winner is the same for everybody, and the drawing is shown the next time you load the site. See the <a href="#/raffle">Turkey Raffle</a> page.</p>
   <h2>Player profiles</h2><p>Click any player on a leaderboard to see their portfolio and trade history. You can hide yours from other players on your Account page.</p>
   <h2>Daily streaks</h2><p>Make at least 5 trades in a day to build a streak. Buys and cash-outs both count, and days run midnight to midnight Pacific Time. Each streak day adds 0.1% to the profit on your cash-outs, up to 10%. Missing a day resets the bonus to 0%.</p>
   <h2>Usernames and profiles</h2><p>Keep usernames and profile choices appropriate. Names that imitate staff are not allowed.</p>
   <h2>Fair play</h2><p>One account per person. Duplicate accounts or cheating can lead to disqualification. Collusion with other users is highly prohibited, though influencing the results of a market is encouraged. Automated trading programs will result in immediate disqualification.</p></div>`;
 
-const pgSuggest = () => `<h1>Suggest a market</h1><p class="mut">An admin reviews every suggestion before it goes live.</p>
+const pgSuggest = () => `<h1>Suggest a market</h1><p class="mut">An admin reviews every suggestion before it goes live. Approved suggestions add 15 points to the Thanksgiving Feast!</p>
   <div class="card narrow"><input id="sq" placeholder="Will ... happen by ...?" maxlength="300">
   <div class="row"><label class="mut">Closes (optional)<input id="sd" type="datetime-local"></label><label class="mut">Cooldown in hours (optional, default 1)<input id="sc" type="number" min="0" max="168" step="0.5" placeholder="1"></label></div>
-  <div class="row"><button onclick="propose()">Submit for review</button></div></div>
+  <div class="row"><button class="tk" onclick="propose()">📜 Submit for review</button></div></div>
   <h2>Your suggestions</h2>${PR.length ? `<div class="card"><table><tr><th>Question</th><th>Cooldown</th><th>Status</th><th>Admin comment</th></tr>${statusRows(PR)}</table></div>` : '<p class="mut">None yet.</p>'}`;
 
 const pgCreate = () => `<h1>Create market</h1><div class="card narrow"><input id="q" placeholder="Question, e.g. Will it snow on Dec 25?" maxlength="300">
   <div class="row"><label class="mut">Opening YES %<input id="o" type="number" value="50"></label><label class="mut">Cooldown (hours)<input id="c" type="number" value="1"></label></div>
-  <div class="row"><label class="mut">Closes (optional)<input id="d" type="datetime-local"></label></div><div class="row"><button onclick="mk()">Create market</button></div></div>`;
+  <div class="row"><label class="mut">Closes (optional)<input id="d" type="datetime-local"></label></div><div class="row"><button class="tk" onclick="mk()">🍁 Create market</button></div></div>`;
 
 function pgReview(){
   const pend = PR.filter(p => p.status === 'pending'), done = PR.filter(p => p.status !== 'pending');
@@ -751,7 +1191,57 @@ const pgAdmin = () => `<h1>Admin tools</h1><div class="grid"><div class="card"><
   <div class="card"><b>Promote by username</b><input id="pu" placeholder="Username"><div class="row"><button onclick="setRole($('#pu').value,'admin')">Make admin</button></div></div>
   <div class="card"><b>Reset a profile picture</b><input id="ra" placeholder="Username"><div class="row"><button onclick="rpc('reset_avatar',{p_username:$('#ra').value},'Picture reset')">Reset</button></div></div>
   <div class="card"><b>Current admins</b><table>${STAFF.filter(s => s.role === 'admin').map(s => `<tr><td>${nm(s.username)}</td><td><button class="g" data-u="${esc(s.username)}" onclick="setRole(this.dataset.u,'user')">Remove</button></td></tr>`).join('') || '<tr><td class="mut">None yet</td></tr>'}</table></div>
-  ${shopUploadCard()}${specialAdminCard()}</div>`;
+  ${feastAdminCard()}${prizeAdminCard()}${shopUploadCard()}${specialAdminCard()}</div>`;
+
+// ---------- Thanksgiving Feast settings (owner) ----------
+const feastAdminCard = () => FE ? `<div class="card" style="grid-column:1/-1"><b>🦃 Thanksgiving Feast</b>
+  <p class="mut">${fnum(FE.total)} of ${fnum(FE.goal)} points · ${FE.players} contributors · ${fnum((FE.totals || {}).tickets)} tickets · ends ${feastEnd()}${FE.rolled ? ' · <b>already rolled</b>' : ''}. The raffle and rewards roll by themselves the first time anyone loads the site after it ends.</p>
+  <div class="row"><label class="mut">Meter goal (points)<input id="fg" type="number" min="100" step="100" value="${+FE.goal}"></label><button class="tk" onclick="setFeastGoal()">Save goal</button><button class="g" onclick="previewRaffle()">🎟️ Preview the raffle animation</button></div></div>` : '';
+// ---------- Feast prizes (owner): edit the banners and icons the top contributors win ----------
+const PRIZES = [['bn_feast_champ', 'Top 5 banner'], ['ic_feast_crown', 'Top 5 icon'], ['bn_feast_head', '#1 banner'], ['ic_feast_golden', '#1 icon']];
+let PRZFILE = {};
+const prizeAdminCard = () => {
+  const rows = PRIZES.map(([id, label]) => {
+    const it = SHOP.find(x => x.id === id), f = PRZFILE[id];
+    if (!it) return `<tr><td colspan="4" class="mut">${label}: not found. Run thanksgiving.sql first.</td></tr>`;
+    return `<tr><td>${itemPrev(it)}<div class="mut">${label}</div></td>
+      <td><label class="mut">Name<input id="pzn_${id}" maxlength="30" value="${esc(it.name)}"></label></td>
+      <td>${it.kind === 'icon' ? `<label class="mut">Emoji (or upload an image)<input id="pze_${id}" maxlength="8" placeholder="e.g. 🦃"></label>` : '<span class="mut">Upload an image (about 1000 × 100)</span>'}
+        <div class="row"><label class="up"><input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onchange="pickPrize('${id}',this)" hidden><span class="btn">Choose image</span></label><span class="mut">${f ? esc(f.file.name) : ''}</span></div></td>
+      <td><button onclick="savePrize('${id}')">Save</button></td></tr>`;
+  }).join('');
+  return `<div class="card" style="grid-column:1/-1"><b>🏅 Feast prizes</b>
+    <p class="mut">The banners and icons the top contributors win if the meter fills. Change the name, upload an image, or (for icons) type an emoji, then press Save. People who already won one see the change right away.</p>
+    <table>${rows}</table></div>`;
+};
+function pickPrize(id, inp){
+  const f = inp.files[0]; inp.value = '';
+  if (!f) return;
+  if (!/^image\/(png|jpeg|webp|gif)$/.test(f.type) || f.size > 10e6) return toast('Choose a PNG, JPG, WebP or GIF under 10 MB.');
+  if (PRZFILE[id]) URL.revokeObjectURL(PRZFILE[id].url);
+  PRZFILE[id] = {file: f, url: URL.createObjectURL(f)};
+  render();
+}
+async function savePrize(id){
+  const it = SHOP.find(x => x.id === id); if (!it) return;
+  const name = ($('#pzn_' + id).value || '').trim(), em = $('#pze_' + id) ? $('#pze_' + id).value.trim() : '', f = PRZFILE[id];
+  let path = null;
+  if (f) {
+    let p;
+    try { p = await prepImage(f.file, f.url, it.kind); } catch (e) { return toast('Could not read that image.'); }
+    if (p.blob.size > 1048576) return toast('That image is still over 1 MB after resizing. Try a smaller one.');
+    path = artPath(it.kind, p.ext);
+    const up = await sb.storage.from('shop-art').upload(path, p.blob, {contentType: p.blob.type});
+    if (up.error) return toast(up.error.message);
+  }
+  const {error} = await sb.rpc('feast_set_prize', {p_id:id, p_name:name || null, p_path:path, p_emoji:em || null});
+  if (error) { if (path) sb.storage.from('shop-art').remove([path]); return toast(error.message); }
+  if (f) { URL.revokeObjectURL(f.url); delete PRZFILE[id]; }
+  toast('Prize updated!');
+  for (const k in AT) AT[k] = 0;
+  await load();
+}
+const setFeastGoal = () => { const g = parseInt($('#fg').value); if (!(g >= 100)) return toast('Enter a goal of at least 100.'); rpc('feast_set_goal', {p_goal:g}, 'Goal updated'); };
 
 // ---------- Shop uploads (owner) ----------
 const shopUploadCard = () => `<div class="card" style="grid-column:1/-1"><b>Add a banner or icon to the shop</b>
@@ -877,9 +1367,12 @@ function pgShop(){
       : `<button ${+me.balance < +x.price ? 'disabled' : ''} onclick="buyItem('${x.id}')">Buy · ${x.price}</button>`;
     return `<div class="card split"><div>${prev}<div class="mut" style="margin-top:4px">${esc(x.name)}${own ? ' · owned' : ''}</div></div>${btn}</div>`;
   };
-  const by = k => SHOP.filter(x => x.kind === k).map(card).join('');
-  return `<h1>Shop</h1>${SHOP.length ? '' : `<div class="card"><b>The shop is empty.</b><p class="mut">${esc(SHOPERR || 'No items were found in the database.')} If this mentions the schema cache or a missing table, update.sql has not been applied to this project yet.</p></div>`}<p class="mut">Spend tokens on banners and icons. They show next to your name everywhere. You have <b>${(+me.balance).toFixed(1)}</b> tokens. Everything you own is in your <a href="#/inventory">Inventory</a>.</p>
-    <h2>Banners</h2><div class="grid">${by('banner')}</div><h2>Icons</h2><div class="grid">${by('icon')}</div>`;
+  // only items the owner has listed are for sale (the earned feast prizes never are)
+  const sale = SHOP.filter(x => x.listed !== false && !isFeastReward(x));
+  const by = k => sale.filter(x => x.kind === k).map(card).join('');
+  const empty = SHOPERR ? `<div class="card"><b>The shop could not load.</b><p class="mut">${esc(SHOPERR)}</p></div>` : (sale.length ? '' : '<div class="card"><b>The shop is restocking.</b><p class="mut" style="margin-bottom:0">New banners and icons are coming soon. Check back later!</p></div>');
+  return `<h1>Shop</h1>${empty}<p class="mut">Spend tokens on banners and icons. They show next to your name everywhere. You have <b>${(+me.balance).toFixed(1)}</b> tokens. Everything you own is in your <a href="#/inventory">Inventory</a>.</p>
+    ${by('banner') ? `<h2>Banners</h2><div class="grid">${by('banner')}</div>` : ''}${by('icon') ? `<h2>Icons</h2><div class="grid">${by('icon')}</div>` : ''}`;
 }
 const buyItem = id => rpc('buy_item', {p_item:id}, 'Purchased!');
 const equip = (kind, id) => rpc('equip_item', {p_kind:kind, p_item:id});
@@ -889,12 +1382,11 @@ const equip = (kind, id) => rpc('equip_item', {p_kind:kind, p_item:id});
 const acctTabs = cur => `<div class="tabs"><button class="${cur === 'account' ? '' : 'g'}" onclick="go('account')">Profile</button><button class="${cur === 'inventory' ? '' : 'g'}" onclick="go('inventory')">Inventory</button></div>`;
 
 function pgAccount(){
-  const s = STAT || {}, p = +s.net_profit || 0, cl = me.colors || {};
+  const s = STAT || {}, p = +s.net_profit || 0;
   const stat = (l, v) => `<div class="card"><div class="mut">${l}</div><div class="big">${v}</div></div>`;
   const hist = HIST.length ? `<table><tr><th>Time</th><th>Market</th><th>Action</th><th>Tokens</th><th>YES after</th></tr>${HIST.map(r =>
     `<tr><td>${new Date(r.ts).toLocaleString()}</td><td><a href="#/market/${r.market_id}">${esc(r.question)}</a></td><td>${r.kind === 'buy' ? 'Bought' : 'Cashed out'} ${r.side.toUpperCase()}</td><td>${(+r.tokens).toFixed(1)}</td><td>${(+r.price_yes * 100).toFixed(0)}%</td></tr>`).join('')}</table>` : '<p class="mut">No trades yet.</p>';
-  const pick = (obj, key) => `<div class="row">${Object.entries(obj).map(([k, v]) => `<button class="g${(me[key] || (key === 'pattern' ? 'none' : 'light')) === k ? ' sel' : ''}" onclick="look({${key}:'${k}'})">${v}</button>`).join('')}</div>`;
-  const col = (id, l, k, d) => `<label class="mut clr">${l}<input id="${id}" type="color" value="${esc(cl[k] || d)}" oninput="prevC()"></label>`;
+  const pick = (obj, key) => `<div class="row">${Object.entries(obj).map(([k, v]) => `<button class="g${(me[key] || (key === 'pattern' ? 'plaid' : 'light')) === k ? ' sel' : ''}" onclick="look({${key}:'${k}'})">${v}</button>`).join('')}</div>`;
   return `<h1>Account</h1>${acctTabs('account')}
   <div class="card split" style="background:var(--grad)"><div class="row" style="margin:0">${avatar(me.username, 48)}<div>${nm(me.username)}<div class="mut">${me.role}</div></div></div><button class="g" onclick="sb.auth.signOut().then(load)">Log out</button></div>
   <div class="stats">${stat('Tokens', (+me.balance).toFixed(1))}${stat('Net worth', (+s.net_worth || 0).toFixed(1))}${stat('Net profit', (p >= 0 ? '+' : '') + p.toFixed(1))}${stat('Trades', s.trades || 0)}</div>
@@ -906,15 +1398,9 @@ function pgAccount(){
     <div class="card"><b>Username</b><input id="nu" value="${esc(me.username)}" maxlength="20"><div class="row"><button onclick="rpc('change_username',{p_name:$('#nu').value},'Username updated')">Save username</button></div><p class="mut" style="margin-bottom:0">3-20 letters, numbers, . _ - · once every 24 hours.</p></div>
     <div class="card"><b>Privacy</b><p class="mut">Other players can open your profile from the leaderboards. Choose whether they can see your portfolio and trade history.</p>
       <div class="row"><button class="g${me.show_activity !== false ? ' sel' : ''}" onclick="setVisible(true)">Visible</button><button class="g${me.show_activity === false ? ' sel' : ''}" onclick="setVisible(false)">Hidden</button></div></div>
-    <div class="card"><b>Color theme</b>${pick(THEMES, 'theme')}
-      <div style="margin-top:14px"><b>Make your own</b><div class="row">${col('cbg', 'Background', 'bg', '#f3f6fb')}${col('ccard', 'Cards', 'card', '#ffffff')}${col('cfg', 'Text', 'fg', '#0f172a')}${col('cacc', 'Highlight', 'acc', '#2f6bd8')}</div>
-      <div class="row"><button onclick="saveColors()">Save custom colors</button></div></div>
-      <div style="margin-top:14px"><b>Background pattern</b></div>${pick(PATS, 'pattern')}
-      <div class="row"><label class="mut clr">Pattern color<input id="cpat" type="color" value="${esc(me.pattern_color || '#5b6678')}" oninput="this.dataset.t=1;prevPat()"></label>
-      <label class="mut">Prominence: <b id="patv">${patStr()}</b>%<input id="cpps" type="range" min="0" max="100" step="5" value="${patStr()}" oninput="prevPat()"></label></div>
-      <div class="row"><button onclick="savePat()">Save pattern look</button><button class="g" onclick="patReset()">Reset</button></div></div>
+    <div class="card"><b>Background pattern</b><p class="mut">The orange autumn theme is the same for everyone. Pick the pattern behind the page.</p>${pick(PATS, 'pattern')}</div>
     <div class="card"><b>Banner and icon</b><p class="mut">Buy them in the <a href="#/shop">Shop</a>, then equip them from your <a href="#/inventory">Inventory</a>.</p></div>
-    <div class="card"><b>Your referral link</b><p class="mut">Earn ${REFERRER_BONUS} tokens for every friend who signs up and confirms their email. They get ${FRIEND_BONUS} too.</p><input readonly value="${esc(refLink())}" onclick="this.select()"><div class="row"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div></div>
+    <div class="card"><b>Your referral link</b><p class="mut">Earn ${REFERRER_BONUS} tokens for every friend who signs up and confirms their email. They get ${FRIEND_BONUS} too (and you add 20 points to the feast!).</p><input readonly value="${esc(refLink())}" onclick="this.select()"><div class="row"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div></div>
     ${me.role === 'user' ? `<div class="card"><b>Have an admin invite code?</b><input id="ic" placeholder="Code"><div class="row"><button onclick="redeem()">Redeem</button></div></div>` : ''}
   </div></div>`;
 }
@@ -922,11 +1408,12 @@ function pgAccount(){
 // ---------- Inventory ----------
 // everything you own: bought shop items + earned items you hold right now
 function pgInventory(){
+  const feastLocked = SHOP.filter(x => isFeastReward(x) && !OWN.includes(x.id));
   const mine = SHOP.filter(x => OWN.includes(x.id)).concat(SPECIAL.filter(x => SHELD.includes(x.id)));
   const locked = SPECIAL.filter(x => !SHELD.includes(x.id));
   const card = x => {
     const on = me.icon === x.id || me.banner === x.id;
-    return `<div class="card split"><div>${itemPrev(x)}<div class="mut" style="margin-top:4px">${esc(x.name)}${x.special ? ' <span class="chip">EARNED</span>' : ''}${on ? ' <span class="chip">EQUIPPED</span>' : ''}${x.special ? `<br>${CRIT[x.criteria] || ''}` : ''}</div></div>
+    return `<div class="card split"><div>${itemPrev(x)}<div class="mut" style="margin-top:4px">${esc(x.name)}${(x.special || isFeastReward(x)) ? ' <span class="chip">EARNED</span>' : ''}${on ? ' <span class="chip">EQUIPPED</span>' : ''}${x.special ? `<br>${CRIT[x.criteria] || ''}` : ''}</div></div>
       <button class="g" onclick="equip('${x.kind}','${on ? '' : x.id}')">${on ? 'Unequip' : 'Equip'}</button></div>`;
   };
   const section = (title, kind) => {
@@ -937,22 +1424,14 @@ function pgInventory(){
     const h = holdersOf(x);
     return `<div class="card"><div class="dim">${itemPrev(x)}</div><div class="mut" style="margin-top:6px">${esc(x.name)} <span class="chip">LOCKED</span><br>Earned by having the ${esc(CRIT[x.criteria] || '').replace(/^./, c => c.toLowerCase())}<br>Held by: ${h.length ? h.map(u => nm(u)).join(' ') : 'nobody yet'}</div></div>`;
   };
+  const feastCard = x => `<div class="card"><div class="dim">${itemPrev(x)}</div><div class="mut" style="margin-top:6px">${esc(x.name)} <span class="chip">LOCKED</span><br>Earned by finishing ${x.id.includes('_head') || x.id.includes('_golden') ? '#1' : 'in the top 5'} in the Thanksgiving Feast contribution leaderboard</div></div>`;
+  const earn = locked.map(lockedCard).join('') + feastLocked.map(feastCard).join('');
   return `<h1>Account</h1>${acctTabs('inventory')}
   <p class="mut">Everything you own. Equipped items show next to your name everywhere. Buy more in the <a href="#/shop">Shop</a>.</p>
   ${section('Banners', 'banner')}${section('Icons', 'icon')}
-  ${locked.length ? `<h2>Earnable</h2><p class="mut">Special items you can win. Hold the lead and it is equipped for you automatically.</p><div class="grid">${locked.map(lockedCard).join('')}</div>` : ''}`;
+  ${earn ? `<h2>Earnable</h2><p class="mut">Special items you can win. Hold the lead and it is equipped for you automatically.</p><div class="grid">${earn}</div>` : ''}`;
 }
 const look = o => rpc('set_look', {p_avatar:o.avatar || null, p_theme:o.theme || null, p_pattern:o.pattern || null}, 'Saved');
-const prevC = () => { root.dataset.theme = 'custom'; [['bg','cbg'],['card','ccard'],['fg','cfg'],['acc','cacc']].forEach(([k, i]) => root.style.setProperty(CK[k], $('#' + i).value)); };
-const saveColors = () => rpc('set_colors', {p_bg:$('#cbg').value, p_card:$('#ccard').value, p_fg:$('#cfg').value, p_acc:$('#cacc').value}, 'Colors saved');
-const prevPat = () => {
-  const c = $('#cpat'), n = +$('#cpps').value;
-  if (c.dataset.t || me.pattern_color) root.style.setProperty('--patc', c.value);
-  root.style.setProperty('--patp', n + '%');
-  $('#patv').textContent = n;
-};
-const savePat = () => { const c = $('#cpat'); rpc('set_pattern_look', {p_color:(c.dataset.t || me.pattern_color) ? c.value : null, p_strength:+$('#cpps').value}, 'Pattern look saved'); };
-const patReset = () => rpc('set_pattern_look', {p_color:null, p_strength:100}, 'Pattern look reset');
 const rmAvatar = async () => { const old = me.avatar_path; await rpc('set_avatar_path', {p_path:null}, 'Picture removed'); if (old) sb.storage.from('avatars').remove([old]); };
 function uploadAvatar(inp){
   const f = inp.files[0]; inp.value = '';
@@ -982,7 +1461,7 @@ function pgIdeas(){
   const own = me.role === 'owner';
   const rows = IDEAS.map(x => `<tr><td>${esc(x.body)}</td>${own ? `<td>${x.profiles ? nm(x.profiles.username) : '?'}</td>` : ''}<td>${new Date(x.created_at).toLocaleDateString()}</td><td><span class="chip">${x.status}</span>${own ? `<div class="row">${['planned', 'done', 'declined'].map(s => `<button class="g" onclick="setIdea(${x.id},'${s}')">${s}</button>`).join('')}</div>` : ''}</td></tr>`).join('');
   return `<h1>Idea Box</h1><p class="mut">Got an idea for the website? New features, fixes, shop items, anything. It goes straight to the owner.</p>
-  <div class="card narrow"><textarea id="ib" rows="4" maxlength="500" placeholder="I think the site should..."></textarea><div class="row"><button onclick="sendIdea()">Send idea</button><span class="mut">Up to 5 per day</span></div></div>
+  <div class="card narrow"><textarea id="ib" rows="4" maxlength="500" placeholder="I think the site should..."></textarea><div class="row"><button class="tk" onclick="sendIdea()">🍂 Send idea</button><span class="mut">Up to 5 per day</span></div></div>
   <h2>${own ? 'All ideas' : 'Your ideas'}</h2>${IDEAS.length ? `<div class="card"><table><tr><th>Idea</th>${own ? '<th>From</th>' : ''}<th>Sent</th><th>Status</th></tr>${rows}</table></div>` : '<p class="mut">None yet.</p>'}`;
 }
 async function sendIdea(){
@@ -995,8 +1474,9 @@ const setIdea = (id, s) => rpc('set_idea_status', {p_id:id, p_status:s});
 
 // ---------- Streak badge ----------
 const toggleStk = () => { STK_OPEN = !STK_OPEN; render(); };
+const feastFab = () => FE ? `<a class="feast-fab" href="#/feast" title="Thanksgiving Feast: ${Math.floor(feastPct())}% full"><span class="tk">🦃</span><span>${Math.floor(feastPct())}%</span></a>` : '';
 function streakBadge(){
-  if (!STK) return '';
+  if (!STK) return FE ? `<div id="stk">${feastFab()}</div>` : '';
   const n = +STK.streak, t = +STK.today_trades, g = +STK.goal, pct = +STK.bonus_pct;
   const need = Math.max(0, g - t);
   const status = need === 0 ? 'Today\'s goal is done. Your streak is safe.'
@@ -1004,7 +1484,7 @@ function streakBadge(){
   const panel = STK_OPEN ? `<div class="stk-panel"><b>Daily streak</b>
     <p>Streak: <b>${n}</b> day${n === 1 ? '' : 's'}</p><p>Trades today: <b>${t} / ${g}</b></p><p>Cash-out bonus: <b>${pct.toFixed(1)}%</b> of profit</p>
     <p class="mut">${status}</p><p class="mut">+0.1% per streak day, max 10%. Missing a day resets it. Days run midnight to midnight Pacific.</p></div>` : '';
-  return `<div id="stk">${panel}<button class="stk-btn${n ? '' : ' off'}" onclick="toggleStk()" aria-label="Streak details" title="Daily trading streak">🔥 <b>${n}</b></button></div>`;
+  return `<div id="stk">${panel}${feastFab()}<button class="stk-btn${n ? '' : ' off'}" onclick="toggleStk()" aria-label="Streak details" title="Daily trading streak">🔥 <b>${n}</b></button></div>`;
 }
 
 // ---------- shell + router ----------
@@ -1018,24 +1498,26 @@ function render(){
   const staff = me.role !== 'user', owner = me.role === 'owner';
   const pend = PR.filter(p => p.status === 'pending').length;
   const meBn = itemById(me.banner);
-  const link = (id, label, badge) => `<a href="#/${id}" class="${id === pg || (id === 'markets' && pg === 'market') || (id === 'leaderboard' && pg === 'user') ? 'on' : ''}">${svg(IC[id])}${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
-  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, frenzy: pgFrenzy, user: () => pgUser(decodeURIComponent(arg || '')), shop: pgShop, ideas: pgIdeas, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount, inventory: pgInventory};
+  const link = (id, label, badge) => `<a href="#/${id}" class="${id === pg || (id === 'markets' && pg === 'market') || (id === 'leaderboard' && pg === 'user') ? 'on' : ''}">${ico(IC[id])}${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
+  const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, raffle: pgRaffle, feast: pgFeast, raffle: pgRaffle, favors: pgFavors, user: () => pgUser(decodeURIComponent(arg || '')), shop: pgShop, ideas: pgIdeas, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount, inventory: pgInventory};
   const ok = {create: staff, review: staff, admin: owner, suggest: !staff};
   const waiting = BLOCKING[pg] && (EXTRAS[pg] || []).some(k => !LOADED[k]);
   const body = !pages[pg] ? '<p>Page not found.</p>' : (pg in ok && !ok[pg]) ? '<p class="mut">You do not have access to this page.</p>' : waiting ? '<p class="mut">Loading...</p>' : pages[pg]();
 
   $('#app').innerHTML = `<div id="shell"><nav><h2>EagleEye Market</h2>
-    ${link('frenzy', 'Trading Frenzy')}${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('shop', 'Shop')}${link('ideas', 'Idea Box', ideaNew() || '')}${link('rules', 'Rules')}
+    ${link('feast', 'Thanksgiving Feast')}${link('raffle', 'Turkey Raffle', myTix() ? myTix() : '')}${link('favors', 'Trade Favors', FE && FE.favor_in ? '1' : '')}${link('markets', 'Markets')}${link('portfolio', 'Portfolio')}${link('leaderboard', 'Leaderboard')}${link('shop', 'Shop')}${link('ideas', 'Idea Box', ideaNew() || '')}${link('rules', 'Rules')}
     ${staff ? link('create', 'Create market') + link('review', 'Review', pend || '') : link('suggest', 'Suggest a market')}
     ${owner ? link('admin', 'Admin tools') : ''}
     <div class="navref"><span class="mut">Your referral link</span><input readonly value="${esc(refLink())}" onclick="this.select()" aria-label="Your referral link"><button onclick="navigator.clipboard.writeText(refLink());toast('Link copied!')">Copy link</button></div>
-    <a href="#/account" class="me${pg === 'account' || pg === 'inventory' ? ' on' : ''}${meBn ? ' bn' : ''}"${meBn ? ` style="${esc(bannerStyle(meBn))}"` : ''}>${avatar(me.username, 30)}<span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis">${esc(me.username)}</b><span class="mut">${(+me.balance).toFixed(0)} tokens</span></span></a>
-    </nav><main><div class="card split"><span><span class="chip">SEASON</span> <b id="cd" style="font-weight:500">${cdText()}</b></span><a href="#/rules">Rules</a></div><div id="rb">${pg === 'frenzy' ? '' : frenzyBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
+    <a href="#/account" class="me${pg === 'account' || pg === 'inventory' ? ' on' : ''}${meBn ? ' bn' : ''}"${meBn ? ` style="${esc(bannerStyle(meBn))}"` : ''}>${avatar(me.username, 30)}<span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis">${esc(me.username)}</b><span class="mut">${(+me.balance).toFixed(0)} tokens · 🎟️ ${myTix()}</span></span></a>
+    </nav><main>${PAGE_STICKERS}<div id="rb">${favorBanner()}${eventBanner()}${pg === 'feast' ? '' : feastBanner()}</div>${body}</main></div><div id="stkw">${streakBadge()}</div>`;
 
   for (const k in keep) { const el = document.getElementById(k); if (el) el.value = keep[k]; }
   if (pg === 'admin') { showShopPreview(); showSpecialPreview(); }
   if (pg === 'market' && staff && !MTok[+arg]) fetchTrades(+arg);
   if (pg === 'user' && arg && !UPtok[decodeURIComponent(arg)]) fetchUser(decodeURIComponent(arg));
+  // the raffle has rolled: show the drawing once, the next time this player loads the site
+  if (RAFFLE_PENDING && FE && FE.raffle) { RAFFLE_PENDING = false; showRaffle(FE.raffle, false); }
 }
 
 addEventListener('hashchange', () => { UPtok = {}; render(); scrollTo(0, 0); ensureExtras(); });
@@ -1087,6 +1569,46 @@ async function fetchTrades(id){
 const buy = (id, side) => +$('#a'+id).value >= 10 ? rpc('trade', {p_market:id, p_side:side, p_tokens:+$('#a'+id).value, p_action:'buy'}) : toast('Minimum bet is 10 tokens.');
 const sell = (id, side) => rpc('trade', {p_market:id, p_side:side, p_tokens:0, p_action:'sell'});
 
+// ---------- Quick bet pop-up (Market of the Week card) ----------
+let qbKey = null;
+function closeQuickBet(){
+  const d = $('#qb'); if (d) d.remove();
+  if (qbKey) { document.removeEventListener('keydown', qbKey); qbKey = null; }
+}
+function quickBet(ev, id, side){
+  ev.stopPropagation(); ev.preventDefault();
+  const m = markets.find(x => x.id === id); if (!m) return;
+  const i = info(m);
+  if (!i.open || i.closed) return toast('Trading is closed on this market.');
+  if (i.locked) return toast('Locked until ' + new Date(i.until).toLocaleString());
+  if (P.some(p => p.market_id === id && +p.shares > 0)) return toast('You already have a position here. Cash out first to trade again.');
+  closeQuickBet();
+  const S = side.toUpperCase(), d = document.createElement('div');
+  d.id = 'qb'; d.className = 'qb-back';
+  d.innerHTML = `<div class="qb" role="dialog" aria-modal="true" aria-labelledby="qbt">
+    <b id="qbt">How much would you like to bet?</b>
+    <div class="mut" style="margin-top:4px"><b style="color:var(--${side})">${S}</b> · ${esc(m.question)}</div>
+    <input id="qba" type="number" min="10" step="1" inputmode="numeric" placeholder="Tokens (minimum 10)" autocomplete="off">
+    <div class="row">${[10, 50, 100].map(n => `<button class="g" data-n="${n}">${n}</button>`).join('')}</div>
+    <p class="mut">You have ${(+me.balance).toFixed(1)} tokens.</p>
+    <div class="row"><button class="${side === 'yes' ? 'y' : 'n'}" id="qbok">Bet ${S}</button><button class="g" id="qbx">Cancel</button></div></div>`;
+  document.body.appendChild(d);
+  const inp = $('#qba');
+  d.addEventListener('click', e => { if (e.target === d) closeQuickBet(); });
+  d.querySelectorAll('[data-n]').forEach(b => b.addEventListener('click', () => { inp.value = b.dataset.n; inp.focus(); }));
+  $('#qbx').addEventListener('click', closeQuickBet);
+  const submit = async () => {
+    const n = +inp.value;
+    if (!(n >= 10)) return toast('Minimum bet is 10 tokens.');
+    closeQuickBet();
+    await rpc('trade', {p_market:id, p_side:side, p_tokens:n, p_action:'buy'}, 'Bet placed: ' + n + ' tokens on ' + S);
+  };
+  $('#qbok').addEventListener('click', submit);
+  qbKey = e => { if (e.key === 'Escape') closeQuickBet(); else if (e.key === 'Enter' && document.activeElement === inp) submit(); };
+  document.addEventListener('keydown', qbKey);
+  inp.focus();
+}
+
 async function mk(){
   const id = await rpc('create_market', {p_question:$('#q').value, p_yes:$('#o').value/100, p_cooldown:Math.round($('#c').value*3600), p_closes:$('#d').value ? new Date($('#d').value).toISOString() : null});
   if (id) { toast('Market created'); go('market/' + id); }
@@ -1122,6 +1644,7 @@ async function checkReferralAlerts(){
 setInterval(() => { if (!document.hidden) checkReferralAlerts(); }, 30000);
 
 load().then(checkReferralAlerts);
+// ---- password reset: expired / already-used link message ----
 if (LINK_EXPIRED) { history.replaceState(null, '', location.pathname + location.search); setTimeout(() => toast('That reset link has expired or was already used. Tap Forgot password to get a new one.'), 400); }
 </script>
 </body>
