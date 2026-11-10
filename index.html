@@ -619,7 +619,7 @@ const FETCH = {
   final: async () => { const r = await sb.from('season_final').select('place,username,score').order('place'); FINAL = r.data || []; return r; },
   staff: async () => { const r = await sb.from('profiles').select('username,role').neq('role','user'); STAFF = r.data || []; return r; },
   inv: async () => { const r = await sb.from('invite_codes').select('code,used_by'); INV = r.data || []; return r; },
-  pr: async () => { const r = await sb.from('proposals').select('id,question,closes_at,status,note,cooldown_seconds,profiles(username)').order('created_at', {ascending:false}).limit(100); PR = r.data || []; return r; },
+  pr: async () => { const r = await sb.from('proposals').select('id,question,closes_at,status,note,cooldown_seconds,proposer,admin_made,profiles(username)').order('created_at', {ascending:false}).limit(100); PR = r.data || []; return r; },
   streak: async () => { const r = await sb.rpc('my_streak'); STK = (r.data && r.data[0]) || null; return r; },
   sboard: async () => { const r = await sb.rpc('streak_board'); SBD = r.data || []; return r; },
   co: async () => { const r = await sb.rpc('cosmetics'); CO = {}; (r.data || []).forEach(x => { CO[x.username] = x; }); return r; },
@@ -1196,7 +1196,7 @@ const pgCreate = () => `<h1>Create market</h1><div class="card narrow"><input id
   <div class="row"><label class="mut">Closes (optional)<input id="d" type="datetime-local"></label></div><div class="row"><button class="tk" onclick="mk()">🍁 Create market</button></div></div>`;
 
 function pgReview(){
-  const pend = PR.filter(p => p.status === 'pending'), done = PR.filter(p => p.status !== 'pending');
+  const pend = PR.filter(p => p.status === 'pending' && !(p.admin_made && p.proposer === me.id)), done = PR.filter(p => p.status !== 'pending');
   return `<h1>Review suggestions</h1><div class="grid">${pend.map(p => `<div class="card"><span class="mut">From ${p.profiles ? nm(p.profiles.username) : '?'}${p.closes_at ? ' · closes ' + new Date(p.closes_at).toLocaleString() : ''}</span>
     <input id="pq${p.id}" value="${esc(p.question)}" maxlength="300">
     <div class="row"><label class="mut">Opening YES %<input id="po${p.id}" type="number" value="50"></label><label class="mut">Cooldown (hours)<input id="pc${p.id}" type="number" step="0.5" value="${+((p.cooldown_seconds || 3600) / 3600).toFixed(2)}"></label></div>
@@ -1515,7 +1515,7 @@ function render(){
   document.querySelectorAll('input[id],textarea[id],select[id]').forEach(i => keep[i.id] = i.value);
   const [pg, arg] = (location.hash.slice(2) || 'markets').split('/');
   const staff = me.role !== 'user', owner = me.role === 'owner';
-  const pend = PR.filter(p => p.status === 'pending').length;
+  const pend = PR.filter(p => p.status === 'pending' && !(p.admin_made && p.proposer === me.id)).length;
   const meBn = itemById(me.banner);
   const link = (id, label, badge) => `<a href="#/${id}" class="${id === pg || (id === 'markets' && pg === 'market') || (id === 'leaderboard' && pg === 'user') ? 'on' : ''}">${ico(IC[id])}${label}${badge ? `<span class="chip">${badge}</span>` : ''}</a>`;
   const pages = {markets: pgMarkets, market: () => pgMarket(+arg), portfolio: pgPortfolio, leaderboard: pgBoard, raffle: pgRaffle, feast: pgFeast, raffle: pgRaffle, favors: pgFavors, user: () => pgUser(decodeURIComponent(arg || '')), shop: pgShop, ideas: pgIdeas, rules: pgRules, suggest: pgSuggest, create: pgCreate, review: pgReview, admin: pgAdmin, account: pgAccount, inventory: pgInventory};
