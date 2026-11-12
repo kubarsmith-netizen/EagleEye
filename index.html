@@ -1074,15 +1074,18 @@ function pgMarkets(){
 // total that lands in your account on cash-out: payout (2x profit on the Market of the Week)
 // + streak bonus + Turkey Market double profit + a waiting Trade Favor - favors you sent (all on the profit only;
 // favors only apply to cash-outs worth over 200 tokens)
+// profit rounded to 4 decimals like the database does: a loss or a break-even (0 profit) is never a "real" profit,
+// so Trade Favors never apply to it
+const realProfit = (m, p) => Math.max(0, Math.round((cashValue(m, p) - (+p.invested)) * 1e4) / 1e4);
 const cashTotal = (m, p) => {
   const c = cashValue(m, p), prof = Math.max(0, c - (+p.invested)), b = STK ? prof * (+STK.bonus_pct) / 100 : 0;
-  const fav = c > 200 ? (favIn() - favOwe()) : 0;
+  const fav = (c > 200 && realProfit(m, p) > 0) ? (favIn() - favOwe()) : 0;
   return c + b + (isTurkey(m) ? prof : 0) + prof * fav / 100;
 };
 const bonusNote = (m, p) => {
   const bits = [];
   if (isTurkey(m)) bits.push('🦃 Turkey Market 2× profit');
-  if (cashValue(m, p) > 200) {
+  if (cashValue(m, p) > 200 && realProfit(m, p) > 0) {
     if (favIn()) bits.push(`🧡 +${favIn().toFixed(1)}% favor you received`);
     if (favOwe()) bits.push(`🧡 −${favOwe().toFixed(1)}% favor you sent`);
   }
@@ -1103,7 +1106,7 @@ function pgMarket(id){
     <div class="row"><button class="y" onclick="buy(${id},'yes')">🦃 Buy YES</button><button class="n" onclick="buy(${id},'no')">🦃 Buy NO</button></div>`;
   const pos = mine.map(p => {
     const v = cashTotal(m, p);
-    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>You receive: ${v.toFixed(1)}${cashValue(m, p) > +p.invested ? bonusNote(m, p) : ''}</span>
+    return `<div class="row split"><span><b>${p.side.toUpperCase()}</b><br>Invested: ${(+p.invested).toFixed(1)}<br>Bought at: ${(boughtAtPrice(m, p) * 100).toFixed(0)}%<br>Now: ${(sidePrice(m, p.side) * 100).toFixed(0)}%<br>You receive: ${v.toFixed(1)}${realProfit(m, p) > 0 ? bonusNote(m, p) : ''}</span>
     <button class="g" ${i.locked || i.closed || !i.open ? 'disabled' : ''} onclick="sell(${id},'${p.side}')">🥧 Cash out</button></div>`;
   }).join('');
   const resolve = i.open && me.role !== 'user' ? `<div class="card"><b>Resolve this market</b><div class="row">
