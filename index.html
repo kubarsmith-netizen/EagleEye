@@ -603,7 +603,7 @@ async function auth(login){
 
 // ---------- data ----------
 const AT = {}, LOADED = {};
-const TTL = {ev:60e3, act:60e3, pts:60e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3, streak:60e3, sboard:60e3, co:60e3, shop:60e3, special:60e3, te:30e3, stats:30e3, hist:30e3, ideas:30e3, fe:30e3, fa:30e3};
+const TTL = {ev:60e3, act:60e3, pts:300e3, lb:30e3, final:300e3, staff:60e3, inv:60e3, pr:60e3, streak:60e3, sboard:60e3, co:60e3, shop:60e3, special:60e3, te:30e3, stats:30e3, hist:30e3, ideas:30e3, fe:30e3, fa:30e3};
 const EXTRAS = {markets:['act'], market:['pts'], leaderboard:['lb','final','sboard'], admin:['staff','inv','final','special'], suggest:['pr'], review:['pr'], shop:['shop'], account:['stats','hist','shop'], inventory:['shop','special'], ideas:['ideas'], feast:['fe'], raffle:['fe'], favors:['fe','fa']};
 const BLOCKING = {leaderboard:1, admin:1, suggest:1, review:1, shop:1, account:1, inventory:1, ideas:1, feast:1, raffle:1, favors:1};
 
