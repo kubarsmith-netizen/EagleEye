@@ -211,6 +211,12 @@ nav a,.chip,.rc,.rank,.nm{border-radius:12px}
 .meter .tgm{position:absolute;top:50%;font-size:28px;transform:translate(-50%,-56%);filter:drop-shadow(0 2px 2px #0006)}
 .feast-bar{margin:0 0 16px;padding:18px 22px;border-radius:18px;border:var(--bw) solid #c2410c;background:linear-gradient(110deg,#d9480f,#ee6a14 55%,#f97f1a);color:#fff;position:relative;overflow:hidden}
 .feast-bar a{color:#fff;font-weight:700;text-decoration:underline}
+.feast-bar.fb-win{background:linear-gradient(110deg,#166534,#16a34a 55%,#22c55e);border-color:#166534}
+.feast-bar.fb-lose{background:linear-gradient(110deg,#475569,#64748b 55%,#7c8aa0);border-color:#475569}
+.feast-bar .fb-res{display:flex;flex-direction:column;gap:6px}
+.feast-bar .fb-res .fb-h{font-size:20px;font-weight:800}
+.feast-bar .fb-res .fb-w{font-size:16px}
+.feast-bar .fb-res .fb-c{font-size:15px;opacity:.95}
 .feast-bar .fb-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
 .feast-bar .fb-top .sp{flex:1}
 .feast-bar .meter{height:24px;margin:12px 0 0;background:#7c2d1255;border-color:#ffffff88}
@@ -790,6 +796,20 @@ function feastBanner(compact){
   const endMs = new Date(FE.ends_at).getTime();
   if (Date.now() > endMs + 3 * 864e5) return '';
   const over = Date.now() >= endMs, p = feastPct(), tm = FE.turkey_market_id ? markets.find(m => m.id === FE.turkey_market_id) : null;
+  // the event is over and the results are in: one results banner, the same for everybody
+  if (over && FE.rolled) {
+    const R = FE.raffle || {}, met = !!FE.goal_met;
+    const win = R.winner
+      ? (R.winner_is_me ? `🎉 <b>Congratulations, ${esc(R.winner)}, you won the Turkey Raffle!</b> ${fnum(R.prize)} tokens are yours.` : `🎉 <b>Congratulations to ${esc(R.winner)}</b>, the winner of the Turkey Raffle and ${fnum(R.prize)} tokens!`)
+      : 'Nobody earned a raffle ticket this year, so there was no raffle winner.';
+    const com = met
+      ? '🦃 <b>Congrats, everybody did it!</b> The community filled the meter and the prizes were paid.'
+      : `😞 <b>Aw shucks.</b> The community meter did not fill up this time${pen() > 0 ? `, so everyone's balance was cut by ${pen()}%` : ''}. Better luck next time!`;
+    const watch = R.winner ? '<a class="pill" href="javascript:void(0)" onclick="replayRaffle()">🎟️ Watch the raffle again</a>' : '';
+    return `<div class="feast-bar ${met ? 'fb-win' : 'fb-lose'}"><div class="fb-top"><span class="chip ev">THANKSGIVING RESULTS</span></div>
+      <div class="fb-res" style="margin-top:10px"><div class="fb-w">${win}</div><div class="fb-c">${com}</div></div>
+      ${watch ? `<div class="fb-ev"><span class="ev-txt">Thank you for playing!</span><span class="links">${watch}</span></div>` : ''}</div>`;
+  }
   const msg = over
     ? (FE.rolled ? (FE.goal_met ? 'The community filled the meter. Prizes were paid!' : `The meter fell short, so no community prizes were paid${pen() > 0 ? ` and every balance was cut by ${pen()}%` : ''}.`) : 'Dinner is served! Counting the results...')
     : (p >= 100 ? 'The meter is FULL! Keep contributing, prizes are paid at Thanksgiving.' : `Fill the meter together for prizes${pen() > 0 ? `. If we do not, <b>everybody's balance is cut by ${pen()}%</b>!` : '!'}`);
