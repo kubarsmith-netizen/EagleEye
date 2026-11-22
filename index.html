@@ -252,19 +252,20 @@ nav a,.chip,.rc,.rank,.nm{border-radius:12px}
 .slip{position:absolute;min-width:58px;max-width:78px;height:20px;padding:0 4px;background:#fff7e0;color:#4a2208;font-size:9.5px;font-weight:700;line-height:20px;border-radius:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;box-shadow:0 1px 3px #0007;transform:rotate(var(--r,0deg))}
 .stir .slip{animation:stir .9s ease-in-out infinite alternate;animation-delay:var(--dl,0s)}
 @keyframes stir{from{transform:translate(0,0) rotate(var(--r,0deg))}to{transform:translate(var(--dx,20px),var(--dy,-16px)) rotate(var(--r2,40deg))}}
-.rf-hand{position:absolute;left:50%;top:-34px;font-size:58px;transform:translateX(-50%) rotate(-12deg);transition:top 1.3s ease;z-index:3}
-.rf-hand.dip{top:130px}
-.rf-hand.out{top:-110px}
-.rf-pull{position:absolute;left:50%;bottom:150px;width:min(260px,80vw);padding:16px 12px;background:#fff7e0;color:#4a2208;border-radius:6px;font-weight:700;font-size:24px;box-shadow:0 8px 28px #000a;transform:translate(-50%,60px) scale(.25);opacity:0;transition:transform 1.2s cubic-bezier(.2,.9,.3,1.15),opacity .5s;z-index:4;font-family:Fraunces,Georgia,serif;word-break:break-word}
+.rf-pull{position:absolute;left:50%;bottom:150px;width:max-content;max-width:none;white-space:nowrap;border-radius:8px;box-shadow:0 8px 28px #000a;transform:translate(-50%,60px) scale(.25);opacity:0;transition:transform 1.2s cubic-bezier(.2,.9,.3,1.15),opacity .5s;z-index:4;perspective:900px}
+.rf-in{display:grid;transform-style:preserve-3d;transition:transform .8s ease}
+.rf-in.flip{transform:rotateY(180deg)}
+.rf-face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:8px}
+.rf-front{background:#fff7e0;color:#4a2208;font-weight:700;font-size:24px;padding:18px 28px;font-family:Fraunces,Georgia,serif;transform:rotateY(180deg);display:flex;align-items:center;justify-content:center}
+.rf-cardback{min-width:190px;min-height:64px;background:radial-gradient(circle,#fbbf24 0 2.5px,transparent 3.5px) 0 0/22px 22px,repeating-linear-gradient(45deg,#7c2d12 0 2px,transparent 2px 11px),repeating-linear-gradient(-45deg,#7c2d12 0 2px,transparent 2px 11px),#c2410c;box-shadow:inset 0 0 0 5px #fff7e0,inset 0 0 0 7px #7c2d12}
 .rf-pull.up{transform:translate(-50%,-70px) scale(1);opacity:1}
 .rf-pull.win{box-shadow:0 0 0 4px #fbbf24,0 0 40px #fbbf24aa;animation:pop .6s ease-out}
 @keyframes pop{0%{transform:translate(-50%,-70px) scale(.8)}60%{transform:translate(-50%,-70px) scale(1.12)}100%{transform:translate(-50%,-70px) scale(1)}}
 .rf-res{min-height:60px;font-size:19px;margin-top:10px}
 .rf-res b{color:#fde68a}
 .rf-actions{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-.rf-actions button.g{color:#fff3e0;border-color:#ffffff66}
 .rf-confetti span{position:absolute;top:-10vh;font-size:26px;animation:fall 5s linear forwards;z-index:1;pointer-events:none}
-@media(prefers-reduced-motion:reduce){#leaves{display:none}.stk-btn,.tk,button.tk:hover{animation:none!important}.stir .slip{animation:none}.rf-hand,.rf-pull{transition:none}.rf-confetti{display:none}}
+@media(prefers-reduced-motion:reduce){#leaves{display:none}.stk-btn,.tk,button.tk:hover{animation:none!important}.stir .slip{animation:none}.rf-pull,.rf-in{transition:none}.rf-confetti{display:none}}
 
 /* =============== extras =============== */
 main{padding-bottom:90px}
@@ -989,12 +990,16 @@ function showRaffle(R, preview){
   el.innerHTML = `<div class="rf-back"><div class="rf-confetti" id="rfc"></div><div class="rf-card">
     <div class="rf-title">🦃 The Thanksgiving Raffle 🍁</div>
     <div class="rf-sub" id="rfsub">${has ? 'Stirring the tickets...' : 'Counting the tickets...'}</div>
-    <div class="rf-stage" id="rfst"><div class="rf-hand" id="rfh">✋</div><div class="rf-pull" id="rfp">🍁</div>
+    <div class="rf-stage" id="rfst"><div class="rf-pull" id="rfp"><div class="rf-in" id="rfi"><div class="rf-face rf-cardback"></div><div class="rf-face rf-front" id="rff"></div></div></div>
       <div class="rf-bowl stir" id="rfb">${slips.map((n, i) => `<span class="slip" style="left:${Math.round(Math.random() * 190)}px;top:${Math.round(60 + Math.random() * 100)}px;--r:${Math.round(Math.random() * 90 - 45)}deg;--r2:${Math.round(Math.random() * 180 - 90)}deg;--dx:${Math.round(Math.random() * 60 - 30)}px;--dy:${Math.round(Math.random() * -50)}px;--dl:-${(Math.random() * 1.2).toFixed(2)}s">${esc(n)}</span>`).join('')}</div><div class="rf-rim"></div></div>
     <div class="rf-res" id="rfr"></div>
-    <div class="rf-actions"><button class="g" id="rfs">Skip</button><button class="tk" id="rfx" style="display:none">🍂 Close</button></div></div></div>`;
+    <div class="rf-actions"><button class="tk" id="rfx" style="display:none">🍂 Close</button></div></div></div>`;
   const q = s => el.querySelector(s), timers = [];
   let done = false;
+  // the winner's name always stays on ONE line: the card stretches to fit, and the text only shrinks if even the full screen is too narrow
+  const frontEl = q('#rff'), pullEl = q('#rfp');
+  frontEl.textContent = winnerName;
+  { const maxW = Math.max(160, innerWidth - 48); let fs = 24; while (pullEl.offsetWidth > maxW && fs > 10) { fs--; frontEl.style.fontSize = fs + 'px'; } }
   const confetti = () => {
     const c = q('#rfc'); if (!c) return;
     const L = ['🍁','🍂','🍃','🦃','🍁','🍂'];
@@ -1008,11 +1013,11 @@ function showRaffle(R, preview){
   const reveal = () => {
     if (done) return; done = true;
     timers.forEach(clearTimeout);
-    const b = q('#rfb'), h = q('#rfh'), pl = q('#rfp'), sub = q('#rfsub'), res = q('#rfr');
+    const b = q('#rfb'), pl = q('#rfp'), sub = q('#rfsub'), res = q('#rfr');
     if (!b) return;
-    b.classList.remove('stir'); h.classList.remove('dip'); h.classList.add('out');
+    b.classList.remove('stir');
     if (has && winnerName) {
-      pl.textContent = winnerName; pl.classList.add('up', 'win');
+      pl.classList.add('up', 'win'); q('#rfi').classList.add('flip');
       sub.textContent = 'And the winner is...';
       res.innerHTML = isMe ? `🎉 <b>That's YOU, ${esc(winnerName)}!</b> You won <b>${fnum(R.prize)}</b> tokens!` : `🎉 <b>${esc(winnerName)}</b> wins <b>${fnum(R.prize)}</b> tokens!<div class="mut" style="color:#fcd9a8;margin-top:4px">Ticket #${R.ticket} of ${fnum(R.tickets_total)} was drawn.</div>`;
       confetti();
@@ -1021,14 +1026,13 @@ function showRaffle(R, preview){
       sub.textContent = 'The bowl is empty...';
       res.innerHTML = 'Nobody earned a turkey ticket this year. Make 10 trades next time to get one!';
     }
-    q('#rfs').style.display = 'none'; q('#rfx').style.display = '';
+    q('#rfx').style.display = '';
   };
-  q('#rfs').onclick = reveal;
   q('#rfx').onclick = () => { el.innerHTML = ''; if (!preview) { rpc('feast_ack_raffle', {}, null); if (FE) FE.show_raffle = false; } };
   if (reduce || !has) { reveal(); return; }
-  timers.push(setTimeout(() => { if (done) return; q('#rfsub').textContent = 'Reaching in...'; q('#rfh').classList.add('dip'); }, 2800));
-  timers.push(setTimeout(() => { if (done) return; q('#rfb').classList.remove('stir'); q('#rfsub').textContent = 'Pulling out a ticket...'; q('#rfh').classList.remove('dip'); q('#rfh').classList.add('out'); q('#rfp').classList.add('up'); }, 4400));
-  timers.push(setTimeout(reveal, 6200));
+  timers.push(setTimeout(() => { if (done) return; q('#rfb').classList.remove('stir'); q('#rfsub').textContent = 'Pulling out a ticket...'; q('#rfp').classList.add('up'); }, 2800));
+  timers.push(setTimeout(() => { if (done) return; q('#rfsub').textContent = 'And the winner is...'; q('#rfi').classList.add('flip'); }, 4400));
+  timers.push(setTimeout(reveal, 5400));
 }
 // "watch again" after the draw (never re-ack, so it is only a replay)
 const replayRaffle = () => { if (FE && FE.raffle && FE.raffle.winner) showRaffle(FE.raffle, true); };
